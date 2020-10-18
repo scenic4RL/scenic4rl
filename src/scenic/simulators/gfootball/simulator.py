@@ -1,0 +1,90 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from typing import Dict, List
+import math
+
+from gfootball.env import config
+from gfootball.env import football_env
+
+from scenic.syntax.translator import verbosity
+
+from scenic.core.simulators import SimulationCreationError
+from scenic.syntax.veneer import verbosePrint
+from scenic.core.simulators import Simulator, Simulation
+
+
+class GFootBallSimulator(Simulator):
+	def __init__(self, settings={}, render=True):
+
+		verbosePrint('Connecting to GFootBall...')
+		self.settings:Dict = settings
+		self.render = render
+
+		default_settings = {
+			'action_set': "full",
+			'dump_full_episodes': False,
+			'real_time': True,
+			'players': ['keyboard:left_players=1']
+		}
+
+		for setting, option in default_settings.items():
+			if setting not in self.settings:
+				verbosePrint(f'Using Default Settings for {setting}: {default_settings[setting]}')
+				self.settings[setting] = default_settings[setting]
+
+	def createSimulation(self, scene, verbosity=0):
+		return GFootBallSimulation(scene=scene, settings = self.settings,
+							   render=self.render,
+							   verbosity=verbosity)
+
+
+class GFootBallSimulation(Simulation):
+	def __init__(self, scene, settings, render, verbosity=0):
+
+
+		self.settings = settings
+
+		self.cfg = config.Config(self.settings)
+
+		self.env = football_env.FootballEnv(self.cfg)
+
+		env = self.env
+		env.render()
+		env.reset()
+
+		#Reloads current world: destroys all actors, except traffic manager instances == ?
+		#connects display if render == true
+
+
+		#Create Carla actors corresponding to Scenic objects
+		#need blueprint ?
+		#set transforms (location and rotations)
+		#
+
+
+		#DO THE FIRST TICK/STEP
+
+
+		#APplies "control" to carla objects
+
+		#Set Carla actor's initial speed (if specified)
+
+	def executeActions(self, allActions):
+		#Apply control updates which were accumulated while executing the actions
+		#for openai gym execute action is part of step ??
+		#does this only buffer all sort of actions ????
+		pass
+
+	def step(self):
+		# Run simulation for one timestep
+		env.step([])
+
+	def getProperties(self, obj, properties):
+		# Extract  properties
+		return values
+
+if __name__ == "__main__":
+	g = GFootBallSimulator()
+	s = g.createSimulation(None)

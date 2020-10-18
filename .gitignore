@@ -121,3 +121,7 @@ venv.bak/
 dmypy.json
 
 *.cproject
+
+# Azad's
+.idea/
+_localz/
