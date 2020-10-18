@@ -16,11 +16,13 @@ from scenic.core.simulators import Simulator, Simulation
 
 
 class GFootBallSimulator(Simulator):
-	def __init__(self, settings={}, render=True):
-
+	def __init__(self, settings={}, render=True, record=False, timestep=None):
+		super().__init__()
 		verbosePrint('Connecting to GFootBall...')
 		self.settings:Dict = settings
 		self.render = render
+		self.timestep = timestep
+		self.record = record
 
 		default_settings = {
 			'action_set': "full",
@@ -36,21 +38,27 @@ class GFootBallSimulator(Simulator):
 
 	def createSimulation(self, scene, verbosity=0):
 		return GFootBallSimulation(scene=scene, settings = self.settings,
-							   render=self.render,
+								   timestep=self.timestep,
+							   render=self.render, record=self.record,
 							   verbosity=verbosity)
 
 
 class GFootBallSimulation(Simulation):
-	def __init__(self, scene, settings, render, verbosity=0):
-
+	def __init__(self, scene, settings, timestep, render, record, verbosity=0):
+		super().__init__(scene, timestep=timestep, verbosity=verbosity)
+		self.verbosity = verbosity
+		self.record = record
+		self.timestep = timestep
 		self.scene = scene
 		self.settings = settings
 		self.cfg = config.Config(self.settings)
+
 		self.env = football_env.FootballEnv(self.cfg)
 		self.render = render
-		env = self.env
-		env.render()
-		env.reset()
+
+		if self.render:
+			self.env.render()
+		self.env.reset()
 
 		#Reloads current world: destroys all actors, except traffic manager instances == ?
 		#connects display if render == true
@@ -77,11 +85,18 @@ class GFootBallSimulation(Simulation):
 
 	def step(self):
 		# Run simulation for one timestep
-		env.step([])
+		self.env.step([])
 
 	def getProperties(self, obj, properties):
 		# Extract  properties
-		return {}
+		values = dict()
+		values['velocity'] = 0
+		values['angularSpeed'] = 0
+		values['position'] = 0
+		values['speed'] = 0
+		values['heading'] = 0
+		# {'velocity', 'angularSpeed', 'position', 'speed', 'heading'
+		return values
 
 if __name__ == "__main__":
 	g = GFootBallSimulator()
