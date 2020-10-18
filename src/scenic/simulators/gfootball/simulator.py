@@ -43,13 +43,11 @@ class GFootBallSimulator(Simulator):
 class GFootBallSimulation(Simulation):
 	def __init__(self, scene, settings, render, verbosity=0):
 
-
+		self.scene = scene
 		self.settings = settings
-
 		self.cfg = config.Config(self.settings)
-
 		self.env = football_env.FootballEnv(self.cfg)
-
+		self.render = render
 		env = self.env
 		env.render()
 		env.reset()
@@ -83,8 +81,9 @@ class GFootBallSimulation(Simulation):
 
 	def getProperties(self, obj, properties):
 		# Extract  properties
-		return values
+		return {}
 
 if __name__ == "__main__":
 	g = GFootBallSimulator()
 	s = g.createSimulation(None)
+	#g.simulate()
