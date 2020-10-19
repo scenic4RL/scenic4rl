@@ -51,6 +51,15 @@ class GFootBallSimulation(Simulation):
 		self.timestep = timestep
 		self.scene = scene
 		self.settings = settings
+
+		for obj in self.objects:
+			if isinstance(obj, gfootball.Player):
+				print("Player")
+
+			else:
+				print(obj)
+
+		#SET UP CONFIG
 		self.cfg = config.Config(self.settings)
 
 		self.env = football_env.FootballEnv(self.cfg)
@@ -59,6 +68,9 @@ class GFootBallSimulation(Simulation):
 		if self.render:
 			self.env.render()
 		self.env.reset()
+
+
+
 
 		#Reloads current world: destroys all actors, except traffic manager instances == ?
 		#connects display if render == true
