@@ -21,7 +21,7 @@ import gfootball
 
 
 #build a scenario file from arguments
-def build_scenario_file(scene_attrs):
+def build_scenario_file(scene_attrs, own_players, opo_players):
     code_str = ""
     code_str += "from . import *\n"
 
@@ -30,6 +30,9 @@ def build_scenario_file(scene_attrs):
     #basic settings:
     for name, value in scene_attrs.items():
         code_str += f"\t{name} = {value}\n"
+
+    #addOwnPlayers:
+
 
     code_str += "\n"
     code_str += "\n"
@@ -45,6 +48,8 @@ scene_attrs['offsides'] = False
 scene_attrs['end_episode_on_score'] = True
 scene_attrs['end_episode_on_out_of_play'] = False
 scene_attrs['end_episode_on_possession_change'] = False
+
+#my players
 
 
 #write scenario to file
@@ -81,6 +86,3 @@ while True:
     _, _, done, _ = env.step([])
     if done:
         env.reset()
-
-
-
