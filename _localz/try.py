@@ -20,7 +20,7 @@ settings = {
     'dump_full_episodes': False,
     'real_time': True,
     'players': ['keyboard:left_players=1'],
-    'level': 'scenic_gen'
+    'level': 'dynamic'
 }
 cfg = config.Config(settings)
 

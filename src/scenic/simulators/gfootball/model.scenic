@@ -17,8 +17,20 @@ class Ball:
     width: 0.005
     length: 0.005
 
+
+#AskEddie: How to modify distribution of position based on role?
 class Player:
     position: Point on workspace
     direction: Range(0, 360) deg
     width: 0.01
     length: 0.01
+    role: "CM"
+
+
+#AskEddie: should we specify a boolean field in player? instead of My/Op Player
+
+class MyPlayer(Player):
+    pass
+
+class OpPlayer(Player):
+    pass

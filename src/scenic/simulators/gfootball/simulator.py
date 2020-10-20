@@ -19,6 +19,7 @@ import gfootball_engine as libgame
 #Role = libgame.e_PlayerRole
 #Team = libgame.e_Team
 
+#One important implication is that there is a single action per 100 ms reported to the environment, which might cause a lag effect when playing.
 class GFootBallSimulator(Simulator):
 	def __init__(self, settings={}, render=True, record=False, timestep=None):
 		super().__init__()
@@ -50,7 +51,7 @@ class GFootBallSimulator(Simulator):
 
 
 class GFootBallSimulation(Simulation):
-	def __init__(self, scene, settings, timestep, render, record, verbosity=0):
+	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 		self.verbosity = verbosity
 		self.record = record
@@ -73,10 +74,22 @@ class GFootBallSimulation(Simulation):
 				code_str += f"\tbuilder.config().{name} = {value}\n"
 
 			# add Ball
-			"builder.SetBallPosition(0.02, 0.0)"
-			code_str += f"\tbuilder.SetBallPosition({ball.position.x}, {ball.position.y})"
+			code_str += f"\tbuilder.SetBallPosition({ball.position.x}, {ball.position.y})\n"
 
 			# addOwnPlayers:
+			code_str += f"\tbuilder.SetTeam(Team.e_Left)\n"
+
+			for player in own_players:
+				code_str += f"\tbuilder.AddPlayer({player.position.x}, {player.position.y}, e_PlayerRole_{player.role})\n"
+
+			code_str += "\n"
+			code_str += "\n"
+
+			# addOponentPlayers:
+			code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
+
+			for player in opo_players:
+				code_str += f"\tbuilder.AddPlayer({player.position.x}, {player.position.y}, e_PlayerRole_{player.role})\n"
 
 			code_str += "\n"
 			code_str += "\n"
@@ -98,7 +111,9 @@ class GFootBallSimulation(Simulation):
 				'offsides': False,
 				'end_episode_on_score': True,
 				'end_episode_on_out_of_play': False,
-				'end_episode_on_possession_change': False
+				'end_episode_on_possession_change': False,
+				'right_team_difficulty': 0.0,
+				'left_team_difficulty': 0.0
 			}
 
 			#Set default parameters for scene
@@ -111,14 +126,18 @@ class GFootBallSimulation(Simulation):
 
 			from scenic.simulators.gfootball.model import Player, Ball
 			ball = None
-			players = []
-
+			my_players = []
+			op_players = []
 			for obj in self.objects:
 				print(obj, type(obj))
 
 				# change with isinstance
-				if "Player" in str(type(obj)):
-					players.append(obj)
+				if "MyPlayer" in str(type(obj)):
+					my_players.append(obj)
+
+				elif "OpPlayer" in str(type(obj)):
+					op_players.append(obj)
+
 				elif "Ball" in str(type(obj)):
 					# print(f"Ball {dir(obj)}")
 					ball = obj
@@ -126,7 +145,7 @@ class GFootBallSimulation(Simulation):
 			print(f"...Writing GFootBall Scenario to {module_path}")
 
 			with open(module_path + "/" + GFOOTBALL_SCENARIO_FILENAME, "w+") as file:
-				code_str = get_scenario_python_str(scene_attrs, own_players=players, opo_players=[], ball=ball)
+				code_str = get_scenario_python_str(scene_attrs, own_players=my_players, opo_players=op_players, ball=ball)
 				print(code_str)
 				file.write(code_str)
 
