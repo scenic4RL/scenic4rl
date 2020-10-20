@@ -62,7 +62,7 @@ class GFootBallSimulation(Simulation):
 		Role = libgame.e_PlayerRole
 		Team = libgame.e_Team
 
-		def get_scenario_python_str(scene_attrs, own_players, opo_players):
+		def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
 			code_str = ""
 			code_str += "from . import *\n"
 
@@ -70,7 +70,11 @@ class GFootBallSimulation(Simulation):
 
 			# basic settings:
 			for name, value in scene_attrs.items():
-				code_str += f"\t{name} = {value}\n"
+				code_str += f"\tbuilder.config().{name} = {value}\n"
+
+			# add Ball
+			"builder.SetBallPosition(0.02, 0.0)"
+			code_str += f"\tbuilder.SetBallPosition({ball.position.x}, {ball.position.y})"
 
 			# addOwnPlayers:
 
@@ -79,29 +83,50 @@ class GFootBallSimulation(Simulation):
 
 			return code_str
 
-
-
 		# write scenario to file
 		GFOOTBALL_SCENARIO_FILENAME = "dynamic.py"
 
 		def initialize_gfootball_scenario():
 
 			# set basic scenario attributes
+
 			scene_attrs = {}
 
-			scene_attrs['game_duration'] = 400
-			scene_attrs['deterministic'] = False
-			scene_attrs['offsides'] = False
-			scene_attrs['end_episode_on_score'] = True
-			scene_attrs['end_episode_on_out_of_play'] = False
-			scene_attrs['end_episode_on_possession_change'] = False
+			default_scene_params = {
+				'game_duration': 400,
+				'deterministic': False,
+				'offsides': False,
+				'end_episode_on_score': True,
+				'end_episode_on_out_of_play': False,
+				'end_episode_on_possession_change': False
+			}
+
+			#Set default parameters for scene
+			scene_attrs.update(default_scene_params)
+
+			#UPDATE SCENE PARAMETERS
+			scene_attrs.update(scene.params)
 
 			module_path = gfootball.scenarios.__path__[0]
+
+			from scenic.simulators.gfootball.model import Player, Ball
+			ball = None
+			players = []
+
+			for obj in self.objects:
+				print(obj, type(obj))
+
+				# change with isinstance
+				if "Player" in str(type(obj)):
+					players.append(obj)
+				elif "Ball" in str(type(obj)):
+					# print(f"Ball {dir(obj)}")
+					ball = obj
 
 			print(f"...Writing GFootBall Scenario to {module_path}")
 
 			with open(module_path + "/" + GFOOTBALL_SCENARIO_FILENAME, "w+") as file:
-				code_str = get_scenario_python_str(scene_attrs, [], [])
+				code_str = get_scenario_python_str(scene_attrs, own_players=players, opo_players=[], ball=ball)
 				print(code_str)
 				file.write(code_str)
 
