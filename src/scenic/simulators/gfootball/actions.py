@@ -2,7 +2,6 @@ from gfootball.env import football_action_set
 from scenic.core.vectors import Vector
 from scenic.core.simulators import Action
 
-
 class SetDirection(Action):
     def __init__(self, direction: int):
         self.direction = direction

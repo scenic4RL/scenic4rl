@@ -3,7 +3,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.core.regions import regionFromShapelyObject
 import math
 
-
+#TODO combine mumtiple behavior
 
 behavior BallRunShoot():
     while True:

@@ -197,7 +197,7 @@ class GFootBallSimulation(Simulation):
 
 		#Set Carla actor's initial speed (if specified)
 
-	# askEddie: when is this called, what is allActions
+
 	def executeActions(self, allActions):
 		#Apply control updates which were accumulated while executing the actions
 		#for openai gym execute action is part of step ??

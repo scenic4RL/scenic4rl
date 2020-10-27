@@ -9,6 +9,8 @@ width = 2
 length = 0.42*2
 workspace = Workspace(RectangularRegion(0 @ 0, 0, width, length)) #ask eddie about first two parameters
 
+#askEddie: How to define regions within workspace: Dbox, left half, right half, etc
+
 # types of objects
 
 class Ball:
