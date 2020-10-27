@@ -25,6 +25,8 @@ class Player:
     width: 0.01
     length: 0.01
     role: "CM"
+    active: False
+    ball_owned: False
 
 
 #AskEddie: should we specify a boolean field in player? instead of My/Op Player

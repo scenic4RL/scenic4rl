@@ -7,6 +7,7 @@ import math
 import gfootball
 from gfootball.env import config
 from gfootball.env import football_env
+from scenic.simulators.gfootball.interface import update_objects_from_obs
 
 from scenic.syntax.translator import verbosity
 
@@ -33,7 +34,7 @@ class GFootBallSimulator(Simulator):
 			'action_set': "full",
 			'dump_full_episodes': False,
 			'real_time': True,
-			'players': ['keyboard:left_players=1']
+			'players': ['agent:left_players=1']
 		}
 
 		for setting, option in default_settings.items():
@@ -58,6 +59,13 @@ class GFootBallSimulation(Simulation):
 		self.timestep = timestep
 		self.scene = scene
 		self.settings = settings
+		self.rewards = []
+		self.last_obs = None
+
+
+		self.ball = None
+		self.my_players = []
+		self.opo_players = []
 
 		Player = libgame.FormationEntry
 		Role = libgame.e_PlayerRole
@@ -77,22 +85,24 @@ class GFootBallSimulation(Simulation):
 			code_str += f"\tbuilder.SetBallPosition({ball.position.x}, {ball.position.y})\n"
 
 			# addOwnPlayers:
-			code_str += f"\tbuilder.SetTeam(Team.e_Left)\n"
+			if len(own_players)>0:
+				code_str += f"\tbuilder.SetTeam(Team.e_Left)\n"
 
-			for player in own_players:
-				code_str += f"\tbuilder.AddPlayer({player.position.x}, {player.position.y}, e_PlayerRole_{player.role})\n"
+				for player in own_players:
+					code_str += f"\tbuilder.AddPlayer({player.position.x}, {player.position.y}, e_PlayerRole_{player.role})\n"
 
-			code_str += "\n"
-			code_str += "\n"
+				code_str += "\n"
+				code_str += "\n"
 
 			# addOponentPlayers:
-			code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
+			if len(opo_players)>0:
+				code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
 
-			for player in opo_players:
-				code_str += f"\tbuilder.AddPlayer({player.position.x}, {player.position.y}, e_PlayerRole_{player.role})\n"
+				for player in opo_players:
+					code_str += f"\tbuilder.AddPlayer({player.position.x}, {player.position.y}, e_PlayerRole_{player.role})\n"
 
-			code_str += "\n"
-			code_str += "\n"
+				code_str += "\n"
+				code_str += "\n"
 
 			return code_str
 
@@ -154,13 +164,11 @@ class GFootBallSimulation(Simulation):
 			'action_set': "full",
 			'dump_full_episodes': False,
 			'real_time': True,
-			'players': ['keyboard:left_players=1'],
+			'players': ['agent:left_players=1', 'keyboard:right_players=1'],
 			'level': GFOOTBALL_SCENARIO_FILENAME[:-3]
 		}
 
 		self.settings.update(settings)
-
-
 
 		#SET UP CONFIG
 		self.cfg = config.Config(self.settings)
@@ -170,47 +178,63 @@ class GFootBallSimulation(Simulation):
 
 		if self.render:
 			self.env.render()
-		self.env.reset()
+
+		self.last_obs = self.env.reset()
+		self.done = False
+
+		#obs = self.last_obs[0]
+
+		update_objects_from_obs(self.last_obs, self.objects)
 
 
+		#read observation
 
+		#obs index to <-> player role : loop over left_team roles
 
-		#Reloads current world: destroys all actors, except traffic manager instances == ?
-		#connects display if render == true
-
-
-		#Create Carla actors corresponding to Scenic objects
-		#need blueprint ?
-		#set transforms (location and rotations)
-		#
-
-
-		#DO THE FIRST TICK/STEP
 
 
 		#APplies "control" to carla objects
 
 		#Set Carla actor's initial speed (if specified)
 
+	# askEddie: when is this called, what is allActions
 	def executeActions(self, allActions):
 		#Apply control updates which were accumulated while executing the actions
 		#for openai gym execute action is part of step ??
 		#does this only buffer all sort of actions ????
-		pass
 
+		self.action = [0]
+		for agent, act in allActions.items():
+			if agent.active:
+				self.action = [act[0].code]
+				print(f"In simulator: Taking {act} actions")
+
+
+
+	#askEddie: How to Report end of an episode (i.e., simulation????)
 	def step(self):
 		# Run simulation for one timestep
-		self.env.step([])
+		if self.done:
+			self.last_obs = self.env.reset()
+			self.done = False
+			print(f"Reward Sum: {sum(self.rewards)}")
+			#askEddie: Signal end of simulation
 
+		self.last_obs, rew, self.done, _ = self.env.step(self.action)
+		self.rewards.append(rew)
+		update_objects_from_obs(self.last_obs, self.objects)
+
+
+
+	#askEddie: How to use this function? Where are these properties set, why only one obj
 	def getProperties(self, obj, properties):
 		# Extract  properties
 		values = dict()
 		values['velocity'] = 0
-		values['angularSpeed'] = 0
-		values['position'] = 0
+		values['angularSpeed'] = self.last_obs
+		values['position'] = obj.position
 		values['speed'] = 0
 		values['heading'] = 0
-		# {'velocity', 'angularSpeed', 'position', 'speed', 'heading'
 		return values
 
 if __name__ == "__main__":
