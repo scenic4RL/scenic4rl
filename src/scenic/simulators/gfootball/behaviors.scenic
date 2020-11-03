@@ -52,7 +52,8 @@ behavior BallRunShoot():
 
         if self.active and self.ball_owned:
 
-            if x < 0.65:
+            # askEddie: how to use penalty_right as defined in model
+            if x < 70:
                 print("Running towards Goal")
                 take SetDirection(5)
             else:

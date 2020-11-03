@@ -165,6 +165,7 @@ class GFootBallSimulation(Simulation):
 			'dump_full_episodes': False,
 			'real_time': True,
 			'players': ['agent:left_players=1', 'keyboard:right_players=1'],
+			#'players': ['agent:left_players=1'],
 			'level': GFOOTBALL_SCENARIO_FILENAME[:-3]
 		}
 

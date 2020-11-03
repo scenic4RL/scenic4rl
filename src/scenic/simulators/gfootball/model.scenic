@@ -4,10 +4,19 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 simulator GFootBallSimulator()
 
+
 # Set up workspace
-width  = 2 * 7.32/0.088           # 166.37 meter
-height = 0.42 * 2 * 7.32 / 0.088  # 69.8727 Meter
-workspace = Workspace(RectangularRegion(0 @ 0, 0, width, height)) #ask eddie about first two parameters
+width  = 166          # Exact: 2 * 7.32/0.088  == 166.37 meter
+height =  70          # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
+
+width_su = 2
+height_su = 0.42*2
+
+workspace = Workspace(RectangularRegion(0 @ 0, 0, width, height))
+
+dbox = RectangularRegion(0.8 @ 0, 0, 0.4, 0.4)
+penalty_right = RectangularRegion(74.75 @ 0, 0, 16.5, 40.32) #stanard dimensions used, need to check what gfootball uses
+penalty_left = RectangularRegion(-74.75 @ 0, 0, 16.5, 40.32)
 
 # top - left [-1, -0.42]
 # bottom - right [1, 0.42]
@@ -22,9 +31,10 @@ goal - Left/right goal is located
     #https://www.itsagoal.net/fifa-laws-of-the-game/
     #https://www.wikiwand.com/en/Football_pitch#:~:text=Goals%20are%20placed%20at%20the,8%20ft)%20above%20the%20ground.
     #https://www.quora.com/What-are-the-official-dimensions-of-a-soccer-field-in-the-FIFA-World-Cup
+    #https://www.footballhistory.org/field.html 
 
     The inner edges of the posts must be 7.32 metres (8 yd) apart
-    Standard: 110 x 68
+    Standard field: 105 x 68
     hence,
 
     1 Y simulator unit = 7.32/0.088 meter
@@ -38,7 +48,7 @@ goal - Left/right goal is located
 """
 
 
-dbox = RectangularRegion(0.8 @ 0, 0, 0.4, 0.4)
+
 
 #askEddie: How to define regions within workspace: Dbox, left half, right half, etc
 
@@ -53,8 +63,8 @@ class Ball:
     rotationZ: Range(0, 360) deg
     ball_owned_team: int
     ball_owned_player: int
-    width: 0.005
-    length: 0.005
+    width: 0.2
+    length: 0.2
 
 
     """
@@ -76,8 +86,8 @@ class Player:
     position: Point on workspace
     direction: Range(0, 360) deg
     tired_factor: float
-    width: 0.01
-    length: 0.01
+    width: 0.5
+    length: 0.5
     role: "CM"
 
     active: False

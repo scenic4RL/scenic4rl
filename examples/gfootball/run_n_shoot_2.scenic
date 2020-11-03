@@ -13,8 +13,7 @@ param deterministic = False
 
 
 #in gfootball the applied actions correspond to the active player (player with ball / closest to ball), but scenic applies behavior to each and every object
-ego = MyPlayer on penalty_left,
-                with role "GK",
+ego = MyPlayer with role "GK",
                 with behavior BallRunShoot()
 
 MyPlayer #left of ego by 5
@@ -31,4 +30,4 @@ MyPlayer with role "CM",
 #AskEddie how to define constants
 OpPlayer with role "GK"
 
-ball = Ball
+ball = Ball 
