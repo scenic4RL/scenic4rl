@@ -1,0 +1,16 @@
+->  set direction to meter, util function for distance
+
+
+-> try changing the name of Player’s attribute direction to heading  (scenic represents angle in radians by default but users will define in deg if wanted)
+
+-> find out “default heading direction” at instantiation of each player. For example, are players always instantiated facing the opponent’s goal post or field?
+
+
+-> syntax to have working: (1) left/right of (2) ahead/behind of (3) beyond.. (4) in/on region (that you defined) (5) offset by ..
+
+
+
+
+Coverage
+
+Observations.

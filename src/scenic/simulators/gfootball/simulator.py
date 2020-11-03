@@ -225,7 +225,6 @@ class GFootBallSimulation(Simulation):
 		update_objects_from_obs(self.last_obs, self.objects)
 
 
-
 	#askEddie: How to use this function? Where are these properties set, why only one obj
 	def getProperties(self, obj, properties):
 		# Extract  properties

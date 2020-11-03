@@ -17,6 +17,8 @@ ego = MyPlayer at -0.95 @ 0,
                 with role "GK",
                 with behavior BallRunShoot()
 
+MyPlayer #left of ego by 5
+
 MyPlayer at -0.8 @ 0.2,
          with role "CB",
          with behavior BallRunShoot()
