@@ -14,7 +14,7 @@ height_su = 0.42*2
 
 workspace = Workspace(RectangularRegion(0 @ 0, 0, width, height))
 
-dbox = RectangularRegion(0.8 @ 0, 0, 0.4, 0.4)
+#dbox = RectangularRegion(0.8 @ 0, 0, 0.4, 0.4)
 penalty_right = RectangularRegion(74.75 @ 0, 0, 16.5, 40.32) #stanard dimensions used, need to check what gfootball uses
 penalty_left = RectangularRegion(-74.75 @ 0, 0, 16.5, 40.32)
 

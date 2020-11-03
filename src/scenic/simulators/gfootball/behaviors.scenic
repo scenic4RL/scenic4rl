@@ -5,6 +5,8 @@ import math
 
 #TODO combine mumtiple behavior
 
+#model is copied here
+
 behavior BallRunShoot():
     while True:
         #if not in dbox, run towards it
@@ -53,12 +55,13 @@ behavior BallRunShoot():
         if self.active and self.ball_owned:
 
             # askEddie: how to use penalty_right as defined in model
-            if x < 70:
-                print("Running towards Goal")
-                take SetDirection(5)
-            else:
+            if self.position in penalty_left:
                 print("Will shoot now!!")
                 take Shoot()
+            else:
+                print("Running towards Goal")
+                take SetDirection(5)
+
 
         else:
             print("Will Do Nothing now!!")
