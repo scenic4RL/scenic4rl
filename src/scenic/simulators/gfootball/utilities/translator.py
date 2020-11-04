@@ -4,7 +4,7 @@ from scenic.core.vectors import Vector
 
 def pos_sim_to_scenic(pos):
     x = sim_to_scenic_x(pos[0])
-    y = sim_to_scenic_y(pos[1])
+    y = -1*sim_to_scenic_y(pos[1])
     return Vector(x, y)
 
 
@@ -23,6 +23,6 @@ def sim_to_scenic_y(y):
 
 def pos_scenic_to_sim(pos):
     x = scenic_to_sim_x(pos.x)
-    y = scenic_to_sim_y(pos.y)
+    y = -1*scenic_to_sim_y(pos.y)
     return Vector(x,y)
 

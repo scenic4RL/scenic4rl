@@ -73,12 +73,6 @@ class GFootBallSimulation(Simulation):
 		Team = libgame.e_Team
 
 
-
-		# write scenario to file
-
-
-
-
 		initialize_gfootball_scenario(scene, self.objects)
 		settings = get_default_settings()
 		self.settings.update(settings)

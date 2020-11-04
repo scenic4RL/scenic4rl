@@ -24,7 +24,7 @@ behavior BallRunShoot():
             if isinstance(obj, Ball):
                 ball = obj
             elif isinstance(obj, MyPlayer):
-                if obj == self: pass#print("Its Me")
+                if obj == self: pass #print("Its Me")
                 else: my_team.append(obj)
             elif isinstance(obj, OpPlayer):
                 op_team.append(obj)

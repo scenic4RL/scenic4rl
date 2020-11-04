@@ -18,7 +18,7 @@ ego = MyPlayer on penalty_left,
                 with behavior BallRunShoot()
 
 #askEddie
-ball = Ball at -10 @ 10
+ball = Ball at -20 @ -34.9 #-82.9 @ 34.9, -82.9 @ -34.9, 0 @y doesnt work
 #ball = Ball at 20 @ 20
 
 MyPlayer with behavior BallRunShoot()#left of ego by 5
