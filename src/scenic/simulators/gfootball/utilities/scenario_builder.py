@@ -1,47 +1,9 @@
 import gfootball
+from scenic.simulators.gfootball.interface import get_scenario_python_str
 from scenic.simulators.gfootball.utilities import translator
 
 
 GFOOTBALL_SCENARIO_FILENAME = "dynamic.py"
-
-
-def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
-    code_str = ""
-    code_str += "from . import *\n"
-
-    code_str += "def build_scenario(builder):\n"
-
-    # basic settings:
-    for name, value in scene_attrs.items():
-        code_str += f"\tbuilder.config().{name} = {value}\n"
-
-    # add Ball
-    ball_pos_sim = translator.pos_scenic_to_sim(ball.position)
-    code_str += f"\tbuilder.SetBallPosition({ball_pos_sim.x}, {ball_pos_sim.y})\n"
-
-    # addOwnPlayers:
-    if len(own_players ) >0:
-        code_str += f"\tbuilder.SetTeam(Team.e_Left)\n"
-
-        for player in own_players:
-            player_pos_sim = translator.pos_scenic_to_sim(player.position)
-            code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
-
-        code_str += "\n"
-        code_str += "\n"
-
-    # addOponentPlayers:
-    if len(opo_players ) >0:
-        code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
-
-        for player in opo_players:
-            player_pos_sim = translator.pos_scenic_to_sim(player.position)
-            code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
-
-        code_str += "\n"
-        code_str += "\n"
-
-    return code_str
 
 
 def initialize_gfootball_scenario(scene, objects):

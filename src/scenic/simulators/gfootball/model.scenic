@@ -6,8 +6,8 @@ simulator GFootBallSimulator()
 
 
 # Set up workspace
-field_width  = 166          # Exact: 2 * 7.32/0.088  == 166.37 meter
-field_height =  70          # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
+field_width  = 200          # Exact: 2 * 7.32/0.088  == 166.37 meter
+field_height =  84          # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
 
 field_width_su = 2
 field_height_su = 0.42*2
@@ -87,7 +87,10 @@ Speed vectors represent a change in the position of the object within a single s
 #AskEddie: How to modify distribution of position based on role?
 class Player:
     position: Point on workspace
+    position_sim: Vector
     direction: Range(0, 360) deg
+    direction_vec: Vector
+
     tired_factor: float
     width: 0.5
     length: 0.5

@@ -42,8 +42,8 @@ behavior BallRunShoot():
         blx = ball.position.x
         bly = ball.position.y
 
-        if self.active:
-            print(self.active, self.role, x,y,blx,bly)
+        #if self.active:
+        #    print(self.active, self.role, x,y,blx,bly)
 
         distance = 0
         distance = (((x-blx)*(x-blx)) + (y-bly)*(y-bly))
@@ -60,16 +60,16 @@ behavior BallRunShoot():
             # askEddie: how to use penalty_right as defined in model
             #if self.position in model.penalty_right:
             if self.position.x >= 59:
-                print("Will shoot now!!")
+                #print("Will shoot now!!")
                 take Shoot()
             else:
-                print("Running towards Goal")
+                #print("Running towards Goal")
                 take SetDirection(ActionCode.right)
 
 
 
         else:
-            print("Will Do Nothing now!!")
+           #print("Will Do Nothing now!!")
             take NoAction()
 
 """

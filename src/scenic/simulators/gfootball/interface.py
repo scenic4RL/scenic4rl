@@ -1,4 +1,7 @@
+from scenic.core.vectors import Vector
 from scenic.simulators.gfootball.utilities import translator
+from scenic.simulators.gfootball.utilities.translator import get_angle_from_direction
+
 player_code_to_role = {
 			0: "GK",
 			1: "CB",
@@ -14,7 +17,6 @@ player_code_to_role = {
 
 def update_objects_from_obs(last_obs, objects):
     obs = last_obs[0]
-
 
     ball_owned_team = obs['ball_owned_team']
     ball_owned_player = obs['ball_owned_player']
@@ -37,13 +39,19 @@ def update_objects_from_obs(last_obs, objects):
             ind_to_role[ind] = role
 
             # TODO add all from: https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
-            pos = translator.pos_sim_to_scenic(obs[tp][ind])
+            pos = obs[tp][ind]
             direction = obs[f"{tp}_direction"][ind]
             tired = obs[f"{tp}_tired_factor"][ind]
 
             player_info[role] = {}
-            player_info[role]['pos'] = pos
-            player_info[role]['direction'] = direction
+            player_info[role]['pos'] = translator.pos_sim_to_scenic(pos)
+            player_info[role]['pos_sim'] = pos
+            player_info[role]['direction'] = get_angle_from_direction(direction)
+            player_info[role]['direction_sim'] = Vector(direction[0], direction[1])
+
+            #if tp=="left_team" and role=="GK":
+            #    print(f"{tp} {role} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
+
             player_info[role]['tired'] = tired
             player_info[role]["active"] = obs["active"] == ind
             player_info[role]["ball_owned"] = False
@@ -110,6 +118,11 @@ def update_objects_from_obs(last_obs, objects):
         if "MyPlayer" in str(type(obj)):
             role = obj.role
             obj.position = my_player_info[role]["pos"]
+            obj.position_sim = my_player_info[role]["pos_sim"]
+
+            obj.direction = my_player_info[role]["direction"]
+            obj.direction_sim = my_player_info[role]["direction_sim"]
+
             obj.tired = my_player_info[role]["tired"]
             obj.active = my_player_info[role]["active"]
             obj.ball_owned = my_player_info[role]["ball_owned"]
@@ -122,6 +135,48 @@ def update_objects_from_obs(last_obs, objects):
 
         elif "Ball" in str(type(obj)):
             obj.position = translator.pos_sim_to_scenic(obs['ball'])
-            obj.direction = obs["ball_direction"]
+            obj.direction = translator.get_angle_from_direction(obs["ball_direction"])
             obj.owned_team = obs['ball_owned_team']
             obj.owned_player = obs['ball_owned_player']
+
+            print(f"Ball {obj.position} with {obj.direction} degree {obs['ball_direction']}")
+
+
+
+def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
+    code_str = ""
+    code_str += "from . import *\n"
+
+    code_str += "def build_scenario(builder):\n"
+
+    # basic settings:
+    for name, value in scene_attrs.items():
+        code_str += f"\tbuilder.config().{name} = {value}\n"
+
+    # add Ball
+    ball_pos_sim = translator.pos_scenic_to_sim(ball.position)
+    code_str += f"\tbuilder.SetBallPosition({ball_pos_sim.x}, {ball_pos_sim.y})\n"
+
+    # addOwnPlayers:
+    if len(own_players ) >0:
+        code_str += f"\tbuilder.SetTeam(Team.e_Left)\n"
+
+        for player in own_players:
+            player_pos_sim = translator.pos_scenic_to_sim(player.position)
+            code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
+
+        code_str += "\n"
+        code_str += "\n"
+
+    # addOponentPlayers:
+    if len(opo_players ) >0:
+        code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
+
+        for player in opo_players:
+            player_pos_sim = translator.pos_scenic_to_sim(player.position)
+            code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
+
+        code_str += "\n"
+        code_str += "\n"
+
+    return code_str
