@@ -1,6 +1,7 @@
 from scenic.core.vectors import Vector
 from scenic.simulators.gfootball.utilities import translator
 from scenic.simulators.gfootball.utilities.translator import get_angle_from_direction
+from scenic.simulators.gfootball import model
 
 player_code_to_role = {
 			0: "GK",
@@ -49,8 +50,8 @@ def update_objects_from_obs(last_obs, objects):
             player_info[role]['direction'] = get_angle_from_direction(direction)
             player_info[role]['direction_sim'] = Vector(direction[0], direction[1])
 
-            #if tp=="left_team" and role=="GK":
-            #    print(f"{tp} {role} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
+            if tp=="right_team" and role=="GK":
+                print(f"{tp} {role} position {player_info[role]['pos']} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
 
             player_info[role]['tired'] = tired
             player_info[role]["active"] = obs["active"] == ind
@@ -139,7 +140,7 @@ def update_objects_from_obs(last_obs, objects):
             obj.owned_team = obs['ball_owned_team']
             obj.owned_player = obs['ball_owned_player']
 
-            print(f"Ball {obj.position} with {obj.direction} degree {obs['ball_direction']}")
+            #print(f"Ball {obj.position} with {obj.direction} degree {obs['ball_direction']}")
 
 
 

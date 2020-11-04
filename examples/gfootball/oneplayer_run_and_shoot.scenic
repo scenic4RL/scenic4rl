@@ -17,8 +17,8 @@ ego = MyPlayer on penalty_left,
                 with role "GK",
                 with behavior BallRunShoot()
 
-#askEddie
-ball = Ball at -20 @ -34.9 #-82.9 @ 34.9, -82.9 @ -34.9, 0 @y doesnt work
+ball = Ball in penalty_left #-82.9 @ 34.9, -82.9 @ -34.9, 0 @y doesnt work
+#ball = Ball in penalty_right Error
 #ball = Ball at 20 @ 20
 
 MyPlayer with behavior BallRunShoot()#left of ego by 5
@@ -33,8 +33,8 @@ MyPlayer with role "CM",
 """
 
 #AskEddie how to define constants
-OpPlayer with role "GK"
-        #on penalty_right
+OpPlayer with role "GK",
+        at -20 @ -10
 
 #OpPlayer at -50 @ 25,
 #         with role "CB"

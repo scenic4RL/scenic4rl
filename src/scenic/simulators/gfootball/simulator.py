@@ -133,6 +133,7 @@ class GFootBallSimulation(Simulation):
 
 
 	#askEddie: How to use this function? Where are these properties set, why only one obj
+	#need to implement this
 	def getProperties(self, obj, properties):
 		# Extract  properties
 		values = dict()
@@ -141,6 +142,10 @@ class GFootBallSimulation(Simulation):
 		values['position'] = obj.position
 		values['speed'] = 0
 		values['heading'] = 0
+
+
+		#values['active'] = 0
+
 		return values
 
 if __name__ == "__main__":
