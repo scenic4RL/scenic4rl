@@ -6,17 +6,20 @@ simulator GFootBallSimulator()
 
 
 # Set up workspace
-width  = 166          # Exact: 2 * 7.32/0.088  == 166.37 meter
-height =  70          # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
+field_width  = 166          # Exact: 2 * 7.32/0.088  == 166.37 meter
+field_height =  70          # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
 
-width_su = 2
-height_su = 0.42*2
+field_width_su = 2
+field_height_su = 0.42*2
 
-workspace = Workspace(RectangularRegion(0 @ 0, 0, width, height))
+workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
 #dbox = RectangularRegion(0.8 @ 0, 0, 0.4, 0.4)
-penalty_right = RectangularRegion(74.75 @ 0, 0, 16.5, 40.32) #stanard dimensions used, need to check what gfootball uses
-penalty_left = RectangularRegion(-74.75 @ 0, 0, 16.5, 40.32)
+penbox_width = 24
+#penalty_right = RectangularRegion( ((field_width-penbox_width)/2) @ 0, 0, penbox_width, 40.32) #stanard dimensions used, need to check what gfootball uses
+#penalty_left = RectangularRegion( ((-1*field_width+penbox_width)/2) @ 0, 0, penbox_width, 40.32)
+penalty_left =  RectangularRegion( -71 @ 0, 0, penbox_width, 40.32) # -166/2+24/2 == -71
+penalty_right = RectangularRegion( 71 @ 0, 0, penbox_width, 40.32)
 
 # top - left [-1, -0.42]
 # bottom - right [1, 0.42]

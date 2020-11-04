@@ -1,7 +1,7 @@
 
 
 
-class Action:
+class ActionCode:
 
     """Default action set"""
     idle = 0

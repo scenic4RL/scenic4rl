@@ -1,7 +1,7 @@
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.simulators.gfootball.behaviors import *
-
+from scenic.simulators.gfootball import model
 #1500 is 45 minutes
 param real_time = False
 param game_duration = 500
@@ -17,7 +17,11 @@ ego = MyPlayer on penalty_left,
                 with role "GK",
                 with behavior BallRunShoot()
 
-MyPlayer #left of ego by 5
+#askEddie
+ball = Ball at -10 @ 10
+#ball = Ball at 20 @ 20
+
+MyPlayer with behavior BallRunShoot()#left of ego by 5
 
 """
 MyPlayer at -50 @ 25,
@@ -30,5 +34,8 @@ MyPlayer with role "CM",
 
 #AskEddie how to define constants
 OpPlayer with role "GK"
+        #on penalty_right
 
-ball = Ball
+#OpPlayer at -50 @ 25,
+#         with role "CB"
+
