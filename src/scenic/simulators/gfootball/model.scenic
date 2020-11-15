@@ -17,13 +17,11 @@ field_height_su = 0.42*2
 
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
-#dbox = RectangularRegion(0.8 @ 0, 0, 0.4, 0.4)
 penbox_height = 48
 penbox_width  = 30
-#penalty_right = RectangularRegion( ((field_width-penbox_width)/2) @ 0, 0, penbox_width, 40.32) #stanard dimensions used, need to check what gfootball uses
-#penalty_left = RectangularRegion( ((-1*field_width+penbox_width)/2) @ 0, 0, penbox_width, 40.32)
+
 penalty_left_center = -1*(field_width/2 - penbox_width/2)
-pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height) # -166/2+24/2 == -71
+pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height)
 pbox_right = RectangularRegion( -1*penalty_left_center @ 0, 180 deg, penbox_width, penbox_height)
 
 # top - left [-1, -0.42]
@@ -64,9 +62,13 @@ class LeftGoalMidPoint:
 
 class Center:
     position: 0@0
+    heading: 0 deg
+    width: 0
+    height: 0
     #viewAngle: 360 deg
     #viewDistance: pos_inf
-
+    allowCollisions: True
+    requireVisible: False
 # types of objects
 
 class Ball:
@@ -79,7 +81,6 @@ class Ball:
     ball_owned_player: int
     width: 0.2
     length: 0.2
-    #askEddie: allowCollisions: True (???)
     allowCollisions: True
     requireVisible: False
     """
@@ -122,6 +123,7 @@ class Player:
 
     #askEddie: should be of action data type
     current_action: int
+    allowCollisions: True
     requireVisible: False
     """
     left_team - N-elements vector with [x, y] positions of players.
