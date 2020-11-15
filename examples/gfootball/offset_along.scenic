@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 
-param game_duration = 600
+param game_duration = 300
 param deterministic = False
 
 
@@ -11,9 +11,10 @@ param deterministic = False
 ego = LeftGoalMidPoint
 
 MyPlayer with role "GK",
-         offset by 5 @ -10
+         offset along 45 deg by 40 @ 0
+         #offset along 45 deg by 25 @ 10
 
 OpPlayer with role "GK",
-         at 80 @ 10
+         offset along 25 deg by 51 @ 0
 
-Ball offset by 10 @ -20
+Ball offset along 89 deg by 41 @ 0

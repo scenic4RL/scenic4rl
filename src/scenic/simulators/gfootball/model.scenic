@@ -22,7 +22,7 @@ penbox_width = 24
 #penalty_right = RectangularRegion( ((field_width-penbox_width)/2) @ 0, 0, penbox_width, 40.32) #stanard dimensions used, need to check what gfootball uses
 #penalty_left = RectangularRegion( ((-1*field_width+penbox_width)/2) @ 0, 0, penbox_width, 40.32)
 penalty_left =  RectangularRegion( -88 @ 0, 0, penbox_width, 40.32) # -166/2+24/2 == -71
-penalty_right = RectangularRegion( 88 @ 0, 0, penbox_width, 40.32)
+penalty_right = RectangularRegion( 88 @ 0, 180 deg, penbox_width, 40.32)
 
 # top - left [-1, -0.42]
 # bottom - right [1, 0.42]
@@ -56,6 +56,8 @@ class LeftGoalMidPoint:
     position: -(field_width/2) @ 0
     width: 0
     height: 0
+    heading: 0 deg
+    #heading: 270 deg
 
 
 class Center:
