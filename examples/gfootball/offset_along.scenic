@@ -14,6 +14,6 @@ MyPlayer with role "GK",
          offset by 5 @ -10
 
 OpPlayer with role "GK",
-         at -99 @ -20
+         at 80 @ 10
 
 Ball offset by 10 @ -20
