@@ -4,12 +4,15 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 simulator GFootBallSimulator()
 
+#Constants
+pos_inf = 500
+eps = 0.001
 
 # Set up workspace
-field_width  = 200          # Exact: 2 * 7.32/0.088  == 166.37 meter
-field_height =  84          # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
+field_width  = 200           # Exact: 2 * 7.32/0.088  == 166.37 meter
+field_height =  84           # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
 
-field_width_su = 2
+field_width_su = 2           #fieldWidth in terms of Simulator unit
 field_height_su = 0.42*2
 
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
@@ -44,17 +47,21 @@ goal - Left/right goal is located
     1 meter  = 0.088/7.32  Y simulator unit
     height = 0.42*2 sm unit = 0.42 * 2 * 7.32 / 0.088 = 69.87272727272727 meter
     width = 2 * 7.32/0.088 = 166.36363636363637 meter
-
-
-
-
 """
-
-
 
 
 #askEddie: How to define regions within workspace: Dbox, left half, right half, etc
 
+class LeftGoalMidPoint:
+    position: -(field_width/2) @ 0
+    width: 0
+    height: 0
+
+
+class Center:
+    position: 0@0
+    #viewAngle: 360 deg
+    #viewDistance: pos_inf
 
 # types of objects
 
@@ -68,8 +75,9 @@ class Ball:
     ball_owned_player: int
     width: 0.2
     length: 0.2
-
-
+    #askEddie: allowCollisions: True (???)
+    allowCollisions: True
+    requireVisible: False
     """
     ball - [x, y, z] position of the ball.
     ball_direction - [x, y, z] ball movement vector.
@@ -91,6 +99,7 @@ class Player:
     direction: Range(0, 360) deg
     direction_vec: Vector
     heading: Range(0, 360) deg
+    allowCollisions: True
     #name: "player"
 
 
@@ -109,7 +118,7 @@ class Player:
 
     #askEddie: should be of action data type
     current_action: int
-
+    requireVisible: False
     """
     left_team - N-elements vector with [x, y] positions of players.
     left_team_direction - N-elements vector with [x, y] movement vectors of players.
