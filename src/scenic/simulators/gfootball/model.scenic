@@ -24,7 +24,6 @@ penalty_left_center = -1*(field_width/2 - penbox_width/2)
 pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height)
 pbox_right = RectangularRegion( -1*penalty_left_center @ 0, 180 deg, penbox_width, penbox_height)
 
-
 left_goal_midpoint = -(field_width/2) @ 0
 right_goal_midpoint = (field_width/2) @ 0
 # top - left [-1, -0.42]
@@ -117,32 +116,34 @@ Speed vectors represent a change in the position of the object within a single s
 
 #AskEddie: How to modify distribution of position based on role?
 class Player:
-    position: Point on workspace
-    position_sim: Vector
-    direction: Range(0, 360) deg
-    direction_vec: Vector
-    heading: Range(0, 360) deg
-    allowCollisions: True
-    #name: "player"
+    #gfootball properties
+    position[dynamic]: Point on workspace
+    #position_sim[dynamic]: Vector
 
+    direction[dynamic]: Range(0, 360) deg
+    #direction_vec[dynamic]: Vector
 
-    tired_factor: float
-    width: 0.5
-    length: 0.5
-    role: "CM"
+    tired_factor[dynamic]: (0,1)#float
+    yellow_cards[dynamic]: float
+    red_card[dynamic]: False
+    role[dynamic]: Uniform("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
 
-    #active[dynamic] : False
-    active: False
-    designated: False
-    ball_owned: False
+    controlled[dynamic]: False #IS this the player controlled by RL/ User Logic
+    #designated: False #dont need for single-agent, hence
 
-    yellow_card: False
-    red_card: False
+    #in this link, it says action is a 10 element array, but actually it returns a 13 element array
+    #https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
+    sticky_actions[dynamic]: list
 
-    #askEddie: should be of action data type
-    current_action: int
+    #G footbal derived
+    owns_ball[dynamic]: False #whether he (as a result also his team) posses the ball or not
+
+    #scenic properties
+    heading: 0 deg
     allowCollisions: True
     requireVisible: False
+    width: 0.5
+    length: 0.5
     """
     left_team - N-elements vector with [x, y] positions of players.
     left_team_direction - N-elements vector with [x, y] movement vectors of players.

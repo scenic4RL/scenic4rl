@@ -126,7 +126,7 @@ class GFootBallSimulation(Simulation):
 
 		self.action = [0]
 		for agent, act in allActions.items():
-			if agent.active:
+			if agent.controlled:
 				self.action = [act[0].code]
 				#print(f"In simulator: Taking {act} actions")
 
@@ -168,6 +168,23 @@ class GFootBallSimulation(Simulation):
 			values['speed'] = obj.speed
 			values['velocity'] = obj.velocity
 
+		if obj in self.my_players or obj in self.opo_players:
+
+			values['position'] = obj.position
+			values['direction'] = obj.direction
+			values['tired_factor'] = obj.tired_factor
+			values['yellow_cards'] = obj.yellow_cards
+			values['red_card'] = obj.yellow_cards
+			values['role'] = obj.role
+			values['controlled'] = obj.controlled
+			values['owns_ball'] = obj.owns_ball
+			values['sticky_actions'] = obj.sticky_actions
+
+
+			values['velocity'] = 0
+			values['angularSpeed'] = obj.angularSpeed
+			values['speed'] = 0
+			values['heading'] = 0
 		else:
 			values['velocity'] = 0
 			values['angularSpeed'] = obj.angularSpeed

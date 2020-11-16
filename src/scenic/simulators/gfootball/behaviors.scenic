@@ -55,11 +55,11 @@ behavior BallRunShoot():
         #if self.active:
         #    print(self.active, self.role, self.ball_owned, distance, direction)
 
-        if self.active and self.ball_owned:
+        if self.controlled and self.owns_ball:
 
             # askEddie: how to use penalty_right as defined in model
             #if self.position in model.penalty_right:
-            if self.position.x >= 59:
+            if self.position in pbox_right:
                 #print("Will shoot now!!")
                 take Shoot()
             else:

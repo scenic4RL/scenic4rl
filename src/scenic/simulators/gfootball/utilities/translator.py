@@ -3,9 +3,10 @@ from scenic.simulators.gfootball import model
 from scenic.core.vectors import Vector
 import math
 
-def pos_sim_to_scenic(pos):
+def pos_sim_to_scenic(pos, mirrorx=False):
     x = sim_to_scenic_x(pos[0])
     y = sim_to_scenic_y(pos[1])
+    if mirrorx: x *= -1
     return Vector(x, y)
 
 
@@ -22,9 +23,10 @@ def sim_to_scenic_y(y):
     return -1 * model.field_height * y / model.field_height_su
 
 
-def pos_scenic_to_sim(pos):
+def pos_scenic_to_sim(pos, mirrorx=False):
     x = scenic_to_sim_x(pos.x)
     y = scenic_to_sim_y(pos.y)
+    if mirrorx: x *= -1
     return Vector(x,y)
 
 

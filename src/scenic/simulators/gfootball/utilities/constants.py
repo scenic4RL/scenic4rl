@@ -1,5 +1,51 @@
 
 
+class RoleCode:
+    GK = 0
+    CB = 1
+    LB = 2
+    RB = 3
+    DM = 4
+    CM = 5
+    LM = 6
+    RM = 7
+    AM = 8
+    CF = 9
+
+    player_code_to_role = {
+        0: "GK",
+        1: "CB",
+        2: "LB",
+        3: "RB",
+        4: "DM",
+        5: "CM",
+        6: "LM",
+        7: "RM",
+        8: "AM",
+        9: "CF"
+    }
+
+    player_role_to_code = {
+        "GK":0 ,
+        "CB":1 ,
+        "LB":2 ,
+        "RB":3 ,
+        "DM":4 ,
+        "CM":5 ,
+        "LM":6 ,
+        "RM":7 ,
+        "AM":8 ,
+        "CF":9
+    }
+
+    @classmethod
+    def code_to_role(cls, code:int):
+        return cls.player_code_to_role[code]
+
+    @classmethod
+    def role_to_code(cls, code: int):
+        return cls.player_role_to_code[code]
+
 
 class ActionCode:
 
