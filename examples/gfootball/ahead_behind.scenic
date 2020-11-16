@@ -10,6 +10,6 @@ param deterministic = False
 
 ego = LeftGoalMidPoint
 
-b = Ball
-MyPlayer with role "GK", left of b by 10
-OpPlayer with role "GK", right of b by 10
+b = Ball at 0 @ 0
+MyPlayer with role "GK", ahead of b by 10
+OpPlayer with role "GK", behind b by 10

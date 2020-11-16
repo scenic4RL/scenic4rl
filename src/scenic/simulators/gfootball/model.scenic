@@ -24,6 +24,9 @@ penalty_left_center = -1*(field_width/2 - penbox_width/2)
 pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height)
 pbox_right = RectangularRegion( -1*penalty_left_center @ 0, 180 deg, penbox_width, penbox_height)
 
+
+left_goal_midpoint = -(field_width/2) @ 0
+right_goal_midpoint = (field_width/2) @ 0
 # top - left [-1, -0.42]
 # bottom - right [1, 0.42]
 
@@ -52,12 +55,20 @@ goal - Left/right goal is located
 
 #askEddie: How to define regions within workspace: Dbox, left half, right half, etc
 
+"""
 class LeftGoalMidPoint:
     position: -(field_width/2) @ 0
     width: 0
     height: 0
     heading: 0 deg
+
+class RightGoalMidPoint:
+    position: (field_width / 2) @ 0
+    width: 0
+    height: 0
+    heading: 270 deg
     #heading: 270 deg
+
 
 
 class Center:
@@ -69,6 +80,7 @@ class Center:
     #viewDistance: pos_inf
     allowCollisions: True
     requireVisible: False
+"""
 # types of objects
 
 class Ball:

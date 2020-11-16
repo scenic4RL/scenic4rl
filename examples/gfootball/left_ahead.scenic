@@ -11,5 +11,5 @@ param deterministic = False
 ego = LeftGoalMidPoint
 
 b = Ball
-MyPlayer with role "GK", left of b by 10
-OpPlayer with role "GK", right of b by 10
+MyPlayer with role "GK", ahead of b by 10, left of b by 10
+OpPlayer with role "GK", right of b by 10, behind b by 20

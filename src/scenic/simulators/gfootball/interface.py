@@ -50,8 +50,8 @@ def update_objects_from_obs(last_obs, objects):
             player_info[role]['direction'] = get_angle_from_direction(direction)
             player_info[role]['direction_sim'] = Vector(direction[0], direction[1])
 
-            if tp=="right_team" and role=="GK":
-                print(f"{tp} {role} position {player_info[role]['pos']} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
+            #if tp=="right_team" and role=="GK":
+            #    print(f"{tp} {role} position {player_info[role]['pos']} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
 
             player_info[role]['tired'] = tired
             player_info[role]["active"] = obs["active"] == ind
@@ -154,9 +154,12 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
     for name, value in scene_attrs.items():
         code_str += f"\tbuilder.config().{name} = {value}\n"
 
+    code_str += f"\n"
     # add Ball
     ball_pos_sim = translator.pos_scenic_to_sim(ball.position)
     code_str += f"\tbuilder.SetBallPosition({ball_pos_sim.x}, {ball_pos_sim.y})\n"
+
+    code_str += f"\n"
 
     # addOwnPlayers:
     if len(own_players ) >0:
