@@ -106,14 +106,7 @@ def update_objects_from_obs(last_obs, objects):
 
     """
 
-    """
-    ball_info = {}
-    ball_info["direction"] = obs['ball_direction']
-    ball_info["ball_rotation"] = obs['ball_rotation']
-    ball_info["ball_owned_team"] = obs['ball_owned_team']
-    ball_info["ball_owned_player"] = obs['ball_owned_player']
-    ball_info["pos"] = translator.pos_sim_to_scenic(obs['ball'])
-    """
+
     for obj in objects:
 
         if "MyPlayer" in str(type(obj)):
@@ -135,14 +128,35 @@ def update_objects_from_obs(last_obs, objects):
             obj.tired = op_player_info[role]["tired"]
 
         elif "Ball" in str(type(obj)):
-            obj.position = translator.pos_sim_to_scenic(obs['ball'])
-            obj.direction = translator.get_angle_from_direction(obs["ball_direction"])
-            obj.owned_team = obs['ball_owned_team']
-            obj.owned_player = obs['ball_owned_player']
+            update_ball_info(obj, obs)
 
             #print(f"Ball {obj.position} with {obj.direction} degree {obs['ball_direction']}")
 
+def update_ball_info(ball, obs):
+    #https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
+    #5 gfootball states: postion, direction, rotation, owned_team, ownded_player
+    ball.position_raw = obs['ball']
+    ball.position = translator.pos_sim_to_scenic(obs['ball'])
 
+    ball.direction_raw = obs["ball_direction"]
+    ball.direction = translator.get_angle_from_direction(obs["ball_direction"])
+
+    ball.rotation = obs["ball_rotation"]
+    ball.owned_team = obs['ball_owned_team']
+    ball.owned_player_idx = obs['ball_owned_player']
+
+    #scenic related properties
+
+
+
+    """
+    ball_info = {}
+    ball_info["direction"] = obs['ball_direction']
+    ball_info["ball_rotation"] = obs['ball_rotation']
+    ball_info["ball_owned_team"] = obs['ball_owned_team']
+    ball_info["ball_owned_player"] = obs['ball_owned_player']
+    ball_info["pos"] = translator.pos_sim_to_scenic(obs['ball'])
+    """
 
 def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
     code_str = ""

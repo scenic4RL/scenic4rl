@@ -27,4 +27,3 @@ opp1 = OpPlayer offset by Uniform(30, 25, 20) @ Uniform(-30,-20,-10, 0, 10, 20, 
 opp2 = OpPlayer offset by Uniform(30, 25, 20) @ Uniform(-30,-20,-10, 0, 10, 20, 30)
 opp3 = OpPlayer offset by Uniform(30, 25, 20) @ Uniform(-30,-20,-10, 0, 10, 20, 30)
 opp4 = OpPlayer offset by Uniform(30, 25, 20) @ Uniform(-30,-20,-10, 0, 10, 20, 30)
-

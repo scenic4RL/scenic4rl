@@ -84,13 +84,19 @@ class Center:
 # types of objects
 
 class Ball:
-    position: Point on workspace
-    direction: Range(0, 360) deg
-    rotationX: Range(0, 360) deg
-    rotationY: Range(0, 360) deg
-    rotationZ: Range(0, 360) deg
-    ball_owned_team: int
-    ball_owned_player: int
+    #Ball State: https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
+    #5 properties in GFootball: position, direction, rotation, owned_team, owned_player
+    position[dynamic]: Point on workspace
+    direction[dynamic]: Range(0, 360) deg
+    rotation[dynamic]: tuple
+    owned_team[dynamic]: int
+    owned_player_idx[dynamic]: int
+
+    #rotationX: Range(0, 360) deg
+    #rotationY: Range(0, 360) deg
+    #rotationZ: Range(0, 360) deg
+
+    #constant scenic properties
     width: 0.2
     length: 0.2
     allowCollisions: True

@@ -53,6 +53,20 @@ class GFootBallSimulator(Simulator):
 
 
 class GFootBallSimulation(Simulation):
+
+	def initialize_utility_ds(self):
+		"""Initializes self.ball, self.my_players and self.opo_players"""
+		from scenic.simulators.gfootball import model
+		for obj in self.objects:
+			if "Ball" in str(type(obj)):
+				self.ball = obj
+
+			elif "MyPlayer" in str(type(obj)):
+				self.my_players.append(obj)
+
+			elif "OpPlayer" in str(type(obj)):
+				self.opo_players.append(obj)
+
 	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 		self.verbosity = verbosity
@@ -63,7 +77,7 @@ class GFootBallSimulation(Simulation):
 		self.rewards = []
 		self.last_obs = None
 
-
+		#DS for accessing easily
 		self.ball = None
 		self.my_players = []
 		self.opo_players = []
@@ -72,7 +86,7 @@ class GFootBallSimulation(Simulation):
 		Role = libgame.e_PlayerRole
 		Team = libgame.e_Team
 
-
+		self.initialize_utility_ds()
 		initialize_gfootball_scenario(scene, self.objects)
 		settings = get_default_settings()
 		self.settings.update(settings)
@@ -136,15 +150,31 @@ class GFootBallSimulation(Simulation):
 	#need to implement this
 	def getProperties(self, obj, properties):
 		# Extract  properties
+
 		values = dict()
-		values['velocity'] = 0
-		values['angularSpeed'] = self.last_obs
-		values['position'] = obj.position
-		values['speed'] = 0
-		values['heading'] = 0
+		if obj == self.ball:
+			# ball dynamic properties
 
+			#5 gfootball properties: position, direction, rotation, owned_team, owned_player
+			values['position'] = obj.position
+			values['direction'] = obj.direction
+			values['rotation'] = obj.rotation
+			values['owned_team'] = obj.owned_team
+			values['owned_player_idx'] = obj.owned_player_idx
 
-		#values['active'] = 0
+			# scenic defaults
+			values['angularSpeed'] = obj.angularSpeed
+			values['heading'] = obj.heading
+			values['speed'] = obj.speed
+			values['velocity'] = obj.velocity
+
+		else:
+			values['velocity'] = 0
+			values['angularSpeed'] = obj.angularSpeed
+			values['position'] = obj.position
+			values['speed'] = 0
+			values['heading'] = 0
+
 
 		return values
 
