@@ -32,7 +32,6 @@ def update_objects_from_obs(last_obs, objects):
             role = RoleCode.code_to_role(role_code)
             ind_to_role[ind] = role
 
-            # TODO add all from: https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
             pos = obs[tp][ind]
             direction = obs[f"{tp}_direction"][ind]
             tired = obs[f"{tp}_tired_factor"][ind]
@@ -81,6 +80,9 @@ def update_objects_from_obs(last_obs, objects):
                 info = op_player_info
                 my_player = False
                 mirrorx = True
+
+
+            #TODO test if the right side teams x locations are reported correctly
 
             role = obj.role
             obj.position = info[role]["position"]
