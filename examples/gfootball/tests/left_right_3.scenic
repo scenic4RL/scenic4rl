@@ -10,12 +10,12 @@ param deterministic = False
 
 #ego = LeftGoalMidPoint
 
-ego = MyPlayer at -90 @ 0,
-            facing 270 deg,
+ego = MyPlayer at 0 @ 0,
+            facing 0 deg,
             with role "GK"
 
 
-ball = Ball left of ego #should be placed at (-90,10)?
+ball = Ball left of ego by 10 #should be placed at (-10,0)?
 
 """
 mp1 = MyPlayer at -90 @ 0,

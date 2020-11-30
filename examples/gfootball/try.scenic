@@ -8,11 +8,11 @@ param deterministic = False
 
 #how to specify that if there is one/ more than one player on one side, there must be one GK??
 
-ego = LeftGoalMidPoint
+ego = Ball at 0 @ 0
 
 MyPlayer with role "GK", in pbox_left
 
 OpPlayer with role "GK",
          in pbox_left
 
-Ball in pbox_left
+

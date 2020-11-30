@@ -147,7 +147,7 @@ class GFootBallSimulation(Simulation):
 
 
 	#askEddie: How to use this function? Where are these properties set, why only one obj
-	#need to implement this
+	#to test this we need behaviors
 	def getProperties(self, obj, properties):
 		# Extract  properties
 

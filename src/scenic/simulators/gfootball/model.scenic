@@ -90,6 +90,7 @@ class Ball:
     rotation[dynamic]: tuple
     owned_team[dynamic]: int
     owned_player_idx[dynamic]: int
+    heading: 0 deg
 
     #rotationX: Range(0, 360) deg
     #rotationY: Range(0, 360) deg
