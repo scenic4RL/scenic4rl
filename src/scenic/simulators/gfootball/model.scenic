@@ -101,6 +101,12 @@ class Ball:
     length: 0.2
     allowCollisions: True
     requireVisible: False
+
+    """
+    viewAngle: 360 deg
+    visibleDistance: pos_inf
+    """
+
     """
     ball - [x, y, z] position of the ball.
     ball_direction - [x, y, z] ball movement vector.
@@ -108,8 +114,6 @@ class Ball:
     ball_owned_team - {-1, 0, 1}, -1 = ball not owned, 0 = left team, 1 = right team.
     ball_owned_player - {0..N-1} integer denoting index of the player owning the ball.
     """
-
-
 
 """
 Speed vectors represent a change in the position of the object within a single step.
@@ -141,10 +145,13 @@ class Player:
 
     #scenic properties
     heading: 0 deg
-    allowCollisions: True
-    requireVisible: False
     width: 0.5
     length: 0.5
+    allowCollisions: True
+    requireVisible: False
+
+    viewAngle: 360 deg
+    visibleDistance: pos_inf
     """
     left_team - N-elements vector with [x, y] positions of players.
     left_team_direction - N-elements vector with [x, y] movement vectors of players.

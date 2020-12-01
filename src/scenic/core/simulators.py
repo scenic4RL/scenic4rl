@@ -142,7 +142,9 @@ class Simulation:
                 self.executeActions(allActions)
 
                 # Run the simulation for a single step and read its state back into Scenic
-                self.step()
+                terminationReason = self.step()
+                if terminationReason is not None: break
+
                 self.updateObjects()
                 self.currentTime += 1
 

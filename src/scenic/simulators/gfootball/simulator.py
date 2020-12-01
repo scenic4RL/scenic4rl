@@ -91,6 +91,7 @@ class GFootBallSimulation(Simulation):
 		settings = get_default_settings()
 		self.settings.update(settings)
 
+		print("New Simulation")
 		#SET UP CONFIG
 		self.cfg = config.Config(self.settings)
 
@@ -108,21 +109,8 @@ class GFootBallSimulation(Simulation):
 		update_objects_from_obs(self.last_obs, self.objects)
 
 
-		#read observation
-
-		#obs index to <-> player role : loop over left_team roles
-
-
-
-		#APplies "control" to carla objects
-
-		#Set Carla actor's initial speed (if specified)
-
 
 	def executeActions(self, allActions):
-		#Apply control updates which were accumulated while executing the actions
-		#for openai gym execute action is part of step ??
-		#does this only buffer all sort of actions ????
 
 		self.action = [0]
 		for agent, act in allActions.items():
@@ -136,9 +124,13 @@ class GFootBallSimulation(Simulation):
 	def step(self):
 		# Run simulation for one timestep
 		if self.done:
-			self.last_obs = self.env.reset()
-			self.done = False
+			#self.last_obs = self.env.reset()
+			#self.done = False
 			print(f"Reward Sum: {sum(self.rewards)}")
+			#self.endSimulation()
+			#signal scenic backend to stop simulation
+
+			#raise Exception
 			#askEddie: Signal end of simulation
 
 		self.last_obs, rew, self.done, _ = self.env.step(self.action)
