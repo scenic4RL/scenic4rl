@@ -17,6 +17,9 @@ pbox_height = 48
 pbox_width  = 29 # was set based on eyeballing by setting balls' location.. The simulator places a ball/a player in slightly different positions for some reason
 
 #derived attributes
+field_hw = field_width/2
+field_hh = field_height/2
+
 pbox_left_center = -1 * (field_width / 2 - pbox_width / 2)
 pbox_right_center = -1 * pbox_left_center
 
@@ -34,6 +37,12 @@ left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, 0.1, 0.044*
 left_pbox =  RectangularRegion(pbox_left_center @ 0, 0, pbox_width, pbox_height)
 right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 0 deg, pbox_width, pbox_height)
 
+center = 0 @ 0
+corner_tr = (field_hw@field_hh)
+corner_bl = ((-1*field_hw)@(-1*field_hh))
+corner_br = (field_hw@(-1*field_hh))
+corner_tl = ((-1*field_hw)@field_hh)
+
 
 """
 goal - Left/right goal is located
@@ -44,29 +53,8 @@ goal - Left/right goal is located
 
 """
 class LeftGoalMidPoint:
-    position: -(field_width/2) @ 0
-    width: 0
-    height: 0
-    heading: 0 deg
-
 class RightGoalMidPoint:
-    position: (field_width / 2) @ 0
-    width: 0
-    height: 0
-    heading: 270 deg
-    #heading: 270 deg
-
-
-
 class Center:
-    position: 0@0
-    heading: 0 deg
-    width: 0
-    height: 0
-    #viewAngle: 360 deg
-    #viewDistance: pos_inf
-    allowCollisions: True
-    requireVisible: False
 """
 # types of objects
 
@@ -107,7 +95,7 @@ class Ball:
 Speed vectors represent a change in the position of the object within a single step.
 """
 
-#AskEddie: How to modify distribution of position based on role?
+
 class Player:
     #gfootball properties
     position[dynamic]: Point on workspace

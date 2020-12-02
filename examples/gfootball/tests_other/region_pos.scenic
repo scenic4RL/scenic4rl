@@ -19,3 +19,5 @@ print(left_pbox.position, left_pbox.corners, left_pbox.length, left_pbox.width)
 print(right_pbox.position, right_pbox.corners, right_pbox.length, right_pbox.width)
 #Expected: (85.5 @ 0) ((71 @ -24), (100. @ -24), (100 @ 24), (71 @ 24)) 48 29
 
+print(center) #0@0
+
