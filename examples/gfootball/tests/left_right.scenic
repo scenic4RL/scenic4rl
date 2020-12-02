@@ -7,7 +7,6 @@ param deterministic = False
 
 
 #how to specify that if there is one/ more than one player on one side, there must be one GK??
-
 #ego = LeftGoalMidPoint
 
 ego = MyPlayer at -90 @ 0,

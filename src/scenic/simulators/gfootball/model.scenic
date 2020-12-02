@@ -1,33 +1,39 @@
 """Scenic World Model for GFootball Scenarios."""
-
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
-
 simulator GFootBallSimulator()
 
 #Constants
 pos_inf = 500
 eps = 0.001
 
-# Set up workspace
-field_width  = 200           # Exact: 2 * 7.32/0.088  == 166.37 meter
-field_height =  84           # Exact: 0.42 * 2 * 7.32 / 0.088 == 69.8727 Meter
-
+# Set up geometric attributes
+field_width  = 200
+field_height =  84
 field_width_su = 2           #fieldWidth in terms of Simulator unit
 field_height_su = 0.42*2
 
-workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
 penbox_height = 48
 penbox_width  = 30
 
+#derived attributes
 penalty_left_center = -1*(field_width/2 - penbox_width/2)
-pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height)
-pbox_right = RectangularRegion( -1*penalty_left_center @ 0, 180 deg, penbox_width, penbox_height)
+penalty_right_center = -1*penalty_left_center
 
 left_goal_midpoint = -(field_width/2) @ 0
 right_goal_midpoint = (field_width/2) @ 0
-# top - left [-1, -0.42]
-# bottom - right [1, 0.42]
+
+goal_width = 0.1
+#regions
+
+workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
+
+right_goal = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
+left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, 0.1, 0.044*2*100)
+
+pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height)
+pbox_right = RectangularRegion( -1*penalty_left_center @ 0, 180 deg, penbox_width, penbox_height)
+
 
 """
 goal - Left/right goal is located

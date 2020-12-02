@@ -14,7 +14,6 @@ ego = MyPlayer at 0 @ 0,
             facing 90 deg,
             with role "GK"
 
-
 ball = Ball left of ego by 10 #should be placed at (0,-10) - Working
 
 """
