@@ -32,7 +32,7 @@ right_goal = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0
 left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, 0.1, 0.044*2*100)
 
 left_pbox =  RectangularRegion(pbox_left_center @ 0, 0, pbox_width, pbox_height)
-right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 180 deg, pbox_width, pbox_height)
+right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 0 deg, pbox_width, pbox_height)
 
 
 """
