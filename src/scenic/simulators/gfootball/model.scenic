@@ -43,6 +43,11 @@ corner_bl = ((-1*field_hw)@(-1*field_hh))
 corner_br = (field_hw@(-1*field_hh))
 corner_tl = ((-1*field_hw)@field_hh)
 
+def grid(r,c,grid_len=5):
+    #assert r<slots/2,
+    dx = field_width/grid_len
+    dy = field_height/grid_len
+    return RectangularRegion( ((r*dx)@(c*dy)), 0, dx, dy)
 
 """
 goal - Left/right goal is located
