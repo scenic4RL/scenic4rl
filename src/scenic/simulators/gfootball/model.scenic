@@ -13,12 +13,12 @@ field_width_su = 2           #fieldWidth in terms of Simulator unit
 field_height_su = 0.42*2
 
 
-penbox_height = 48
-penbox_width  = 30
+pbox_height = 48
+pbox_width  = 29 # was set based on eyeballing by setting balls' location.. The simulator places a ball/a player in slightly different positions for some reason
 
 #derived attributes
-penalty_left_center = -1*(field_width/2 - penbox_width/2)
-penalty_right_center = -1*penalty_left_center
+pbox_left_center = -1 * (field_width / 2 - pbox_width / 2)
+pbox_right_center = -1 * pbox_left_center
 
 left_goal_midpoint = -(field_width/2) @ 0
 right_goal_midpoint = (field_width/2) @ 0
@@ -31,34 +31,16 @@ workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 right_goal = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, 0.1, 0.044*2*100)
 
-pbox_left =  RectangularRegion( penalty_left_center @ 0, 0, penbox_width, penbox_height)
-pbox_right = RectangularRegion( -1*penalty_left_center @ 0, 180 deg, penbox_width, penbox_height)
+left_pbox =  RectangularRegion(pbox_left_center @ 0, 0, pbox_width, pbox_height)
+right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 180 deg, pbox_width, pbox_height)
 
 
 """
 goal - Left/right goal is located
     at -1 and 1 X coordinate,
     ranging -0.044 and 0.044  in y-Axis
-
-    y-axis height = 0.044*2 = 0.088
-
-    #https://www.itsagoal.net/fifa-laws-of-the-game/
-    #https://www.wikiwand.com/en/Football_pitch#:~:text=Goals%20are%20placed%20at%20the,8%20ft)%20above%20the%20ground.
-    #https://www.quora.com/What-are-the-official-dimensions-of-a-soccer-field-in-the-FIFA-World-Cup
-    #https://www.footballhistory.org/field.html 
-
-    The inner edges of the posts must be 7.32 metres (8 yd) apart
-    Standard field: 105 x 68
-    hence,
-
-    1 Y simulator unit = 7.32/0.088 meter
-    1 meter  = 0.088/7.32  Y simulator unit
-    height = 0.42*2 sm unit = 0.42 * 2 * 7.32 / 0.088 = 69.87272727272727 meter
-    width = 2 * 7.32/0.088 = 166.36363636363637 meter
 """
 
-
-#askEddie: How to define regions within workspace: Dbox, left half, right half, etc
 
 """
 class LeftGoalMidPoint:
