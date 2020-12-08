@@ -58,10 +58,12 @@ behavior RandomKick():
         assert act is not None
         #print(self.controlled, self.owns_ball, act)
         if self.controlled:
-            print(f"cntrl: {self.controlled} own: {self.owns_ball} "
-                  f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) B:({ball.position.x:0.2f}, {ball.position.y:0.2f}) "
-                  f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
-            #input()
+            #print(f"cntrl: {self.controlled} own: {self.owns_ball} "
+            #      f"P:({self.position.x:0.2f}, {self.position.y:0.2f})"
+            #      f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
+
+            print(f"Ball: ({ball.position.x:0.2f}, {ball.position.y:0.2f}). dir: {math.degrees(ball.direction):0.2f}")
+            input()
         take act
 
 behavior GreedyPlay():
@@ -170,7 +172,6 @@ behavior BallRunShoot():
             else:
                 #print("Running towards Goal")
                 take SetDirection(ActionCode.right)
-
 
 
         else:

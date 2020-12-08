@@ -63,4 +63,4 @@ def get_angle_from_direction(direction):
     #convert angle from +x axis to  + y axis
     angle = (angle - 90 + 360)%360
     #print(angle)
-    return angle
+    return math.radians(angle)
