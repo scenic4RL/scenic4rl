@@ -152,9 +152,9 @@ class GFootBallSimulation(Simulation):
 			#5 gfootball properties: position, direction, rotation, owned_team, owned_player
 			values['position'] = obj.position
 			values['direction'] = obj.direction
-			values['rotation'] = obj.rotation
+			values['rotation'] = obj.rotation                     #UNPROCESSED #TODO: Process Rotation ?
 			values['owned_team'] = obj.owned_team
-			values['owned_player_idx'] = obj.owned_player_idx
+			values['owned_player_idx'] = obj.owned_player_idx     #TODO: Test it How ??
 
 			# scenic defaults
 			values['angularSpeed'] = obj.angularSpeed
