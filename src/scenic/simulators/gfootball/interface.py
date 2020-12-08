@@ -1,3 +1,5 @@
+import math
+
 from scenic.core.vectors import Vector
 from scenic.simulators.gfootball.utilities import translator
 #from scenic.simulators.gfootball.utilities.constants import player_code_to_role
@@ -112,11 +114,20 @@ def update_player():
 def update_ball(ball, obs):
     #https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
     #5 gfootball states: postion, direction, rotation, owned_team, ownded_player
+
     ball.position_raw = obs['ball']
+
+    if not hasattr(ball, "position") or ball.position is None:
+        ball.position_prev = translator.pos_sim_to_scenic(obs['ball'])
+    else:
+        ball.position_prev = ball.position
+
     ball.position = translator.pos_sim_to_scenic(obs['ball'])
+
 
     ball.direction_raw = obs["ball_direction"]
     ball.direction = translator.get_angle_from_direction(obs["ball_direction"])
+    ball.heading = ball.direction
 
     ball.rotation = obs["ball_rotation"]
     ball.owned_team = obs['ball_owned_team']
@@ -124,8 +135,12 @@ def update_ball(ball, obs):
 
     #scenic related properties
 
+    delx = ball.position.x - ball.position_prev.x
+    dely = ball.position.y - ball.position_prev.y
 
-
+    ball.velocity = Vector(delx, dely)
+    ball.speed = math.sqrt(delx*delx + dely*dely)
+    #print(ball.velocity, ball.speed)
     """
     ball_info = {}
     ball_info["direction"] = obs['ball_direction']

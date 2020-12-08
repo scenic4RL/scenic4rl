@@ -63,8 +63,14 @@ behavior RandomKick():
             #      f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
 
             #f"Rot: {ball.rotation}
-            print(f"Ball: ({ball.position.x:0.2f}, {ball.position.y:0.2f}). dir: {math.degrees(ball.direction):0.2f}"
-                  f" Owned Team: {ball.owned_team}")
+            print(f"Ball: ({ball.position.x:0.2f}, {ball.position.y:0.2f}). dir: {math.degrees(ball.direction):0.2f}\n"
+                  f" Heading {math.degrees(ball.heading):0.2f} "
+                  f" Speed {ball.speed} "
+                  f" Velocity ({ball.velocity.x:0.2f}, {ball.velocity.y:0.2f})"
+                  f" Angular Speed {ball.angularSpeed} "
+                  f" Owned Team: {ball.owned_team}"
+                  )
+
             input()
         take act
 
