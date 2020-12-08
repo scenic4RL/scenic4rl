@@ -19,7 +19,7 @@ g00 = grid(0,0, grid_len)
 gtr = grid(2, 2, grid_len)
 gbr = grid(2, -2, grid_len)
 gtl = grid(-2, 2, grid_len)
-gbl = grid(-2, -2, grid_len)
+gbl  = grid(-2, -2, grid_len)
 g1m0p = grid(-1, 0, grid_len)
 
 print(ego.position, degrees(ego.heading))
@@ -29,7 +29,6 @@ print(gbr.position, gbr.corners, gbr.length, gbr.width)
 print(gtl.position, gtl.corners, gtl.length, gtl.width)
 print(gbl.position, gbl.corners, gbl.length, gbl.width)
 print(g1m0p.position, g1m0p.corners, g1m0p.length, g1m0p.width)
-
 
 """
 Expected

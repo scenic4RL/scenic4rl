@@ -142,6 +142,12 @@ class Player:
     left_team_roles - N-elements vector denoting roles of players. The meaning is:
     """
 
+    """
+    def __init__(self):
+        if self.role is "CF":
+            position[dynamic]: Point on StrikerZone
+            # require position in StrikerZone
+    """
 
 #AskEddie: should we specify a boolean field in player? instead of My/Op Player
 

@@ -10,12 +10,117 @@ from scenic.simulators.gfootball.utilities import *
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 
+behavior RandomKick():
+    while True:
+        # if not in dbox, run towards it
+
+        pos = self.position
+        objects = simulation().objects
+
+
+        ball = simulation().ball
+        my_players = simulation().my_players
+        opo_players = simulation().opo_players
+
+        act = None
+        if not self.controlled:
+            act = NoAction()
+
+        dis = distance from self to ball
+        angle = math.degrees(angle from self to ball)
+
+        if self.controlled and self.owns_ball:
+
+            if self in right_pbox:
+                act =  Shoot()
+            else:
+                act = SetDirection(ActionCode.right)
+
+        elif self.controlled and not self.owns_ball:
+
+
+            #print(dis)
+            disx = self.x - ball.x
+            disy = self.y - ball.y
+
+            #if close tackle
+            if dis < 1.5:
+                act = Sliding()
+            elif math.fabs(disx) > math.fabs(disy):
+                dir = ActionCode.left if disx>0 else ActionCode.right
+                act =  SetDirection(dir)
+            else:
+                dir = ActionCode.bottom if disy>0 else ActionCode.top
+                act = SetDirection(dir)
+
+            #print(f"{self.position} {ball.position} {dir}")
+
+        assert act is not None
+        #print(self.controlled, self.owns_ball, act)
+        if self.controlled:
+            print(f"cntrl: {self.controlled} own: {self.owns_ball} "
+                  f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) B:({ball.position.x:0.2f}, {ball.position.y:0.2f}) "
+                  f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
+            #input()
+        take act
+
+behavior GreedyPlay():
+    while True:
+        #if not in dbox, run towards it
+
+        pos = self.position
+        objects = simulation().objects
+
+        ball = simulation().ball
+        my_players = simulation().my_players
+        opo_players = simulation().opo_players
+
+
+        #print(f"Ball")
+        """
+        ball = None
+        my_team = []
+        op_team = []
+        for obj in objects:
+            if isinstance(obj, Ball):
+                ball = obj
+            elif isinstance(obj, MyPlayer):
+                if obj == self: pass #print("Its Me")
+                else: my_team.append(obj)
+            elif isinstance(obj, OpPlayer):
+                op_team.append(obj)
+        """
+
+        x = self.position.x
+        y = self.position.y
+        blx = ball.position.x
+        bly = ball.position.y
+
+
+
+        #if self.active:
+        #    print(self.active, self.role, self.ball_owned, distance, direction)
+
+        if self.controlled and self.owns_ball:
+            if self.position in right_pbox:
+                #print("Will shoot now!!")
+                take Shoot()
+            else:
+                #print("Running towards Goal")
+                take SetDirection(ActionCode.right)
+
+
+
+        else:
+            #print("Will Do Nothing now!!")
+            take NoAction()
+
+
 behavior BallRunShoot():
     while True:
         #if not in dbox, run towards it
 
         pos = self.position
-
         objects = simulation().objects
         ball = None
         my_team = []
@@ -71,6 +176,8 @@ behavior BallRunShoot():
         else:
            #print("Will Do Nothing now!!")
             take NoAction()
+
+
 
 """
 simulation().timestep

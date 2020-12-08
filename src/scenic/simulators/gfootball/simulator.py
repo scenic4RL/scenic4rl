@@ -122,11 +122,13 @@ class GFootBallSimulation(Simulation):
 
 	#askEddie: How to Report end of an episode (i.e., simulation????)
 	def step(self):
+		#print("in step")
 		# Run simulation for one timestep
 		if self.done:
 			#self.last_obs = self.env.reset()
 			#self.done = False
 			print(f"Reward Sum: {sum(self.rewards)}")
+			return sum(self.rewards)
 			#self.endSimulation()
 			#signal scenic backend to stop simulation
 

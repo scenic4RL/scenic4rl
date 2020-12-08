@@ -10,8 +10,8 @@ param deterministic = False
 #how to specify that if there is one/ more than one player on one side, there must be one GK??
 
 ego = MyPlayer with role "GK"
-MyPlayer
-MyPlayer
+MyPlayer with role "CB"
+#MyPlayer with role "CB"
 
 #AskEddie how to define constants
 OpPlayer with role "GK"
@@ -19,3 +19,9 @@ OpPlayer
 OpPlayer
 
 Ball
+
+ego = MyGK
+
+MyCB
+MyCF
+

@@ -137,6 +137,8 @@ def runSimulation(scene):
         print(f'  Ran simulation in {totalTime:.4g} seconds.')
     return result is not None
 
+
+
 if args.gather_stats is None:   # Generate scenes interactively until killed
     import matplotlib.pyplot as plt
     successCount = 0

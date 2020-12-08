@@ -10,9 +10,9 @@ param deterministic = False
 
 ego = Ball at 0 @ 0
 
-MyPlayer with role "GK", in pbox_left
+MyPlayer with role "GK", in left_pbox
 
 OpPlayer with role "GK",
-         in pbox_left
+         in left_pbox
 
 
