@@ -7,6 +7,15 @@ from scenic.simulators.gfootball.utilities.constants import RoleCode
 from scenic.simulators.gfootball.utilities.translator import get_angle_from_direction
 
 
+def get_velocity_and_speed(position, position_prev):
+    delx = position.x - position_prev.x
+    dely = position.y - position_prev.y
+
+    velocity = Vector(delx, dely)
+    speed = math.sqrt(delx * delx + dely * dely)
+
+    return velocity, speed
+
 def update_objects_from_obs(last_obs, objects):
     obs = last_obs[0]
 
@@ -87,6 +96,11 @@ def update_objects_from_obs(last_obs, objects):
             #TODO test if the right side teams x locations are reported correctly
 
             role = obj.role
+
+            obj.position_prev = obj.position
+
+
+
             obj.position = info[role]["position"]
             obj.position_sim = info[role]["position_sim"]
             obj.direction = info[role]["direction"]
@@ -96,6 +110,8 @@ def update_objects_from_obs(last_obs, objects):
             obj.yellow_cards = info[role]["yellow_cards"]
             obj.controlled = info[role]["controlled"]
             obj.owns_ball = info[role]["owns_ball"]
+
+            obj.velocity, obj.speed = get_velocity_and_speed(obj.position, obj.position_prev)
 
             if not hasattr(obj, "sticky_actions") or obj.sticky_actions is None:
                 obj.sticky_actions = []
@@ -135,11 +151,17 @@ def update_ball(ball, obs):
 
     #scenic related properties
 
+
+
+
     delx = ball.position.x - ball.position_prev.x
     dely = ball.position.y - ball.position_prev.y
 
-    ball.velocity = Vector(delx, dely)
-    ball.speed = math.sqrt(delx*delx + dely*dely)
+    velocity1 = Vector(delx, dely)
+    speed1 = math.sqrt(delx*delx + dely*dely)
+
+    ball.velocity, ball.speed = get_velocity_and_speed(ball.position, ball.position_prev)
+
     #print(ball.velocity, ball.speed)
     """
     ball_info = {}

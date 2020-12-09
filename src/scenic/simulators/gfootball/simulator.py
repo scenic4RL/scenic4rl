@@ -175,10 +175,10 @@ class GFootBallSimulation(Simulation):
 			values['sticky_actions'] = obj.sticky_actions
 
 
-			values['velocity'] = 0
-			values['angularSpeed'] = obj.angularSpeed
-			values['speed'] = 0
-			values['heading'] = 0
+			values['velocity'] = obj.velocity
+			values['angularSpeed'] = obj.angularSpeed        #unspecified
+			values['speed'] = obj.speed
+			values['heading'] = obj.direction
 		else:
 			values['velocity'] = 0
 			values['angularSpeed'] = obj.angularSpeed

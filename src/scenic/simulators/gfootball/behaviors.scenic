@@ -60,25 +60,14 @@ behavior RandomKick():
         if self.controlled:
             #print to test Player
 
-            """
-			values['red_card'] = obj.yellow_cards
-			values['role'] = obj.role
-
-			values['sticky_actions'] = obj.sticky_actions
-
-
-			values['velocity'] = 0
-			values['angularSpeed'] = obj.angularSpeed
-			values['speed'] = 0
-			values['heading'] = 0
-            """
             print(f"cntrl: {self.controlled} own: {self.owns_ball} tired: {self.tired_factor:0.4f} yellow: {self.yellow_cards} red: {self.red_card}\n"
                   f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) "
                   f"D:({math.degrees(self.direction):0.2f}) \n"
+                  f"V:({self.velocity.x:0.2f}, {self.velocity.y:0.2f})  Speed: {self.speed:0.4f}\n"
                   f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
 
-
             """
+            print("\n")
             #Print to test Ball
             print(f"Ball: ({ball.position.x:0.2f}, {ball.position.y:0.2f}). dir: {math.degrees(ball.direction):0.2f}\n"
                   f" Heading {math.degrees(ball.heading):0.2f} "
@@ -86,10 +75,11 @@ behavior RandomKick():
                   f" Velocity ({ball.velocity.x:0.2f}, {ball.velocity.y:0.2f})"
                   f" Angular Speed {ball.angularSpeed} "
                   f" Owned Team: {ball.owned_team}"
-                  ) 
+                  )
             """
+            print("")
 
-            input()
+            #input()
         take act
 
 behavior GreedyPlay():
