@@ -58,18 +58,40 @@ behavior RandomKick():
         assert act is not None
         #print(self.controlled, self.owns_ball, act)
         if self.controlled:
-            #print(f"cntrl: {self.controlled} own: {self.owns_ball} "
-            #      f"P:({self.position.x:0.2f}, {self.position.y:0.2f})"
-            #      f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
+            #print to test Player
 
-            #f"Rot: {ball.rotation}
+            """
+            values['position'] = obj.position
+			values['direction'] = obj.direction
+			values['tired_factor'] = obj.tired_factor
+			values['yellow_cards'] = obj.yellow_cards
+			values['red_card'] = obj.yellow_cards
+			values['role'] = obj.role
+
+			values['sticky_actions'] = obj.sticky_actions
+
+
+			values['velocity'] = 0
+			values['angularSpeed'] = obj.angularSpeed
+			values['speed'] = 0
+			values['heading'] = 0
+            """
+            print(f"cntrl: {self.controlled} own: {self.owns_ball} "
+                  f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) "
+                  f"D:({math.degrees(self.direction):0.2f}) "
+                  f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
+
+
+            """
+            #Print to test Ball
             print(f"Ball: ({ball.position.x:0.2f}, {ball.position.y:0.2f}). dir: {math.degrees(ball.direction):0.2f}\n"
                   f" Heading {math.degrees(ball.heading):0.2f} "
                   f" Speed {ball.speed} "
                   f" Velocity ({ball.velocity.x:0.2f}, {ball.velocity.y:0.2f})"
                   f" Angular Speed {ball.angularSpeed} "
                   f" Owned Team: {ball.owned_team}"
-                  )
+                  ) 
+            """
 
             input()
         take act
