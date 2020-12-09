@@ -16,8 +16,16 @@ def get_velocity_and_speed(position, position_prev):
 
     return velocity, speed
 
-def update_objects_from_obs(last_obs, objects):
+
+def update_game_state(obs, game_state):
+    game_state.frame = obs["frame"]
+    game_state.score = obs["score"]
+    game_state.steps_left = obs["steps_left"]
+    game_state.game_mode = obs["game_mode"]
+
+def update_objects_from_obs(last_obs, objects, game_state):
     obs = last_obs[0]
+    update_game_state(obs, game_state)
 
     ball_owned_team = obs['ball_owned_team']
     ball_owned_player = obs['ball_owned_player']

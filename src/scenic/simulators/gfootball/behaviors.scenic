@@ -21,6 +21,7 @@ behavior RandomKick():
         ball = simulation().ball
         my_players = simulation().my_players
         opo_players = simulation().opo_players
+        game_state = simulation().game_state
 
         act = None
         if not self.controlled:
@@ -58,13 +59,16 @@ behavior RandomKick():
         assert act is not None
         #print(self.controlled, self.owns_ball, act)
         if self.controlled:
-            #print to test Player
 
+            print(f"score: {game_state.score} mode: {game_state.game_mode} steps_left: {game_state.steps_left}")
+            #print to test Player
+            """
             print(f"cntrl: {self.controlled} own: {self.owns_ball} tired: {self.tired_factor:0.4f} yellow: {self.yellow_cards} red: {self.red_card}\n"
                   f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) "
                   f"D:({math.degrees(self.direction):0.2f}) \n"
                   f"V:({self.velocity.x:0.2f}, {self.velocity.y:0.2f})  Speed: {self.speed:0.4f}\n"
                   f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
+            """
 
             """
             print("\n")

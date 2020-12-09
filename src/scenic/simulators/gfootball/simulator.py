@@ -21,6 +21,15 @@ import gfootball_engine as libgame
 #Role = libgame.e_PlayerRole
 #Team = libgame.e_Team
 
+class GameState:
+
+	def __init__(self, game_mode:int = 0, score:List[int] = [0, 0], steps_left:int=-1, frame=None):
+		self.frame = frame
+		self.steps_left = steps_left
+		self.score = score
+		self.game_mode = game_mode
+
+
 #One important implication is that there is a single action per 100 ms reported to the environment, which might cause a lag effect when playing.
 class GFootBallSimulator(Simulator):
 	def __init__(self, settings={}, render=True, record=False, timestep=None):
@@ -55,6 +64,7 @@ class GFootBallSimulator(Simulator):
 class GFootBallSimulation(Simulation):
 
 	def initialize_utility_ds(self):
+		self.game_state = GameState()
 		"""Initializes self.ball, self.my_players and self.opo_players"""
 		from scenic.simulators.gfootball import model
 		for obj in self.objects:
@@ -106,7 +116,7 @@ class GFootBallSimulation(Simulation):
 
 		#obs = self.last_obs[0]
 
-		update_objects_from_obs(self.last_obs, self.objects)
+		update_objects_from_obs(self.last_obs, self.objects, self.game_state)
 
 
 
@@ -137,7 +147,7 @@ class GFootBallSimulation(Simulation):
 
 		self.last_obs, rew, self.done, _ = self.env.step(self.action)
 		self.rewards.append(rew)
-		update_objects_from_obs(self.last_obs, self.objects)
+		update_objects_from_obs(self.last_obs, self.objects, self.game_state)
 
 
 	#askEddie: How to use this function? Where are these properties set, why only one obj
