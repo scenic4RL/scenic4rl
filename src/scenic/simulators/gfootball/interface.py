@@ -38,7 +38,8 @@ def update_objects_from_obs(last_obs, objects):
             direction = obs[f"{tp}_direction"][ind]
             tired = obs[f"{tp}_tired_factor"][ind]
             yellows = obs[f"{tp}_yellow_card"][ind]
-            red_card = obs[f"{tp}_active"][ind]
+            active = bool(obs[f"{tp}_active"][ind])
+            red_card = not active
 
             player_info[role] = {}
             player_info[role]['position'] = translator.pos_sim_to_scenic(pos)
@@ -49,8 +50,7 @@ def update_objects_from_obs(last_obs, objects):
 
             player_info[role]['tired_factor'] = tired
 
-            if isinstance(yellows, bool): yellows = 0
-            player_info[role]['yellow_cards'] = yellows
+            player_info[role]['yellow_cards'] = int(yellows)
             player_info[role]['red_card'] = red_card
 
             player_info[role]["controlled"] = (obs["active"] == ind)

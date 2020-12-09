@@ -61,10 +61,6 @@ behavior RandomKick():
             #print to test Player
 
             """
-            values['position'] = obj.position
-			values['direction'] = obj.direction
-			values['tired_factor'] = obj.tired_factor
-			values['yellow_cards'] = obj.yellow_cards
 			values['red_card'] = obj.yellow_cards
 			values['role'] = obj.role
 
@@ -76,9 +72,9 @@ behavior RandomKick():
 			values['speed'] = 0
 			values['heading'] = 0
             """
-            print(f"cntrl: {self.controlled} own: {self.owns_ball} "
+            print(f"cntrl: {self.controlled} own: {self.owns_ball} tired: {self.tired_factor:0.4f} yellow: {self.yellow_cards} red: {self.red_card}\n"
                   f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) "
-                  f"D:({math.degrees(self.direction):0.2f}) "
+                  f"D:({math.degrees(self.direction):0.2f}) \n"
                   f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
 
 
