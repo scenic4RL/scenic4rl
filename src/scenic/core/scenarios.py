@@ -233,7 +233,7 @@ class Scenario:
 			if rejection is not None:
 				continue
 			# Check user-specified requirements
-			# s
+			#
 			# default positions here too ??
 			for req in activeReqs:
 				if not req.satisfiedBy(sample):
