@@ -5,6 +5,8 @@ from scenic.simulators.gfootball.utilities import constants
 
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 
+
+
 class SetDirection(Action):
     def __init__(self, direction: int):
         self.direction = direction

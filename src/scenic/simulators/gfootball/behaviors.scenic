@@ -88,6 +88,13 @@ behavior RandomKick():
             #input()
         take act
 
+def set_dir_if_not(action, sticky_actions):
+    is_running = ActionCode.sticky_direction(sticky_actions)
+    if not is_running or action.code != is_running:
+        return action
+    else:
+        return NoAction()
+
 behavior GreedyPlay():
     while True:
         # if not in dbox, run towards it
@@ -125,10 +132,13 @@ behavior GreedyPlay():
             else:
                 if ang_wrto_x>45:
                     act = SetDirection(ActionCode.top)
+                    act = set_dir_if_not(act, self.sticky_actions)
                 elif ang_wrto_x<-45:
                     act = SetDirection(ActionCode.bottom)
+                    act = set_dir_if_not(act, self.sticky_actions)
                 else:
                     act = SetDirection(ActionCode.right)
+                    act = set_dir_if_not(act, self.sticky_actions)
 
             print(f"({self.position.x:0.2f}, {self.position.y:0.2f}) {dis_to_goal:0.2f}", dir_angle, ang_wrto_x, act, self.sticky_actions[0:8])
 
@@ -145,9 +155,11 @@ behavior GreedyPlay():
             elif math.fabs(disx) > math.fabs(disy):
                 dir = ActionCode.left if disx>0 else ActionCode.right
                 act =  SetDirection(dir)
+                act = set_dir_if_not(act, self.sticky_actions)
             else:
                 dir = ActionCode.bottom if disy>0 else ActionCode.top
                 act = SetDirection(dir)
+                act = set_dir_if_not(act, self.sticky_actions)
 
             #print(f"{self.position} {ball.position} {dir}")
 
@@ -179,7 +191,7 @@ behavior GreedyPlay():
             #print("")
 
             #input()
-            print(act)
+            #print(act)
             #input()
         take act
 

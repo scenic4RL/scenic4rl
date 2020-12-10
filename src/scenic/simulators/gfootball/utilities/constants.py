@@ -1,3 +1,4 @@
+from typing import List
 
 
 class RoleCode:
@@ -47,7 +48,12 @@ class RoleCode:
         return cls.player_role_to_code[code]
 
 
+
+
 class ActionCode:
+
+
+
 
     """Default action set"""
     idle = 0
@@ -81,7 +87,20 @@ class ActionCode:
 
     sticky_actions = [left, top_left, top, top_right, right, bottom_right, bottom, bottom_left, sprint, dribble]
     #sticky_actions = [sprint, dribble, , right, top, bottom, top_left, top_right, bottom_left, bottom_right]
+    act_id_to_act_map = {
+        0: left,
+        1: top_left,
+        2:top, 3:top_right, 4:right, 5:bottom_right, 6:bottom, 7:bottom_left, 8:sprint, 9:dribble
+    }
 
+    @classmethod
+    def sticky_direction(cls, s: List):
+
+        for idx in range(len(s)):
+            if s[idx]==1 and idx in cls.act_id_to_act_map:
+                return cls.act_id_to_act_map[idx]
+
+        return None
     @classmethod
     def is_sticky(cls, action:int):
         return action in cls.sticky_actions
