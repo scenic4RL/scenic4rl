@@ -25,7 +25,15 @@ MyCF with behavior GreedyPlay()
 
 ego = mygk
 
-OpPlayer with role "GK",
-         in right_pbox
+OpGK
+OpCB
+OpLB
+OpRB
+OpDM
+OpRM
+OpCM
+OpLM
+OpAM
+OpCF
 
 Ball at 0 @ 0

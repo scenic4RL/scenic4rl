@@ -250,8 +250,80 @@ class MyAM(MyPlayer):
     position[dynamic]: Point on LeftReg_AM
     role[dynamic]: "AM"
 
-class OpPlayer(Player):
-    pass
+
+
+
+
+RightReg_GK = get_reg_from_edges(100, 98, 2, -2)
+
+RightReg_CB = get_reg_from_edges(52, 48, 10, -10)
+RightReg_LB = get_reg_from_edges(44, 42,  -22,  -18)
+RightReg_RB = get_reg_from_edges(44, 42, 22, 18)
+
+RightReg_LM = get_reg_from_edges(20, 16, -22, -18) #[(-0.01, -0.2161)],
+RightReg_CM = get_reg_from_edges(26, 22, 5, -5)
+RightReg_RM = get_reg_from_edges(20, 16, 22, 18) # [(0.00,  0.02)],
+RightReg_DM = get_reg_from_edges(38, 32, 5, -5)
+
+RightReg_CML = get_reg_from_edges(16, 20, -12, -8)
+RightReg_CMR = get_reg_from_edges(16, 20, 12, 8)
+RightReg_CMM = get_reg_from_edges(30, 24, 2, -2)
+
+RightReg_AM = get_reg_from_edges(10, 15, 2, -2)
+RightReg_CF = get_reg_from_edges(5, 1, 2, -2)
+
+class OpGK(MyPlayer):
+    position[dynamic]: Point on RightReg_GK
+    role[dynamic]: "GK"
+
+class OpLB(MyPlayer):
+    position[dynamic]: Point on RightReg_LB
+    role[dynamic]: "LB"
+
+class OpRB(MyPlayer):
+    position[dynamic]: Point on RightReg_RB
+    role[dynamic]: "RB"
+
+class OpCB(MyPlayer):
+    position[dynamic]: Point on RightReg_CB
+    role[dynamic]: "CB"
+
+class OpLM(MyPlayer):
+    position[dynamic]: Point on RightReg_LM
+    role[dynamic]: "LM"
+
+class OpDM(MyPlayer):
+    position[dynamic]: Point on RightReg_DM
+    role[dynamic]: "DM"
+
+
+class OpRM(MyPlayer):
+    position[dynamic]: Point on RightReg_RM
+    role[dynamic]: "RM"
+
+class OpCM(MyPlayer):
+    position[dynamic]: Point on RightReg_CM
+    role[dynamic]: "CM"
+
+class OpCMM(MyPlayer):
+    position[dynamic]: Point on RightReg_CMM
+    role[dynamic]: "CM"
+
+class OpCML(MyPlayer):
+    position[dynamic]: Point on RightReg_CML
+    role[dynamic]: "CM"
+
+class OpCMR(MyPlayer):
+    position[dynamic]: Point on RightReg_CMR
+    role[dynamic]: "CM"
+
+class OpCF(MyPlayer):
+    position[dynamic]: Point on RightReg_CF
+    role[dynamic]: "CF"
+
+class OpAM(MyPlayer):
+    position[dynamic]: Point on RightReg_AM
+    role[dynamic]: "AM"
 
 MY_PLAYER_DEFAULT_POSITIONS = {
     "GK": [(-1.00, 0.00)],
