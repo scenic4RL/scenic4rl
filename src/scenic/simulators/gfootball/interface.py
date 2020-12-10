@@ -23,6 +23,36 @@ def update_game_state(obs, game_state):
     game_state.steps_left = obs["steps_left"]
     game_state.game_mode = obs["game_mode"]
 
+
+def is_player(obj):
+    strs = ["Player", "CB", "GK", "LB", "RB", "CM", "CML", "CMR", "CMM", "CF", "AM", "LM", "RM", "DM"]
+    obj_type_str = str(type(obj))
+    for s in strs:
+        if s in obj_type_str:
+            return True
+    return False
+
+def is_my_player(obj):
+    if not is_player(obj): return False
+    strs = ["MyPlayer", "MyCB", "MyGK", "MyLB", "MyRB", "MyCM", "MyCML", "MyCMR", "MyCMM", "MyCF", "MyAM", "MyLM", "MyRM", "MyDM"]
+    obj_type_str = str(type(obj))
+    for s in strs:
+        if s in obj_type_str:
+            return True
+    return False
+
+def is_op_player(obj):
+    if not is_player(obj): return False
+    op_strs = ["OpPlayer", "Op"]
+    for s in op_strs:
+        if s in str(type(obj)):
+            return True
+    return False
+
+def is_ball(obj):
+    return "Ball" in str(type(obj))
+
+
 def update_objects_from_obs(last_obs, objects, game_state):
     obs = last_obs[0]
     update_game_state(obs, game_state)
@@ -89,13 +119,15 @@ def update_objects_from_obs(last_obs, objects, game_state):
 
     for obj in objects:
 
-        if "Player" in str(type(obj)):
+
+        if is_player(obj):
 
             my_player=True
             info = my_player_info
             mirrorx=False
 
-            if "OpPlayer" in str(type(obj)):
+
+            if is_op_player(obj):
                 info = op_player_info
                 my_player = False
                 mirrorx = True

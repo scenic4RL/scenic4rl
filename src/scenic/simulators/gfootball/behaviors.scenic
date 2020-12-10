@@ -88,54 +88,79 @@ behavior RandomKick():
 
 behavior GreedyPlay():
     while True:
-        #if not in dbox, run towards it
+        # if not in dbox, run towards it
 
         pos = self.position
         objects = simulation().objects
 
+
         ball = simulation().ball
         my_players = simulation().my_players
         opo_players = simulation().opo_players
+        game_state = simulation().game_state
 
+        act = None
+        if not self.controlled:
+            act = NoAction()
 
-        #print(f"Ball")
-        """
-        ball = None
-        my_team = []
-        op_team = []
-        for obj in objects:
-            if isinstance(obj, Ball):
-                ball = obj
-            elif isinstance(obj, MyPlayer):
-                if obj == self: pass #print("Its Me")
-                else: my_team.append(obj)
-            elif isinstance(obj, OpPlayer):
-                op_team.append(obj)
-        """
-
-        x = self.position.x
-        y = self.position.y
-        blx = ball.position.x
-        bly = ball.position.y
-
-
-
-        #if self.active:
-        #    print(self.active, self.role, self.ball_owned, distance, direction)
+        dis = distance from self to ball
+        angle = math.degrees(angle from self to ball)
 
         if self.controlled and self.owns_ball:
-            if self.position in right_pbox:
-                #print("Will shoot now!!")
-                take Shoot()
+
+            if self in right_pbox:
+                act =  Shoot()
             else:
-                #print("Running towards Goal")
-                take SetDirection(ActionCode.right)
+                act = SetDirection(ActionCode.right)
+
+        elif self.controlled and not self.owns_ball:
 
 
+            #print(dis)
+            disx = self.x - ball.x
+            disy = self.y - ball.y
 
-        else:
-            #print("Will Do Nothing now!!")
-            take NoAction()
+            #if close tackle
+            if dis < 1.5:
+                act = Sliding()
+            elif math.fabs(disx) > math.fabs(disy):
+                dir = ActionCode.left if disx>0 else ActionCode.right
+                act =  SetDirection(dir)
+            else:
+                dir = ActionCode.bottom if disy>0 else ActionCode.top
+                act = SetDirection(dir)
+
+            #print(f"{self.position} {ball.position} {dir}")
+
+        assert act is not None
+        #print(self.controlled, self.owns_ball, act)
+        if self.controlled:
+
+            #print(f"score: {game_state.score} mode: {game_state.game_mode} steps_left: {game_state.steps_left}")
+            #print to test Player
+            """
+            print(f"cntrl: {self.controlled} own: {self.owns_ball} tired: {self.tired_factor:0.4f} yellow: {self.yellow_cards} red: {self.red_card}\n"
+                  f"P:({self.position.x:0.2f}, {self.position.y:0.2f}) "
+                  f"D:({math.degrees(self.direction):0.2f}) \n"
+                  f"V:({self.velocity.x:0.2f}, {self.velocity.y:0.2f})  Speed: {self.speed:0.4f}\n"
+                  f"Dis: {dis:0.4f} Angle: {angle:0.2f} Act: {act}")
+            """
+
+            """
+            print("\n")
+            #Print to test Ball
+            print(f"Ball: ({ball.position.x:0.2f}, {ball.position.y:0.2f}). dir: {math.degrees(ball.direction):0.2f}\n"
+                  f" Heading {math.degrees(ball.heading):0.2f} "
+                  f" Speed {ball.speed} "
+                  f" Velocity ({ball.velocity.x:0.2f}, {ball.velocity.y:0.2f})"
+                  f" Angular Speed {ball.angularSpeed} "
+                  f" Owned Team: {ball.owned_team}"
+                  )
+            """
+            print("")
+
+            #input()
+        take act
 
 
 behavior BallRunShoot():

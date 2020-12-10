@@ -2,19 +2,30 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 
-param game_duration = 100
+param game_duration = 200
 param deterministic = False
 
 
 #how to specify that if there is one/ more than one player on one side, there must be one GK??
 
-ego = Ball at 0 @ 0
+mygk = MyGK
 
-MyPlayer with role "GK", in left_pbox
-MyPlayer with role "CM", in left_pbox
-MyPlayer with role "CM", in left_pbox
+
+MyLB
+MyCB
+MyRB
+
+MyDM
+MyLM
+MyCM
+MyRM
+
+MyAM
+MyCF
+
+ego = mygk
 
 OpPlayer with role "GK",
-         in left_pbox
+         in right_pbox
 
-
+Ball at 0 @ 0

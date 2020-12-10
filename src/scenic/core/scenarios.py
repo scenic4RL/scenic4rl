@@ -146,6 +146,7 @@ class Scenario:
 				if not staticBounds[j]:
 					continue
 				if oi.intersects(oj):
+					print(f"{oi} intersects with {oj}")
 					raise InvalidScenarioError(f'Object at {oi.position} intersects'
 											   f' object at {oj.position}')
 

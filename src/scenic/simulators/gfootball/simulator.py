@@ -67,14 +67,15 @@ class GFootBallSimulation(Simulation):
 		self.game_state = GameState()
 		"""Initializes self.ball, self.my_players and self.opo_players"""
 		from scenic.simulators.gfootball import model
+		from scenic.simulators.gfootball.interface import is_player, is_ball, is_op_player, is_my_player
 		for obj in self.objects:
-			if "Ball" in str(type(obj)):
+			if is_ball(obj):
 				self.ball = obj
 
-			elif "MyPlayer" in str(type(obj)):
+			elif is_my_player(obj):
 				self.my_players.append(obj)
 
-			elif "OpPlayer" in str(type(obj)):
+			elif is_op_player(obj):
 				self.opo_players.append(obj)
 
 	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
@@ -112,6 +113,8 @@ class GFootBallSimulation(Simulation):
 			self.env.render()
 
 		self.last_obs = self.env.reset()
+
+		#input()
 		self.done = False
 
 		#obs = self.last_obs[0]
@@ -132,6 +135,7 @@ class GFootBallSimulation(Simulation):
 
 	#askEddie: How to Report end of an episode (i.e., simulation????)
 	def step(self):
+		#input()
 		#print("in step")
 		# Run simulation for one timestep
 		if self.done:
@@ -183,7 +187,6 @@ class GFootBallSimulation(Simulation):
 			values['controlled'] = obj.controlled
 			values['owns_ball'] = obj.owns_ball
 			values['sticky_actions'] = obj.sticky_actions
-
 
 			values['velocity'] = obj.velocity
 			values['angularSpeed'] = obj.angularSpeed        #unspecified

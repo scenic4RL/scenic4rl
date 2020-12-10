@@ -1,4 +1,6 @@
 """Scenic World Model for GFootball Scenarios."""
+import math
+
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 simulator GFootBallSimulator()
 
@@ -133,6 +135,7 @@ class Player:
 
     viewAngle: 360 deg
     visibleDistance: pos_inf
+
     """
     left_team - N-elements vector with [x, y] positions of players.
     left_team_direction - N-elements vector with [x, y] movement vectors of players.
@@ -160,6 +163,96 @@ class OpPlayer(Player):
 
 #source: https://github.com/google-research/football/blob/master/gfootball/scenarios/11_vs_11_competition.py
 #("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
+
+
+#LEFT_REGIONS
+
+def get_reg_from_edges(left, right, top, bottom):
+    cx = (left+right)/2
+    cy = (top+bottom)/2
+    h = math.fabs(top-bottom)
+    w = math.fabs(right-left)
+
+    return RectangularRegion(cx @ cy, 0, w, h)
+
+
+
+LeftReg_GK = get_reg_from_edges(-100, -98, 2, -2)
+
+LeftReg_CB = get_reg_from_edges(-52, -48, 10, -10)
+LeftReg_LB = get_reg_from_edges(-44, -42,  22,  18)
+LeftReg_RB = get_reg_from_edges(-44, -42, -22, -18)
+
+LeftReg_LM = get_reg_from_edges(-20, -16, 22, 18) #[(-0.01, -0.2161)],
+LeftReg_CM = get_reg_from_edges(-26, -22, 5, -5)
+LeftReg_RM = get_reg_from_edges(-20, -16, -22, -18) # [(0.00,  0.02)],
+
+LeftReg_DM = get_reg_from_edges(-38, -32, 5, -5)
+
+LeftReg_CML = get_reg_from_edges(-16, -20, 12, 8)
+LeftReg_CMR = get_reg_from_edges(-16, -20, -12, -8)
+LeftReg_CMM = get_reg_from_edges(-30, -24, 2, -2)
+
+LeftReg_AM = get_reg_from_edges(-10, -15, 2, -2)
+LeftReg_CF = get_reg_from_edges(-5, -1, 2, -2)
+
+
+class MyGK(MyPlayer):
+    position[dynamic]: Point on LeftReg_GK
+    role[dynamic]: "GK"
+
+class MyLB(MyPlayer):
+    position[dynamic]: Point on LeftReg_LB
+    role[dynamic]: "LB"
+
+class MyRB(MyPlayer):
+    position[dynamic]: Point on LeftReg_RB
+    role[dynamic]: "RB"
+
+class MyCB(MyPlayer):
+    position[dynamic]: Point on LeftReg_CB
+    role[dynamic]: "CB"
+
+class MyLM(MyPlayer):
+    position[dynamic]: Point on LeftReg_LM
+    role[dynamic]: "LM"
+
+class MyDM(MyPlayer):
+    position[dynamic]: Point on LeftReg_DM
+    role[dynamic]: "DM"
+
+
+class MyRM(MyPlayer):
+    position[dynamic]: Point on LeftReg_RM
+    role[dynamic]: "RM"
+
+class MyCM(MyPlayer):
+    position[dynamic]: Point on LeftReg_CM
+    role[dynamic]: "CM"
+
+class MyCMM(MyPlayer):
+    position[dynamic]: Point on LeftReg_CMM
+    role[dynamic]: "CM"
+
+class MyCML(MyPlayer):
+    position[dynamic]: Point on LeftReg_CML
+    role[dynamic]: "CM"
+
+class MyCMR(MyPlayer):
+    position[dynamic]: Point on LeftReg_CMR
+    role[dynamic]: "CM"
+
+class MyCF(MyPlayer):
+    position[dynamic]: Point on LeftReg_CF
+    role[dynamic]: "CF"
+
+class MyAM(MyPlayer):
+    position[dynamic]: Point on LeftReg_AM
+    role[dynamic]: "AM"
+
+class OpPlayer(Player):
+    pass
+
 MY_PLAYER_DEFAULT_POSITIONS = {
     "GK": [(-1.00, 0.00)],
     "CB": [(-0.50, -0.06356),(-0.500000, 0.06356)],

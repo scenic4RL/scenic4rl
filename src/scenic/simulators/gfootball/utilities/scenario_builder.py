@@ -34,17 +34,19 @@ def initialize_gfootball_scenario(scene, objects):
     ball = None
     my_players = []
     op_players = []
+
+    from scenic.simulators.gfootball.interface import is_player, is_my_player, is_op_player, is_ball
     for obj in objects:
-        print(obj, type(obj))
+        #print(obj, type(obj))
 
         # change with isinstance
-        if "MyPlayer" in str(type(obj)):
+        if is_my_player(obj):
             my_players.append(obj)
 
-        elif "OpPlayer" in str(type(obj)):
+        elif is_op_player(obj):
             op_players.append(obj)
 
-        elif "Ball" in str(type(obj)):
+        elif is_ball(obj):
             # print(f"Ball {dir(obj)}")
             ball = obj
 
