@@ -1,4 +1,5 @@
 from scenic.simulators.gfootball.actions import *
+from scenic.simulators.gfootball.actions import ReleaseDirection
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball import model
 from scenic.core.regions import regionFromShapelyObject
@@ -35,6 +36,7 @@ behavior RandomKick():
             if self in right_pbox:
                 act =  Shoot()
             else:
+
                 act = SetDirection(ActionCode.right)
 
         elif self.controlled and not self.owns_ball:
@@ -108,13 +110,30 @@ behavior GreedyPlay():
 
         if self.controlled and self.owns_ball:
 
-            if self in right_pbox:
+            dis_to_goal = distance from self to right_goal_midpoint
+            dir_angle = math.degrees(angle from self to right_goal_midpoint)
+            ang_wrto_x = dir_angle + 90
+            if ang_wrto_x>180: ang_wrto_x -= 360
+            elif ang_wrto_x<-180: ang_wrto_x += 360
+
+            if dis_to_goal<35 or self in right_pbox:
+                sticky_dir = bool(sum(self.sticky_actions[0:8]))
+                #if sticky_dir:
+                #    act = ReleaseDirection()
+                #else:
                 act =  Shoot()
             else:
-                act = SetDirection(ActionCode.right)
+                if ang_wrto_x>45:
+                    act = SetDirection(ActionCode.top)
+                elif ang_wrto_x<-45:
+                    act = SetDirection(ActionCode.bottom)
+                else:
+                    act = SetDirection(ActionCode.right)
+
+            print(f"({self.position.x:0.2f}, {self.position.y:0.2f}) {dis_to_goal:0.2f}", dir_angle, ang_wrto_x, act, self.sticky_actions[0:8])
+
 
         elif self.controlled and not self.owns_ball:
-
 
             #print(dis)
             disx = self.x - ball.x
@@ -157,8 +176,10 @@ behavior GreedyPlay():
                   f" Owned Team: {ball.owned_team}"
                   )
             """
-            print("")
+            #print("")
 
+            #input()
+            print(act)
             #input()
         take act
 

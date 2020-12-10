@@ -79,7 +79,8 @@ class ActionCode:
     """V2 action set"""
     builtin_ai = 19  # , let game's built-in AI generate an action
 
-    sticky_actions = [sprint, dribble, left, right, top, bottom, top_left, top_right, bottom_left, bottom_right]
+    sticky_actions = [left, top_left, top, top_right, right, bottom_right, bottom, bottom_left, sprint, dribble]
+    #sticky_actions = [sprint, dribble, , right, top, bottom, top_left, top_right, bottom_left, bottom_right]
 
     @classmethod
     def is_sticky(cls, action:int):

@@ -1,6 +1,7 @@
 from gfootball.env import football_action_set
 from scenic.core.vectors import Vector
 from scenic.core.simulators import Action
+from scenic.simulators.gfootball.utilities import constants
 
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 
@@ -24,6 +25,16 @@ class Shoot(Action):
 
     def __str__(self):
         return "shoot"
+
+class ReleaseDirection(Action):
+    def __init__(self):
+        self.code = constants.ActionCode.release_direction
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "release Direction"
 
 class NoAction(Action):
     def __init__(self):

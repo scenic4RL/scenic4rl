@@ -129,7 +129,8 @@ class GFootBallSimulation(Simulation):
 		for agent, act in allActions.items():
 			if agent.controlled:
 				self.action = [act[0].code]
-				#print(f"In simulator: Taking {act} actions")
+				print(f"In simulator: Taking {act[0]} action")
+				input("In simulator: Step?")
 
 
 
