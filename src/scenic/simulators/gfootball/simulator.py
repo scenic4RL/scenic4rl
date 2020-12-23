@@ -59,8 +59,6 @@ class GFootBallSimulator(Simulator):
 							   verbosity=verbosity)
 
 
-
-
 class GFootBallSimulation(Simulation):
 
 	def initialize_utility_ds(self):
