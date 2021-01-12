@@ -3,7 +3,7 @@ from scenic.simulators.gfootball.interface import get_scenario_python_str
 from scenic.simulators.gfootball.utilities import translator
 
 
-GFOOTBALL_SCENARIO_FILENAME = "dynamic.py"
+
 
 
 def initialize_gfootball_scenario(scene, objects):
@@ -53,7 +53,7 @@ def initialize_gfootball_scenario(scene, objects):
 
     print(f"...Writing GFootBall Scenario to {module_path}")
 
-    with open(module_path + "/" + GFOOTBALL_SCENARIO_FILENAME, "w+") as file:
+    with open(module_path + "/" + scene.params["level"]+".py", "w+") as file:
         code_str = get_scenario_python_str(scene.params, own_players=my_players, opo_players=op_players, ball=ball)
         print(code_str)
         file.write(code_str)

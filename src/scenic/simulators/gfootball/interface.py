@@ -52,16 +52,59 @@ def is_op_player(obj):
 def is_ball(obj):
     return "Ball" in str(type(obj))
 
+def extract_info_from_single_obs(obs):
+    my_player_idx_info_map = {} #idx to info
+    op_player_idx_info_map = {}
+    ball_info = {}
 
-def update_objects_from_obs(last_obs, objects, game_state):
-    obs = last_obs[0]
-    update_game_state(obs, game_state)
+
+    team_prefixes = ["left_team", "right_team"]
+    player_infos = [my_player_idx_info_map, op_player_idx_info_map]
+
 
     ball_owned_team = obs['ball_owned_team']
     ball_owned_player = obs['ball_owned_player']
 
-    """To be able to pair player objects in scenic and observation, 
-    We add the constraint the every team can have at most one player in the same role"""
+    for team_prefix, player_info in zip(team_prefixes, player_infos):
+        tp = team_prefix
+        for idx in range(obs[f'{tp}_roles'].shape[0]):
+            pos = obs[tp][idx]
+            direction = obs[f"{tp}_direction"][idx]
+            tired = obs[f"{tp}_tired_factor"][idx]
+            yellows = obs[f"{tp}_yellow_card"][idx]
+            active = bool(obs[f"{tp}_active"][idx])
+            red_card = not active
+
+
+            info_map = {}
+            player_info[idx] = info_map
+            info_map['position'] = translator.pos_sim_to_scenic(pos)
+            info_map['position_sim'] = pos
+
+            info_map['direction'] = get_angle_from_direction(direction)
+            info_map['direction_sim'] = Vector(direction[0], direction[1])
+
+            info_map['tired_factor'] = tired
+
+            info_map['yellow_cards'] = int(yellows)
+            info_map['red_card'] = red_card
+
+            info_map["controlled"] = (obs["active"] == idx)
+
+            info_map["owns_ball"] = False
+            ball_own_team_code = 0 if tp == "left_team" else 1
+            if ball_owned_team == ball_own_team_code and ball_owned_player == idx:
+                info_map["owns_ball"] = True
+
+            info_map["sticky_actions"] = None
+            if info_map["controlled"]:
+                info_map["sticky_actions"] = list(obs["sticky_actions"])
+
+    return my_player_idx_info_map, op_player_idx_info_map
+
+def get_player_info_from_single_obs(obs):
+    """To be able to pair player objects in scenic and observation,
+        We add the constraint the every team can have at most one player in the same role"""
     my_player_info = {}
     my_ind_to_role = {}
 
@@ -72,11 +115,14 @@ def update_objects_from_obs(last_obs, objects, game_state):
     player_infos = [my_player_info, op_player_info]
     ind_to_roles = [my_ind_to_role, op_ind_to_role]
 
-    print(obs["active"], obs["designated"])
-    #read the left and right team arrays and put information in the corresponding DS
-    for team_prefix, player_info, ind_to_role  in zip(team_prefixes, player_infos, ind_to_roles):
+    ball_owned_team = obs['ball_owned_team']
+    ball_owned_player = obs['ball_owned_player']
+
+    # print(obs["active"], obs["designated"])
+    # read the left and right team arrays and put information in the corresponding DS
+    for team_prefix, player_info, ind_to_role in zip(team_prefixes, player_infos, ind_to_roles):
         tp = team_prefix
-        #mirrorx = False if tp=="left_team" else True
+        # mirrorx = False if tp=="left_team" else True
         for ind in range(obs[f'{tp}_roles'].shape[0]):
             role_code = obs[f"{tp}_roles"][ind]
             role = RoleCode.code_to_role(role_code)
@@ -106,9 +152,8 @@ def update_objects_from_obs(last_obs, objects, game_state):
             # if tp=="right_team" and role=="GK":
             #    print(f"{tp} {role} position {player_info[role]['pos']} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
 
-
             player_info[role]["owns_ball"] = False
-            ball_own_team_code = 0 if tp=="left_team" else 1
+            ball_own_team_code = 0 if tp == "left_team" else 1
             if ball_owned_team == ball_own_team_code and ball_owned_player == ind:
                 player_info[role]["owns_ball"] = True
 
@@ -116,61 +161,87 @@ def update_objects_from_obs(last_obs, objects, game_state):
             if player_info[role]["controlled"]:
                 player_info[role]["sticky_actions"] = list(obs["sticky_actions"])
 
+    return my_player_info, my_ind_to_role, op_player_info, op_ind_to_role
+
+def generate_index_to_player_map(last_obs, objects):
+    obs = last_obs[0]
+    my_player_idx_info_map, op_player_idx_info_map = extract_info_from_single_obs(obs)
+    my_player_to_idx, my_idx_to_player, op_player_to_idx, op_idx_to_player = {}, {}, {}, {}
 
 
     for obj in objects:
-
-
         if is_player(obj):
 
-            my_player=True
-            info = my_player_info
-            mirrorx=False
+            if is_my_player(obj):
+                info_map = my_player_idx_info_map
+                pos_to_idx = my_player_to_idx
+                idx_to_pos = my_idx_to_player
+
+            else:
+                info_map = op_player_idx_info_map
+                pos_to_idx = op_player_to_idx
+                idx_to_pos = op_idx_to_player
+
+            min_distance = None
+            min_idx = -1
+            for idx, info in info_map.items():
+                p = info["position"]
+                dist = math.sqrt(math.pow(p.x-obj.position.x, 2) +  math.pow(p.y-obj.position.y, 2))
+                if min_distance is None or dist<min_distance:
+                    min_idx = idx
+                    min_distance = dist
+
+                pos_to_idx[obj] = min_idx
+                idx_to_pos[min_idx] = obj
+
+                #print(obj.position, p, idx, dist, min_idx, min_distance)
+            #print()
+
+    return my_player_to_idx, my_idx_to_player, op_player_to_idx, op_idx_to_player
+
+def update_objects_from_obs(last_obs, objects, game_state, my_player_to_idx, my_idx_to_player, op_player_to_idx, op_idx_to_player, num_controlled=1):
+    obs = last_obs[0]
+    #my_player_info, my_ind_to_role, op_player_info, op_ind_to_role = get_player_info_from_single_obs(obs)
+
+    my_player_idx_info_map, op_player_idx_info_map = extract_info_from_single_obs(obs)
 
 
-            if is_op_player(obj):
-                info = op_player_info
-                my_player = False
-                mirrorx = True
+    update_game_state(obs, game_state)
 
 
-            #TODO test if the right side teams x locations are reported correctly
+    for info, idx_to_player, player_to_idx in zip([my_player_idx_info_map, op_player_idx_info_map],\
+                        [my_idx_to_player, op_idx_to_player],\
+                        [my_player_to_idx, op_player_to_idx]):
 
-            role = obj.role
-
+        for idx, obj in idx_to_player.items():
             obj.position_prev = obj.position
 
-
-
-            obj.position = info[role]["position"]
-            obj.position_sim = info[role]["position_sim"]
-            obj.direction = info[role]["direction"]
-            obj.direction_sim = info[role]["direction_sim"]
-            obj.tired_factor = info[role]["tired_factor"]
-            obj.red_card = info[role]["red_card"]
-            obj.yellow_cards = info[role]["yellow_cards"]
-            obj.controlled = info[role]["controlled"]
-            obj.owns_ball = info[role]["owns_ball"]
+            obj.position = info[idx]["position"]
+            obj.position_sim = info[idx]["position_sim"]
+            obj.direction = info[idx]["direction"]
+            obj.direction_sim = info[idx]["direction_sim"]
+            obj.tired_factor = info[idx]["tired_factor"]
+            obj.red_card = info[idx]["red_card"]
+            obj.yellow_cards = info[idx]["yellow_cards"]
+            obj.controlled = info[idx]["controlled"]
+            obj.owns_ball = info[idx]["owns_ball"]
 
             obj.velocity, obj.speed = get_velocity_and_speed(obj.position, obj.position_prev)
 
             if not hasattr(obj, "sticky_actions") or obj.sticky_actions is None:
                 obj.sticky_actions = []
 
-            if info[role]["sticky_actions"] is not None:
-                obj.sticky_actions = info[role]["sticky_actions"]
+            if info[idx]["sticky_actions"] is not None:
+                obj.sticky_actions = info[idx]["sticky_actions"]
 
 
-        elif "Ball" in str(type(obj)):
+
+    #update_players and Ball
+    for obj in objects:
+        if "Ball" in str(type(obj)):
             update_ball(obj, obs)
 
-            #print(f"Ball {obj.position} with {obj.direction} degree {obs['ball_direction']}")
 
-
-    x=1
-
-def update_player():
-    pass
 def update_ball(ball, obs):
     #https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
     #5 gfootball states: postion, direction, rotation, owned_team, ownded_player

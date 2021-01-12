@@ -23,27 +23,29 @@ default_scene_params = {
 }
 """
 
+
 #CONFIG PARAMETERS
 param action_set = 'default'
 param custom_display_stats = None
 param display_game_stats = True
 param dump_full_episodes = False
 param dump_scores = False
-param players =  ['agent:left_players=1']
+param players =  ['agent:left_players=1', 'keyboard:right_players=1']
 #param level =  '11_vs_11_stochastic'
 param physics_steps_per_frame =  10
 param render_resolution_x = 1280
-param real_time =  False
+param real_time =  True
 param tracesdir = '/tmp/dumps'
 param video_format =  'avi'
 param video_quality_level= 0
 param write_video = False
 
+param level = "dynamic"
 #GAME PARAMETERS
 param game_duration =  400
 param deterministic =  False
 param offsides =  False
-param end_episode_on_score =  True
+param end_episode_on_score =  False
 param end_episode_on_out_of_play =  False
 param end_episode_on_possession_change = False
 param right_team_difficulty  = 0.0

@@ -7,7 +7,7 @@ import math
 import gfootball
 from gfootball.env import config
 from gfootball.env import football_env
-from scenic.simulators.gfootball.interface import update_objects_from_obs
+from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map
 from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario, get_default_settings
 
 from scenic.syntax.translator import verbosity
@@ -43,12 +43,8 @@ class GFootBallSimulator(Simulator):
 
 	def createSimulation(self, scene, verbosity=0):
 
-		#settings
-		#https://github.com/google-research/football/blob/master/gfootball/env/config.py
-
-		allowed_settings = {""}
-
 		self.settings = scene.params.copy()
+		#self.settings["players"] = [f"agent:left_players={2}", "keyboard:right_players=1"]
 
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
@@ -61,8 +57,12 @@ class GFootBallSimulator(Simulator):
 
 
 class GFootBallSimulation(Simulation):
+	def initialize_multiplayer_ds(self, obs):
+		self.multiplayer = True
+		self.num_controlled = len(obs)
 
 	def initialize_utility_ds(self):
+		self.multiplayer = False
 		self.game_state = GameState()
 		"""Initializes self.ball, self.my_players and self.opo_players"""
 		#from scenic.simulators.gfootball import model
@@ -76,6 +76,8 @@ class GFootBallSimulation(Simulation):
 
 			elif is_op_player(obj):
 				self.opo_players.append(obj)
+
+
 
 	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
@@ -98,8 +100,8 @@ class GFootBallSimulation(Simulation):
 
 		self.initialize_utility_ds()
 		initialize_gfootball_scenario(scene, self.objects)
-		settings = get_default_settings()
-		self.settings.update(settings)
+		#settings = get_default_settings()
+		#self.settings.update(settings)
 
 		print("New Simulation")
 		#SET UP CONFIG
@@ -112,13 +114,15 @@ class GFootBallSimulation(Simulation):
 			self.env.render()
 
 		self.last_obs = self.env.reset()
+		self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player = generate_index_to_player_map(self.last_obs, self.objects)
+		self.initialize_multiplayer_ds(self.last_obs)
 
 		#input()
 		self.done = False
 
 		#obs = self.last_obs[0]
 
-		update_objects_from_obs(self.last_obs, self.objects, self.game_state)
+		update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
 
 
@@ -127,10 +131,12 @@ class GFootBallSimulation(Simulation):
 		self.action = [0]
 		for agent, act in allActions.items():
 			if agent.controlled:
+
 				self.action = [act[0].code]
 				#print(f"In simulator: Taking {act[0]} action")
 				#input("In simulator: Step?")
-
+		#TODO: IMPLEMENT ACTION FROM EVERY AGENT
+		self.action = self.action*self.num_controlled
 
 
 	#askEddie: How to Report end of an episode (i.e., simulation????)
@@ -151,7 +157,7 @@ class GFootBallSimulation(Simulation):
 
 		self.last_obs, rew, self.done, _ = self.env.step(self.action)
 		self.rewards.append(rew)
-		update_objects_from_obs(self.last_obs, self.objects, self.game_state)
+		update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
 
 	#askEddie: How to use this function? Where are these properties set, why only one obj
