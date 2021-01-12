@@ -13,29 +13,46 @@ import gfootball_engine as libgame
 from gfootball.env import football_action_set
 
 #AddPlayer(self, x, y, role, lazy=False, controllable=True):
+num_player =  5
 settings = {
     'action_set': "full",
     'dump_full_episodes': True,
-    'real_time': False,
-    'players': ["agent:left_players=1", "bot:right_players=1"],
-    'level': '1_vs_1_easy'
+    'real_time': True,
+    'players': [f"agent:left_players={num_player}", "keyboard:right_players=1"],
+    'level': '11_vs_11_stochastic'
 }
-#    'tracesdir': '~/gfootball-dumps/',
-#    'write_video': True
 
 cfg = config.Config(settings)
 
 
 env = football_env.FootballEnv(cfg)
 
+desig = -1
+def print_obs(obs_list):
+
+
+    global desig
+    for i, obs in enumerate(obs_list):
+        #print(obs["active"], obs["designated"])
+
+        if desig != obs["designated"]:
+            print(obs["active"], obs["designated"])
+            print("DESIG CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+            desig = obs["designated"]
+
+
+    #print()
 
 env.render()
-env.step([0])
 env.reset()
+obs, _, done, _ = env.step([0]*num_player)
+print_obs(obs)
 
-
+#print(obs["active"], obs["designated"])
 while True:
-    _, _, done, _ = env.step([football_action_set.action_shot])
+    obs, _, done, _ = env.step([football_action_set.action_shot]*num_player)
+    print_obs(obs)
     #_, _, done, _ = env.step([])
     if done:
         break

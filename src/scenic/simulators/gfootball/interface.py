@@ -72,6 +72,7 @@ def update_objects_from_obs(last_obs, objects, game_state):
     player_infos = [my_player_info, op_player_info]
     ind_to_roles = [my_ind_to_role, op_ind_to_role]
 
+    print(obs["active"], obs["designated"])
     #read the left and right team arrays and put information in the corresponding DS
     for team_prefix, player_info, ind_to_role  in zip(team_prefixes, player_infos, ind_to_roles):
         tp = team_prefix
@@ -164,6 +165,9 @@ def update_objects_from_obs(last_obs, objects, game_state):
             update_ball(obj, obs)
 
             #print(f"Ball {obj.position} with {obj.direction} degree {obs['ball_direction']}")
+
+
+    x=1
 
 def update_player():
     pass

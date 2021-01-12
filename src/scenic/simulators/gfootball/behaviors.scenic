@@ -62,7 +62,7 @@ behavior RandomKick():
         #print(self.controlled, self.owns_ball, act)
         if self.controlled:
 
-            print(f"score: {game_state.score} mode: {game_state.game_mode} steps_left: {game_state.steps_left}")
+            #print(f"score: {game_state.score} mode: {game_state.game_mode} steps_left: {game_state.steps_left}")
             #print to test Player
             """
             print(f"cntrl: {self.controlled} own: {self.owns_ball} tired: {self.tired_factor:0.4f} yellow: {self.yellow_cards} red: {self.red_card}\n"
@@ -83,9 +83,10 @@ behavior RandomKick():
                   f" Owned Team: {ball.owned_team}"
                   )
             """
-            print("")
+            #print("")
 
             #input()
+            pass
         take act
 
 def set_dir_if_not(action, sticky_actions):
@@ -140,7 +141,7 @@ behavior GreedyPlay():
                     act = SetDirection(ActionCode.right)
                     act = set_dir_if_not(act, self.sticky_actions)
 
-            print(f"({self.position.x:0.2f}, {self.position.y:0.2f}) {dis_to_goal:0.2f}", dir_angle, ang_wrto_x, act, self.sticky_actions[0:8])
+            #print(f"({self.position.x:0.2f}, {self.position.y:0.2f}) {dis_to_goal:0.2f}", dir_angle, ang_wrto_x, act, self.sticky_actions[0:8])
 
 
         elif self.controlled and not self.owns_ball:
