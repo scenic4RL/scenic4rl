@@ -34,7 +34,7 @@ goal_width = 0.1
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
 right_goal = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
-left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, 0.1, 0.044*2*100)
+left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 
 left_pbox =  RectangularRegion(pbox_left_center @ 0, 0, pbox_width, pbox_height)
 right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 0 deg, pbox_width, pbox_height)
@@ -221,7 +221,6 @@ class MyDM(MyPlayer):
     position[dynamic]: Point on LeftReg_DM
     role[dynamic]: "DM"
 
-
 class MyRM(MyPlayer):
     position[dynamic]: Point on LeftReg_RM
     role[dynamic]: "RM"
@@ -249,9 +248,6 @@ class MyCF(MyPlayer):
 class MyAM(MyPlayer):
     position[dynamic]: Point on LeftReg_AM
     role[dynamic]: "AM"
-
-
-
 
 
 RightReg_GK = get_reg_from_edges(100, 98, 2, -2)

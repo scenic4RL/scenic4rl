@@ -257,7 +257,6 @@ behavior BallRunShoot():
             take NoAction()
 
 
-
 """
 simulation().timestep
 objects = simulation().objects
