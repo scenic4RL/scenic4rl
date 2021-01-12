@@ -8,6 +8,47 @@ simulator GFootBallSimulator()
 pos_inf = 500
 eps = 0.001
 
+"""Default Parameters"""
+
+"""
+default_scene_params = {
+    'game_duration': 400,
+    'deterministic': False,
+    'offsides': False,
+    'end_episode_on_score': True,
+    'end_episode_on_out_of_play': False,
+    'end_episode_on_possession_change': False,
+    'right_team_difficulty': 0.0,
+    'left_team_difficulty': 0.0
+}
+"""
+
+#CONFIG PARAMETERS
+param action_set = 'default'
+param custom_display_stats = None
+param display_game_stats = True
+param dump_full_episodes = False
+param dump_scores = False
+param players =  ['agent:left_players=1']
+param level =  '11_vs_11_stochastic'
+param physics_steps_per_frame =  10
+param render_resolution_x = 1280
+param real_time =  False
+param tracesdir = '/tmp/dumps'
+param video_format =  'avi'
+param video_quality_level= 0
+param write_video = False
+
+#GAME PARAMETERS
+param game_duration =  400
+param deterministic =  False
+param offsides =  False
+param end_episode_on_score =  True
+param end_episode_on_out_of_play =  False
+param end_episode_on_possession_change = False
+param right_team_difficulty  = 0.0
+param left_team_difficulty = 0.0
+
 # Set up geometric attributes
 field_width  = 200
 field_height =  84

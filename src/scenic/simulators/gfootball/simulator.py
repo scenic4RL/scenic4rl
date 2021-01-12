@@ -35,24 +35,25 @@ class GFootBallSimulator(Simulator):
 	def __init__(self, settings={}, render=True, record=False, timestep=None):
 		super().__init__()
 		verbosePrint('Connecting to GFootBall...')
-		self.settings:Dict = settings
+		self.settings:Dict = None
 		self.render = render
 		self.timestep = timestep
 		self.record = record
 
-		default_settings = {
-			'action_set': "full",
-			'dump_full_episodes': False,
-			'real_time': True,
-			'players': ['agent:left_players=1']
-		}
-
-		for setting, option in default_settings.items():
-			if setting not in self.settings:
-				verbosePrint(f'Using Default Settings for {setting}: {default_settings[setting]}')
-				self.settings[setting] = default_settings[setting]
 
 	def createSimulation(self, scene, verbosity=0):
+
+		#settings
+		#https://github.com/google-research/football/blob/master/gfootball/env/config.py
+
+		allowed_settings = {""}
+
+		self.settings = scene.params.copy()
+
+		verbosePrint(f"Parameters: ")
+		for setting, option in self.settings.items():
+			verbosePrint(f'{setting}: {self.settings[setting]}')
+
 		return GFootBallSimulation(scene=scene, settings = self.settings,
 								   timestep=self.timestep,
 							   render=self.render, record=self.record,
@@ -64,7 +65,7 @@ class GFootBallSimulation(Simulation):
 	def initialize_utility_ds(self):
 		self.game_state = GameState()
 		"""Initializes self.ball, self.my_players and self.opo_players"""
-		from scenic.simulators.gfootball import model
+		#from scenic.simulators.gfootball import model
 		from scenic.simulators.gfootball.interface import is_player, is_ball, is_op_player, is_my_player
 		for obj in self.objects:
 			if is_ball(obj):

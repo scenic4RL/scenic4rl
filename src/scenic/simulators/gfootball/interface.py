@@ -220,7 +220,9 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
 
     # basic settings:
     for name, value in scene_attrs.items():
-        code_str += f"\tbuilder.config().{name} = {value}\n"
+        value_str = f"{value}"
+        if isinstance(value, str): value_str = f"'{value_str}'"
+        code_str += f"\tbuilder.config().{name} = {value_str}\n"
 
     code_str += f"\n"
     # add Ball

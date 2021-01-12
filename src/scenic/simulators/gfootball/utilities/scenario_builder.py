@@ -9,8 +9,9 @@ GFOOTBALL_SCENARIO_FILENAME = "dynamic.py"
 def initialize_gfootball_scenario(scene, objects):
     # set basic scenario attributes
 
-    scene_attrs = {}
+    #scene_attrs = {}
 
+    """
     default_scene_params = {
         'game_duration': 400,
         'deterministic': False,
@@ -21,12 +22,12 @@ def initialize_gfootball_scenario(scene, objects):
         'right_team_difficulty': 0.0,
         'left_team_difficulty': 0.0
     }
-
+    
     # Set default parameters for scene
     scene_attrs.update(default_scene_params)
-
+    """
     # UPDATE SCENE PARAMETERS
-    scene_attrs.update(scene.params)
+    #scene_attrs.update(scene.params)
 
     module_path = gfootball.scenarios.__path__[0]
 
@@ -53,7 +54,7 @@ def initialize_gfootball_scenario(scene, objects):
     print(f"...Writing GFootBall Scenario to {module_path}")
 
     with open(module_path + "/" + GFOOTBALL_SCENARIO_FILENAME, "w+") as file:
-        code_str = get_scenario_python_str(scene_attrs, own_players=my_players, opo_players=op_players, ball=ball)
+        code_str = get_scenario_python_str(scene.params, own_players=my_players, opo_players=op_players, ball=ball)
         print(code_str)
         file.write(code_str)
 
