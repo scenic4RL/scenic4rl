@@ -16,13 +16,11 @@ def get_velocity_and_speed(position, position_prev):
 
     return velocity, speed
 
-
 def update_game_state(obs, game_state):
     game_state.frame = obs["frame"]
     game_state.score = obs["score"]
     game_state.steps_left = obs["steps_left"]
     game_state.game_mode = obs["game_mode"]
-
 
 def is_player(obj):
     strs = ["Player", "CB", "GK", "LB", "RB", "CM", "CML", "CMR", "CMM", "CF", "AM", "LM", "RM", "DM"]
@@ -55,8 +53,6 @@ def is_ball(obj):
 def extract_info_from_single_obs(obs):
     my_player_idx_info_map = {} #idx to info
     op_player_idx_info_map = {}
-    ball_info = {}
-
 
     team_prefixes = ["left_team", "right_team"]
     player_infos = [my_player_idx_info_map, op_player_idx_info_map]
@@ -102,67 +98,6 @@ def extract_info_from_single_obs(obs):
 
     return my_player_idx_info_map, op_player_idx_info_map
 
-def get_player_info_from_single_obs(obs):
-    """To be able to pair player objects in scenic and observation,
-        We add the constraint the every team can have at most one player in the same role"""
-    my_player_info = {}
-    my_ind_to_role = {}
-
-    op_player_info = {}
-    op_ind_to_role = {}
-
-    team_prefixes = ["left_team", "right_team"]
-    player_infos = [my_player_info, op_player_info]
-    ind_to_roles = [my_ind_to_role, op_ind_to_role]
-
-    ball_owned_team = obs['ball_owned_team']
-    ball_owned_player = obs['ball_owned_player']
-
-    # print(obs["active"], obs["designated"])
-    # read the left and right team arrays and put information in the corresponding DS
-    for team_prefix, player_info, ind_to_role in zip(team_prefixes, player_infos, ind_to_roles):
-        tp = team_prefix
-        # mirrorx = False if tp=="left_team" else True
-        for ind in range(obs[f'{tp}_roles'].shape[0]):
-            role_code = obs[f"{tp}_roles"][ind]
-            role = RoleCode.code_to_role(role_code)
-            ind_to_role[ind] = role
-
-            pos = obs[tp][ind]
-            direction = obs[f"{tp}_direction"][ind]
-            tired = obs[f"{tp}_tired_factor"][ind]
-            yellows = obs[f"{tp}_yellow_card"][ind]
-            active = bool(obs[f"{tp}_active"][ind])
-            red_card = not active
-
-            player_info[role] = {}
-            player_info[role]['position'] = translator.pos_sim_to_scenic(pos)
-            player_info[role]['position_sim'] = pos
-
-            player_info[role]['direction'] = get_angle_from_direction(direction)
-            player_info[role]['direction_sim'] = Vector(direction[0], direction[1])
-
-            player_info[role]['tired_factor'] = tired
-
-            player_info[role]['yellow_cards'] = int(yellows)
-            player_info[role]['red_card'] = red_card
-
-            player_info[role]["controlled"] = (obs["active"] == ind)
-
-            # if tp=="right_team" and role=="GK":
-            #    print(f"{tp} {role} position {player_info[role]['pos']} direction {player_info[role]['direction']} {player_info[role]['direction_sim']}")
-
-            player_info[role]["owns_ball"] = False
-            ball_own_team_code = 0 if tp == "left_team" else 1
-            if ball_owned_team == ball_own_team_code and ball_owned_player == ind:
-                player_info[role]["owns_ball"] = True
-
-            player_info[role]["sticky_actions"] = None
-            if player_info[role]["controlled"]:
-                player_info[role]["sticky_actions"] = list(obs["sticky_actions"])
-
-    return my_player_info, my_ind_to_role, op_player_info, op_ind_to_role
-
 def generate_index_to_player_map(last_obs, objects):
     obs = last_obs[0]
     my_player_idx_info_map, op_player_idx_info_map = extract_info_from_single_obs(obs)
@@ -205,7 +140,6 @@ def update_objects_from_obs(last_obs, objects, game_state, my_player_to_idx, my_
 
     my_player_idx_info_map, op_player_idx_info_map = extract_info_from_single_obs(obs)
 
-
     update_game_state(obs, game_state)
 
 
@@ -236,11 +170,17 @@ def update_objects_from_obs(last_obs, objects, game_state, my_player_to_idx, my_
 
 
 
-    #update_players and Ball
+    #update Ball
     for obj in objects:
         if "Ball" in str(type(obj)):
             update_ball(obj, obs)
 
+    print("Printing objects")
+    for obj in objects:
+        print(obj, obj.position)
+    print("*"*80)
+    print()
+    input()
 
 def update_ball(ball, obs):
     #https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
