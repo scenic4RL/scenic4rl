@@ -44,7 +44,11 @@ class GFootBallSimulator(Simulator):
 	def createSimulation(self, scene, verbosity=0):
 
 		self.settings = scene.params.copy()
-		#self.settings["players"] = [f"agent:left_players={2}", "keyboard:right_players=1"]
+
+		from scenic.simulators.gfootball.interface import is_my_player
+		#ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
+		num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+		self.settings["players"] = [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
 
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
@@ -57,6 +61,7 @@ class GFootBallSimulator(Simulator):
 
 
 class GFootBallSimulation(Simulation):
+
 	def initialize_multiplayer_ds(self, obs):
 		self.multiplayer = True
 		self.num_controlled = len(obs)
@@ -128,15 +133,11 @@ class GFootBallSimulation(Simulation):
 
 	def executeActions(self, allActions):
 
-		self.action = [0]
-		for agent, act in allActions.items():
-			if agent.controlled:
+		self.action = [-1] * self.num_controlled
 
-				self.action = [act[0].code]
-				#print(f"In simulator: Taking {act[0]} action")
-				#input("In simulator: Step?")
-		#TODO: IMPLEMENT ACTION FROM EVERY AGENT
-		self.action = self.action*self.num_controlled
+		for agent, act in allActions.items():
+			idx = self.my_player_to_idx[agent]
+			self.action[idx] = act[0].code
 
 
 	#askEddie: How to Report end of an episode (i.e., simulation????)
