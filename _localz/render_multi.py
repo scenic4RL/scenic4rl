@@ -14,10 +14,11 @@ from gfootball.env import football_action_set
 
 
 settings = {
-    'game_duaration': 200,
     'action_set': "full",
     'players': [f"agent:left_players=5,right_players=5"],
     'level': '5_vs_5',
+    'dump_full_episodes': True
+
 }
 
 cfg = config.Config(settings)
@@ -28,14 +29,17 @@ env.render()
 env.reset()
 obs, _, done, _ = env.step([0] * 10)
 
+step=0
 
-while True:
+while not done:
     obs, _, done, _ = env.step([football_action_set.action_shot] * 10)
-    print("step")
+    step+=1
+    if step%20==0: print(f"{step} steps done")
     if done:
+        print("Game ends")
         break
 
-print("Game ends")
+
 """
 try:
     while True:
