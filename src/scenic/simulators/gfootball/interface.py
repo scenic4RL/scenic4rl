@@ -174,12 +174,14 @@ def update_objects_from_obs(last_obs, objects, game_state, my_player_to_idx, my_
         if "Ball" in str(type(obj)):
             update_ball(obj, obs)
 
+    """
     print("Printing objects")
     for obj in objects:
         print(obj, obj.position)
     print("*"*80)
     print()
-    input()
+    """
+    #input()
 
 def update_ball(ball, obs):
     #https://github.com/google-research/football/blob/master/gfootball/doc/observation.md

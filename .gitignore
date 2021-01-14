@@ -125,7 +125,7 @@ dmypy.json
 # Azad's
 .idea/
 scvenv
-videos/
+dumps/
 #GFootball
 *.avi
 *.dump

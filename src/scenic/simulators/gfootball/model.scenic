@@ -36,7 +36,7 @@ param players =  ['agent:left_players=1', 'keyboard:right_players=1']
 param physics_steps_per_frame =  10
 param render_resolution_x = 1280
 param real_time =  True
-param tracesdir = '/tmp/dumps'
+param tracesdir = 'dumps'
 param video_format =  'avi'
 param video_quality_level= 0
 param write_video = False

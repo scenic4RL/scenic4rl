@@ -20,7 +20,7 @@ settings = {
     'dump_full_episodes': True,
     'dump_scores': True,
     'write_video': True,
-    'tracesdir': '/Users/azadsalam/codebase/scenic/videos',
+    'tracesdir': 'dumps',
 }
 
 cfg = config.Config(settings)

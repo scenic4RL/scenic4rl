@@ -3,10 +3,12 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.simulators.gfootball.behaviors import *
 
 
-num_player = 2
-param game_duration = 600
+param game_duration = 200
 param deterministic = False
-param players = ['agent:left_players=3', "keyboard:right_players=1"]
+param real_time = False
+param dump_full_episodes = True
+param dump_scores = True
+param write_video = True
 
 #how to specify that if there is one/ more than one player on one side, there must be one GK??
 
@@ -18,7 +20,7 @@ MyLB with behavior GreedyPlay()
 MyCB with behavior GreedyPlay()
 MyRB with behavior GreedyPlay()
 
-OpGK with behavior GreedyPlay()
-OpLB with behavior GreedyPlay()
-OpCB with behavior GreedyPlay()
-OpRB with behavior GreedyPlay()
+OpGK #with behavior GreedyPlay()
+OpLB #with behavior GreedyPlay()
+OpCB #with behavior GreedyPlay()
+OpRB #with behavior GreedyPlay()
