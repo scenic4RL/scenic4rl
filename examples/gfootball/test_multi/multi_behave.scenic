@@ -3,6 +3,7 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.simulators.gfootball.behaviors import *
 
 
+param manual_control = True
 param game_duration = 200
 param deterministic = False
 param real_time = False
@@ -20,7 +21,7 @@ MyLB with behavior GreedyPlay()
 MyCB with behavior GreedyPlay()
 MyRB with behavior GreedyPlay()
 
-OpGK #with behavior GreedyPlay()
-OpLB #with behavior GreedyPlay()
-OpCB #with behavior GreedyPlay()
-OpRB #with behavior GreedyPlay()
+OpGK with behavior BuiltinAIBot()
+OpLB #with behavior BuiltinAIBot()
+OpCB #with behavior BuiltinAIBot()
+

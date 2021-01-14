@@ -43,9 +43,18 @@ class GFootBallSimulator(Simulator):
 
 	def createSimulation(self, scene, verbosity=0):
 
+		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
 		self.settings = scene.params.copy()
 
-		from scenic.simulators.gfootball.interface import is_my_player
+		manual_control = scene.params["manual_control"]
+
+		#if manual control is enabled, the op player wont be allowed to have any scenic behaviors for now
+		if manual_control:
+			op_players = [obj for obj in scene.objects if is_op_player(obj)]
+			opp_with_bhv = [obj for obj in op_players if obj.behavior is not None]
+			assert len(opp_with_bhv)==0, "For now, if manual control is enabled, the opposition players cannot have scenice behaviors"
+
+
 		#ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
 		num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
 		self.settings["players"] = [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]

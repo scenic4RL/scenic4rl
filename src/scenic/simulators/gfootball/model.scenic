@@ -24,6 +24,7 @@ default_scene_params = {
 """
 #New Parameters
 #param control_mode = "multi"
+param manual_control = False
 
 #CONFIG PARAMETERS
 param action_set = 'v2'   # 'v2', 'default'

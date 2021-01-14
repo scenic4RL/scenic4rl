@@ -48,6 +48,16 @@ class NoAction(Action):
     def __str__(self):
         return "no action"
 
+class BuiltinAIAction(Action):
+    def __init__(self):
+        self.code = ActionCode.builtin_ai
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "Built-in AI"
+
 class Sliding(Action):
     def __init__(self):
         self.code = ActionCode.sliding
