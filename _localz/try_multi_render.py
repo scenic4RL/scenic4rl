@@ -15,16 +15,13 @@ from gfootball.env import football_action_set
 #AddPlayer(self, x, y, role, lazy=False, controllable=True):
 num_my_player =  5
 num_op_player =  5
-num_total_controlled = num_my_player+num_op_player
+num_total_controlled = num_my_player+num_op_player-1
 settings = {
     'action_set': "full",
     'dump_full_episodes': True,
-    'real_time': True,
-    'players': [f"agent:left_players={num_my_player},right_players={num_op_player}"],
-    'level': '5_vs_5',
-    'video_quality_level': 0,
-    'physics_steps_per_frame': 10,
-    'render_resolution_x': 1280,
+    'real_time': False,
+    'players': [f"agent:left_players={num_my_player},right_players={num_op_player-1}", "keyboard:right_players=1"],
+    'level': '5_vs_5'
 }
 
 cfg = config.Config(settings)
@@ -61,7 +58,6 @@ print_obs(obs)
 #print(obs["active"], obs["designated"])
 while True:
     obs, _, done, _ = env.step([football_action_set.action_shot] * num_total_controlled)
-    print("step")
     print_obs(obs)
     #_, _, done, _ = env.step([])
     if done:

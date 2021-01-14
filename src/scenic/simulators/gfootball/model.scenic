@@ -22,10 +22,11 @@ default_scene_params = {
     'left_team_difficulty': 0.0
 }
 """
-
+#New Parameters
+#param control_mode = "multi"
 
 #CONFIG PARAMETERS
-param action_set = 'default'
+param action_set = 'v2'   # 'v2', 'default'
 param custom_display_stats = None
 param display_game_stats = True
 param dump_full_episodes = False

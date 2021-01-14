@@ -57,7 +57,6 @@ def extract_info_from_single_obs(obs):
     team_prefixes = ["left_team", "right_team"]
     player_infos = [my_player_idx_info_map, op_player_idx_info_map]
 
-
     ball_owned_team = obs['ball_owned_team']
     ball_owned_player = obs['ball_owned_player']
 
