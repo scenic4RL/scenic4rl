@@ -7,6 +7,7 @@ def pos_sim_to_scenic(pos, mirrorx=False):
     x = sim_to_scenic_x(pos[0])
     y = sim_to_scenic_y(pos[1])
     if mirrorx: x *= -1
+    #if mirrory: y *= -1
     return Vector(x, y)
 
 

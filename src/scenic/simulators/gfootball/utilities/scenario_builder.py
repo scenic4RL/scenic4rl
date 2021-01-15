@@ -1,12 +1,10 @@
 import gfootball
 from scenic.simulators.gfootball.interface import get_scenario_python_str
 from scenic.simulators.gfootball.utilities import translator
+from scenic.simulators.gfootball.utilities.game_ds import GameDS
 
 
-
-
-
-def initialize_gfootball_scenario(scene, objects):
+def initialize_gfootball_scenario(scene, gameds:GameDS):
     # set basic scenario attributes
 
     #scene_attrs = {}
@@ -31,6 +29,7 @@ def initialize_gfootball_scenario(scene, objects):
 
     module_path = gfootball.scenarios.__path__[0]
 
+    """
     from scenic.simulators.gfootball.model import Player, Ball
     ball = None
     my_players = []
@@ -50,11 +49,12 @@ def initialize_gfootball_scenario(scene, objects):
         elif is_ball(obj):
             # print(f"Ball {dir(obj)}")
             ball = obj
+    """
 
     print(f"...Writing GFootBall Scenario to {module_path}")
 
     with open(module_path + "/" + scene.params["level"]+".py", "w+") as file:
-        code_str = get_scenario_python_str(scene.params, own_players=my_players, opo_players=op_players, ball=ball)
+        code_str = get_scenario_python_str(scene.params, own_players=gameds.my_players, opo_players=gameds.op_players, ball=gameds.ball)
         print(code_str)
         file.write(code_str)
 

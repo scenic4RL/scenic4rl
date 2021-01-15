@@ -4,6 +4,7 @@ from scenic.core.vectors import Vector
 from scenic.simulators.gfootball.utilities import translator
 #from scenic.simulators.gfootball.utilities.constants import player_code_to_role
 from scenic.simulators.gfootball.utilities.constants import RoleCode
+from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.simulators.gfootball.utilities.translator import get_angle_from_direction
 
 
@@ -99,13 +100,52 @@ def extract_info_from_single_obs(obs):
 
     return my_player_idx_info_map, op_player_idx_info_map
 
-def generate_index_to_player_map(last_obs, objects):
+
+def get_closest_player(position, players):
+    min_distance = None
+    closest_player = None
+
+    for p in players:
+        dist = math.sqrt(math.pow(p.x - position[0], 2) + math.pow(p.y - position[1], 2))
+        if min_distance is None or dist < min_distance:
+            closest_player = p
+            min_distance = dist
+    return closest_player
+
+
+def update_control_index(last_obs, gameds:GameDS):
+
+    ctrl_idx_to_player = {}
+    player_to_ctrl_idx = {}
+    for ctrl_idx in range(len(last_obs)):
+        obs = last_obs[ctrl_idx]
+        m = obs["active"]
+        pos_sim = obs["left_team"][m]
+
+        #left/right team
+        if ctrl_idx < gameds.get_num_my_players():
+            player_list = gameds.my_players
+            pos_scenic = translator.pos_sim_to_scenic(pos_sim)
+        else:
+            player_list = gameds.op_players
+            pos_scenic = translator.pos_sim_to_scenic(pos_sim, mirrorx=True)
+
+        matching_player = get_closest_player(pos_scenic, player_list)
+
+        #print(ctrl_idx, pos_sim, pos_scenic, matching_player)
+
+        ctrl_idx_to_player[ctrl_idx] = matching_player
+        player_to_ctrl_idx[matching_player] = ctrl_idx
+
+    gameds.initialize_ctrl_idx_map(ctrl_idx_to_player, player_to_ctrl_idx)
+
+def generate_index_to_player_map(last_obs, gameds:GameDS):
     obs = last_obs[0]
     my_player_idx_info_map, op_player_idx_info_map = extract_info_from_single_obs(obs)
     my_player_to_idx, my_idx_to_player, op_player_to_idx, op_idx_to_player = {}, {}, {}, {}
 
 
-    for obj in objects:
+    for obj in gameds.my_players:
         if is_player(obj):
 
             if is_my_player(obj):

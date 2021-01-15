@@ -7,7 +7,9 @@ import math
 import gfootball
 from gfootball.env import config
 from gfootball.env import football_env
-from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map
+from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map, \
+	update_control_index
+from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario, get_default_settings
 from scenic.syntax.veneer import verbosePrint
 from scenic.core.simulators import Simulator, Simulation
@@ -21,7 +23,6 @@ class PlayerConfig:
 		pass
 
 class GameState:
-
 	def __init__(self, game_mode:int = 0, score:List[int] = [0, 0], steps_left:int=-1, frame=None):
 		self.frame = frame
 		self.steps_left = steps_left
@@ -76,30 +77,37 @@ class GFootBallSimulator(Simulator):
 							   verbosity=verbosity)
 
 
+
+
 class GFootBallSimulation(Simulation):
 
+	"""
 	def initialize_multiplayer_ds(self, obs):
 		self.multiplayer = True
 		self.num_controlled = len(obs)
+	"""
 
-	def initialize_utility_ds(self):
+	def get_game_ds(self):
 
-		self.multiplayer = False
-		self.game_state = GameState()
+		game_state = GameState()
+		my_players = []
+		op_players = []
 
-		"""Initializes self.ball, self.my_players and self.opo_players"""
+		"""Extracts Ball and Players"""
 		#from scenic.simulators.gfootball import model
 		from scenic.simulators.gfootball.interface import is_player, is_ball, is_op_player, is_my_player
 		for obj in self.objects:
 			if is_ball(obj):
-				self.ball = obj
+				ball = obj
 
 			elif is_my_player(obj):
-				self.my_players.append(obj)
+				my_players.append(obj)
 
 			elif is_op_player(obj):
-				self.opo_players.append(obj)
+				op_players.append(obj)
 
+
+		return GameDS(my_players, op_players, ball= ball, game_state=game_state)
 
 
 	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
@@ -112,33 +120,29 @@ class GFootBallSimulation(Simulation):
 		self.rewards = []
 		self.last_obs = None
 
-		#DS for accessing easily
-		self.ball = None
-		self.my_players = []
-		self.opo_players = []
-
-		self.initialize_utility_ds()
-		initialize_gfootball_scenario(scene, self.objects)
+		self.game_ds:GameDS = self.get_game_ds()
+		initialize_gfootball_scenario(scene, self.game_ds)
 
 		print("New Simulation")
 		#SET UP CONFIG
-		self.cfg = config.Config(self.settings)
-
-		self.env = football_env.FootballEnv(self.cfg)
+		self.gf_cfg = config.Config(self.settings)
+		self.env = football_env.FootballEnv(self.gf_cfg)
 		self.render = render
 
 		if self.render:
 			self.env.render()
 
 		self.last_obs = self.env.reset()
+
+		update_control_index(self.last_obs, gameds=self.game_ds)
+
 		self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player = generate_index_to_player_map(self.last_obs, self.objects)
-		self.initialize_multiplayer_ds(self.last_obs)
+		#self.initialize_multiplayer_ds(self.last_obs)
 
 		#input()
 		self.done = False
 
 		#obs = self.last_obs[0]
-
 		update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
 
@@ -172,9 +176,6 @@ class GFootBallSimulation(Simulation):
 		self.rewards.append(rew)
 		update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
-
-	#askEddie: How to use this function? Where are these properties set, why only one obj
-	#to test this we need behaviors
 	def getProperties(self, obj, properties):
 		# Extract  properties
 

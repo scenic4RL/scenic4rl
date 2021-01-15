@@ -171,6 +171,9 @@ class Player:
     #G footbal derived
     owns_ball[dynamic]: False #whether he (as a result also his team) posses the ball or not
 
+    #for interfacing
+    #obs_index[dynami]
+
     #scenic properties
     heading: 0 deg
     width: 0.5
