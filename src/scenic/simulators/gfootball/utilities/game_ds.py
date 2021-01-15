@@ -1,9 +1,10 @@
 class GameDS:
-	def __init__(self, my_players=None, op_players=None, ball=None, game_state=None):
+	def __init__(self, my_players=None, op_players=None, ball=None, game_state=None, scene=None):
 		self.my_players = my_players
 		self.op_players = op_players
 		self.game_state = game_state
 		self.ball = ball
+		self.scene = scene
 
 	def get_num_my_players(self):
 		return len(self.my_players)
@@ -14,3 +15,12 @@ class GameDS:
 	def initialize_ctrl_idx_map(self, ctrl_idx_to_player, player_to_ctrl_idx):
 		self.ctrl_idx_to_player = ctrl_idx_to_player
 		self.player_to_ctrl_idx = player_to_ctrl_idx
+
+	def is_manual_controlled(self):
+		return self.scene.params["manual_control"]
+
+	def get_num_controlled(self):
+		if self.is_manual_controlled():
+			return self.get_num_my_players()
+		else:
+			return self.get_num_my_players()+self.get_num_op_players()

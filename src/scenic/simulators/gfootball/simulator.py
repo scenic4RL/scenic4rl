@@ -87,7 +87,7 @@ class GFootBallSimulation(Simulation):
 		self.num_controlled = len(obs)
 	"""
 
-	def get_game_ds(self):
+	def get_game_ds(self, scene):
 
 		game_state = GameState()
 		my_players = []
@@ -107,7 +107,7 @@ class GFootBallSimulation(Simulation):
 				op_players.append(obj)
 
 
-		return GameDS(my_players, op_players, ball= ball, game_state=game_state)
+		return GameDS(my_players, op_players, ball= ball, game_state=game_state, scene = scene)
 
 
 	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
@@ -120,7 +120,7 @@ class GFootBallSimulation(Simulation):
 		self.rewards = []
 		self.last_obs = None
 
-		self.game_ds:GameDS = self.get_game_ds()
+		self.game_ds:GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(scene, self.game_ds)
 
 		print("New Simulation")
@@ -150,7 +150,7 @@ class GFootBallSimulation(Simulation):
 
 	def executeActions(self, allActions):
 		gameds = self.game_ds
-		self.action = [-1] * (gameds.get_num_my_players()+gameds.get_num_op_players())
+		self.action = [-1] * gameds.get_num_controlled()
 
 
 		for agent, act in allActions.items():
