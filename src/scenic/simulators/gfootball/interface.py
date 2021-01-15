@@ -50,6 +50,8 @@ def is_op_player(obj):
 def is_ball(obj):
     return "Ball" in str(type(obj))
 
+
+
 def extract_info_from_single_obs(obs):
     my_player_idx_info_map = {} #idx to info
     op_player_idx_info_map = {}
@@ -134,6 +136,10 @@ def generate_index_to_player_map(last_obs, objects):
     return my_player_to_idx, my_idx_to_player, op_player_to_idx, op_idx_to_player
 
 def update_objects_from_obs(last_obs, objects, game_state, my_player_to_idx, my_idx_to_player, op_player_to_idx, op_idx_to_player, num_controlled=1):
+
+    #for observation of right team players; their own position is stored in left_team.
+    #AS teh observations are flipped as left players
+
     obs = last_obs[0]
     #my_player_info, my_ind_to_role, op_player_info, op_ind_to_role = get_player_info_from_single_obs(obs)
 
@@ -206,10 +212,6 @@ def update_ball(ball, obs):
     ball.owned_player_idx = obs['ball_owned_player']
 
     #scenic related properties
-
-
-
-
     delx = ball.position.x - ball.position_prev.x
     dely = ball.position.y - ball.position_prev.y
 

@@ -15,13 +15,12 @@ param write_video = True
 
 Ball at 0 @ 0
 
-ego = MyGK with behavior GreedyPlay()
+ego = MyGK with behavior GreedyPlay(), at -90 @ 0
+MyCB with behavior GreedyPlay(), at -50 @ 0
+MyCF with behavior GreedyPlay(), at -10 @ 0
 
-MyLB with behavior GreedyPlay()
-MyCB with behavior GreedyPlay()
-MyRB with behavior GreedyPlay()
 
-OpGK with behavior BuiltinAIBot()
-OpLB with behavior BuiltinAIBot()
-OpCB with behavior BuiltinAIBot()
+OpGK with behavior BuiltinAIBot(), at 90 @ 0
+OpCF with behavior BuiltinAIBot(), at 10 @ 0
+
 

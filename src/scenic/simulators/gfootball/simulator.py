@@ -9,17 +9,16 @@ from gfootball.env import config
 from gfootball.env import football_env
 from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map
 from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario, get_default_settings
-
-from scenic.syntax.translator import verbosity
-
-from scenic.core.simulators import SimulationCreationError
 from scenic.syntax.veneer import verbosePrint
 from scenic.core.simulators import Simulator, Simulation
 
 import gfootball_engine as libgame
-#Player = libgame.FormationEntry
-#Role = libgame.e_PlayerRole
-#Team = libgame.e_Team
+
+
+class PlayerConfig:
+	def __init__(self):
+		#self.my_players =
+		pass
 
 class GameState:
 
@@ -55,9 +54,17 @@ class GFootBallSimulator(Simulator):
 			assert len(opp_with_bhv)==0, "For now, if manual control is enabled, the opposition players cannot have scenice behaviors"
 
 
-		#ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
-		num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
-		self.settings["players"] = [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
+			#ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
+			# the opposition will be controlled by keyboard
+			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+			self.settings["players"] = [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
+
+		else:
+			# ALL MY_PLAYERs and OPPLAYES are controlled by `agent` i.e., the simulator expects actions for every agent
+			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
+
+			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
@@ -76,8 +83,10 @@ class GFootBallSimulation(Simulation):
 		self.num_controlled = len(obs)
 
 	def initialize_utility_ds(self):
+
 		self.multiplayer = False
 		self.game_state = GameState()
+
 		"""Initializes self.ball, self.my_players and self.opo_players"""
 		#from scenic.simulators.gfootball import model
 		from scenic.simulators.gfootball.interface import is_player, is_ball, is_op_player, is_my_player
@@ -108,14 +117,8 @@ class GFootBallSimulation(Simulation):
 		self.my_players = []
 		self.opo_players = []
 
-		Player = libgame.FormationEntry
-		Role = libgame.e_PlayerRole
-		Team = libgame.e_Team
-
 		self.initialize_utility_ds()
 		initialize_gfootball_scenario(scene, self.objects)
-		#settings = get_default_settings()
-		#self.settings.update(settings)
 
 		print("New Simulation")
 		#SET UP CONFIG
