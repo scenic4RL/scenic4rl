@@ -143,6 +143,7 @@ class GFootBallSimulation(Simulation):
 		self.done = False
 
 		#obs = self.last_obs[0]
+		update_objects_from_obs(self.last_obs, self.game_ds)
 		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
 
@@ -176,7 +177,9 @@ class GFootBallSimulation(Simulation):
 
 		self.last_obs, rew, self.done, _ = self.env.step(self.action)
 		self.rewards.append(rew)
-		update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
+
+		update_objects_from_obs(self.last_obs, self.game_ds)
+		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
 	def getProperties(self, obj, properties):
 		# Extract  properties
