@@ -33,10 +33,10 @@ behavior GreedyPlay():
         objects = simulation().objects
 
 
-        ball = simulation().ball
-        my_players = simulation().my_players
-        opo_players = simulation().opo_players
-        game_state = simulation().game_state
+        ball = simulation().game_ds.ball
+        my_players = simulation().game_ds.my_players
+        opo_players = simulation().game_ds.op_players
+        game_state = simulation().game_ds.game_state
 
         act = None
         if not self.controlled:

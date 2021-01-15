@@ -136,24 +136,26 @@ class GFootBallSimulation(Simulation):
 
 		update_control_index(self.last_obs, gameds=self.game_ds)
 
-		self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player = generate_index_to_player_map(self.last_obs, self.objects)
+		#self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player = generate_index_to_player_map(self.last_obs, self.objects)
 		#self.initialize_multiplayer_ds(self.last_obs)
 
 		#input()
 		self.done = False
 
 		#obs = self.last_obs[0]
-		update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
+		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
 
 
 	def executeActions(self, allActions):
+		gameds = self.game_ds
+		self.action = [-1] * (gameds.get_num_my_players()+gameds.get_num_op_players())
 
-		self.action = [-1] * self.num_controlled
 
 		for agent, act in allActions.items():
-			idx = self.my_player_to_idx[agent]
+			idx = gameds.player_to_ctrl_idx[agent]
 			self.action[idx] = act[0].code
+
 
 
 	#askEddie: How to Report end of an episode (i.e., simulation????)
@@ -180,7 +182,7 @@ class GFootBallSimulation(Simulation):
 		# Extract  properties
 
 		values = dict()
-		if obj == self.ball:
+		if obj == self.game_ds.ball:
 			# ball dynamic properties
 
 			#5 gfootball properties: position, direction, rotation, owned_team, owned_player
@@ -196,7 +198,7 @@ class GFootBallSimulation(Simulation):
 			values['speed'] = obj.speed
 			values['velocity'] = obj.velocity
 
-		elif obj in self.my_players or obj in self.opo_players:
+		elif obj in self.game_ds.my_players or obj in self.game_ds.op_players:
 
 			values['position'] = obj.position
 			values['direction'] = obj.direction
