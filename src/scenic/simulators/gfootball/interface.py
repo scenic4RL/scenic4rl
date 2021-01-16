@@ -108,8 +108,8 @@ def update_objects_from_obs(last_obs, gameds):
         else:
             pos_sim  = obs[tp][idx]
             direction_sim = obs[f"{tp}_direction"][idx]
-            direction = get_angle_from_direction(direction_sim)
-            position = translator.pos_sim_to_scenic(pos_sim, mirrorx=True)
+            direction = get_angle_from_direction(direction_sim, mirrorx=True, mirrory=True)
+            position = translator.pos_sim_to_scenic(pos_sim, mirrorx=True, mirrory=True)
 
         tired = obs[f"{tp}_tired_factor"][idx]
         yellows = int(obs[f"{tp}_yellow_card"][idx])
@@ -123,6 +123,7 @@ def update_objects_from_obs(last_obs, gameds):
         player.position_sim = pos_sim
         player.direction = direction
         player.direction_sim = direction_sim
+        player.heading = direction
         player.tired_factor = tired
         player.red_card = red_card
         player.yellow_cards = yellows

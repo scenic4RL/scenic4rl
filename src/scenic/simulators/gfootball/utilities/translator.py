@@ -3,11 +3,11 @@ from scenic.simulators.gfootball import model
 from scenic.core.vectors import Vector
 import math
 
-def pos_sim_to_scenic(pos, mirrorx=False):
+def pos_sim_to_scenic(pos, mirrorx=False, mirrory=False):
     x = sim_to_scenic_x(pos[0])
     y = sim_to_scenic_y(pos[1])
     if mirrorx: x *= -1
-    #if mirrory: y *= -1
+    if mirrory: y *= -1
     return Vector(x, y)
 
 
@@ -32,12 +32,15 @@ def pos_scenic_to_sim(pos, mirrorx=False, mirrory=False):
     return Vector(x,y)
 
 
-def get_angle_from_direction(direction):
+def get_angle_from_direction(direction, mirrorx=False, mirrory=False):
     import math
     eps = 1e-5
 
     delx = direction[0]
     dely = direction[1]
+
+    if mirrorx: delx *= -1
+    if mirrory: dely *= -1
 
     delx = sim_to_scenic_x(delx)
     dely = sim_to_scenic_y(dely)
