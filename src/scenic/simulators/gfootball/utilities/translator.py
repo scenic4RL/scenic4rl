@@ -24,10 +24,11 @@ def sim_to_scenic_y(y):
     return -1 * model.field_height * y / model.field_height_su
 
 
-def pos_scenic_to_sim(pos, mirrorx=False):
+def pos_scenic_to_sim(pos, mirrorx=False, mirrory=False):
     x = scenic_to_sim_x(pos.x)
     y = scenic_to_sim_y(pos.y)
     if mirrorx: x *= -1
+    if mirrory: y *= -1
     return Vector(x,y)
 
 

@@ -1,3 +1,6 @@
+import math
+
+
 class GameDS:
 	def __init__(self, my_players=None, op_players=None, ball=None, game_state=None, scene=None):
 		self.my_players = my_players
@@ -35,6 +38,12 @@ class GameDS:
 			  f"   H: {math.degrees(player.heading):0.2f}   V: ({player.velocity.x:0.2f}, {player.velocity.y:0.2f})"
 			  f"   Own: {player.owns_ball}{prev_pos}")
 
+	@staticmethod
+	def ball_str(ball):
+
+		return (f"P: ({ball.position.x:0.2f}, {ball.position.y:0.2f})   D: {math.degrees(ball.direction):0.2f}"
+			  f"   H: {math.degrees(ball.heading):0.2f}   V: ({ball.velocity.x:0.2f}, {ball.velocity.y:0.2f})")
+
 	def print_ds(self):
 		print("My Players")
 		for mp in self.my_players:
@@ -46,7 +55,7 @@ class GameDS:
 			print(self.player_str(op))
 
 		print("ball")
-		print(self.ball)
+		print(self.ball_str(self.ball))
 
 		print()
 		print()

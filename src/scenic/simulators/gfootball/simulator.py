@@ -183,7 +183,7 @@ class GFootBallSimulation(Simulation):
 
 		update_objects_from_obs(self.last_obs, self.game_ds)
 		self.game_ds.print_ds()
-		#input()
+		input()
 
 		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 

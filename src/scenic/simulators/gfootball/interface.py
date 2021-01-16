@@ -217,7 +217,7 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
         code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
 
         for player in opo_players:
-            player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=True)
+            player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=True, mirrory=True)
             #MIRRORING the position of the opponent player, as it seems the simulator mirrors it automatically
             code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
 
