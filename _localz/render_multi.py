@@ -1,10 +1,8 @@
-"""Script allowing to play the game by multiple players."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-
+import pygame
 from gfootball.env.scenario_builder import Scenario
 from gfootball.env import config
 from gfootball.env import football_env
@@ -17,39 +15,22 @@ settings = {
     'action_set': "full",
     'players': [f"agent:left_players=5,right_players=5"],
     'level': '5_vs_5',
-    'dump_full_episodes': True
-
 }
 
 cfg = config.Config(settings)
-
+pygame.display.set_mode((1, 1), pygame.NOFRAME)
 env = football_env.FootballEnv(cfg)
 
 env.render()
+pygame.display.set_mode((1, 1), pygame.NOFRAME)
 env.reset()
 obs, _, done, _ = env.step([0] * 10)
 
-step=0
 
-while not done:
+while True:
     obs, _, done, _ = env.step([football_action_set.action_shot] * 10)
-    step+=1
-    if step%20==0: print(f"{step} steps done")
+    print("step")
     if done:
-        print("Game ends")
         break
 
-
-"""
-try:
-    while True:
-        _, _, done, _ = env.step([])
-        if done:
-            env.reset()
-except KeyboardInterrupt:
-    logging.warning('Game stopped, writing dump...')
-    env.write_dump('shutdown')
-    exit(1)
-    
-"""
-
+print("Game ends")

@@ -24,3 +24,29 @@ class GameDS:
 			return self.get_num_my_players()
 		else:
 			return self.get_num_my_players()+self.get_num_op_players()
+
+	@staticmethod
+	def player_str(player):
+		import math
+		prev_pos = ""
+		if hasattr(player, "prev_pos"):
+			prev_pos = "   Prev Pos: ({player.position_prev.x:0.2f}, {player.position_prev.y:0.2f}) "
+		return (f"{player.role}   P: ({player.position.x:0.2f}, {player.position.y:0.2f})   D: {math.degrees(player.direction):0.2f}"
+			  f"   H: {math.degrees(player.heading):0.2f}   V: ({player.velocity.x:0.2f}, {player.velocity.y:0.2f})"
+			  f"   Own: {player.owns_ball}{prev_pos}")
+
+	def print_ds(self):
+		print("My Players")
+		for mp in self.my_players:
+			print(self.player_str(mp))
+
+		print()
+		print("Op Players")
+		for op in self.op_players:
+			print(self.player_str(op))
+
+		print("ball")
+		print(self.ball)
+
+		print()
+		print()

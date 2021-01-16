@@ -15,11 +15,11 @@ param write_video = False
 
 Ball at 0 @ 0
 
-ego = MyGK with behavior GreedyPlay(), at -90 @ 10
-MyCB with behavior GreedyPlay(), at -50 @ 0
-MyCF with behavior GreedyPlay(), at -10 @ 0
+ego = MyGK with behavior BuiltinAIBot(), at -90 @ 10
+MyCB with behavior BuiltinAIBot(), at -50 @ 0
+MyCF with behavior BuiltinAIBot(), at -10 @ 0
 
-OpGK #with behavior BuiltinAIBot(), at 90 @ 10
-OpCF #with behavior BuiltinAIBot(), at 10 @ 0
+OpGK at 90 @ 10 #,with behavior BuiltinAIBot()
+OpCF at 10 @ 5 #,with behavior BuiltinAIBot()
 
 
