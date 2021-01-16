@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 from typing import Dict, List
+import pygame
 import math
 import gfootball
 from gfootball.env import config
@@ -126,11 +127,13 @@ class GFootBallSimulation(Simulation):
 		print("New Simulation")
 		#SET UP CONFIG
 		self.gf_cfg = config.Config(self.settings)
+		pygame.display.set_mode((1, 1), pygame.NOFRAME)
 		self.env = football_env.FootballEnv(self.gf_cfg)
 		self.render = render
 
 		if self.render:
 			self.env.render()
+			pygame.display.set_mode((1, 1), pygame.NOFRAME)
 
 		self.last_obs = self.env.reset()
 
@@ -180,7 +183,7 @@ class GFootBallSimulation(Simulation):
 
 		update_objects_from_obs(self.last_obs, self.game_ds)
 		self.game_ds.print_ds()
-		input()
+		#input()
 
 		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 

@@ -2,8 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.simulators.gfootball.behaviors import *
 
-
-param manual_control = True
+param manual_control = False
 param game_duration = 200
 param deterministic = False
 param real_time = True
@@ -19,7 +18,7 @@ ego = MyGK with behavior BuiltinAIBot(), at -90 @ 10
 MyCB with behavior BuiltinAIBot(), at -50 @ 0
 MyCF with behavior BuiltinAIBot(), at -10 @ 0
 
-OpGK at 90 @ 10 #,with behavior BuiltinAIBot()
-OpCF at 10 @ 5 #,with behavior BuiltinAIBot()
+OpGK at 90 @ 10, with behavior BuiltinAIBot()
+OpCF at 10 @ 5, with behavior BuiltinAIBot()
 
 
