@@ -1868,9 +1868,12 @@ class ASTSurgeon(NodeTransformer):
 				metaAttrs = []
 				if isinstance(target, Subscript):
 					sl = target.slice
-					if not isinstance(sl, Index):
+					if not isinstance(sl, Index) and not isinstance(sl, ast.Name):
 						self.parseError(sl, 'malformed attributes for property default')
-					sl = sl.value
+
+					if isinstance(sl, Index):
+						sl = sl.value
+
 					if isinstance(sl, Name):
 						metaAttrs.append(sl.id)
 					elif isinstance(sl, Tuple):
