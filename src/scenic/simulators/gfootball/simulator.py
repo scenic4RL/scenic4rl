@@ -204,7 +204,7 @@ class GFootBallSimulation(Simulation):
 			# scenic defaults
 			values['angularSpeed'] = obj.angularSpeed			  #UNPROCESSED / NO VALUE
 			values['heading'] = obj.heading					      #same as direction
-			values['speed'] = obj.speed
+			values['speed'] = obj.speed							#TODO: test this value
 			values['velocity'] = obj.velocity
 
 		elif obj in self.game_ds.my_players or obj in self.game_ds.op_players:

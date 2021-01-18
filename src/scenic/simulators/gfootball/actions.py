@@ -18,6 +18,8 @@ class SetDirection(Action):
     def __str__(self):
         return f"direction {self.direction}"
 
+
+
 class Shoot(Action):
     def __init__(self):
         self.code = 12

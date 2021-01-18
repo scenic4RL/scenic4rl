@@ -157,11 +157,11 @@ class Player:
     #direction_vec[dynamic]: Vector
 
     tired_factor[dynamic]: (0,1)#float
-    yellow_cards[dynamic]: float
+    yellow_cards[dynamic]: float #todo: why it is float?
     red_card[dynamic]: False
     role[dynamic]: Uniform("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
 
-    controlled[dynamic]: False #IS this the player controlled by RL/ User Logic
+    controlled[dynamic]: False #IS this the player controlled by RL/ User Logic #TODO: do we need it anymore?
     #designated: False #dont need for single-agent, hence
 
     #in this link, it says action is a 10 element array, but actually it returns a 13 element array
