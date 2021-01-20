@@ -157,7 +157,7 @@ class Player:
     #direction_vec[dynamic]: Vector
 
     tired_factor[dynamic]: (0,1)#float
-    yellow_cards[dynamic]: float #todo: why it is float?
+    yellow_cards[dynamic]: int
     red_card[dynamic]: False
     role[dynamic]: Uniform("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
 

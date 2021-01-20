@@ -6,7 +6,7 @@ from scenic.core.regions import regionFromShapelyObject
 import math
 
 from scenic.simulators.gfootball.utilities import *
-#TODO combine mumtiple behavior
+
 
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
