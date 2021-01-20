@@ -161,7 +161,7 @@ class Player:
     red_card[dynamic]: False
     role[dynamic]: Uniform("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
 
-    controlled[dynamic]: False #IS this the player controlled by RL/ User Logic #TODO: do we need it anymore?
+    #controlled[dynamic]: False #IS this the player controlled by RL/ User Logic #TODO: do we need it anymore?
     #designated: False #dont need for single-agent, hence
 
     #in this link, it says action is a 10 element array, but actually it returns a 13 element array

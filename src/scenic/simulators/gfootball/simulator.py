@@ -215,7 +215,7 @@ class GFootBallSimulation(Simulation):
 			values['yellow_cards'] = obj.yellow_cards		#todo: need to test it
 			values['red_card'] = obj.red_card				#todo: need to test it
 			values['role'] = obj.role
-			values['controlled'] = obj.controlled
+			#values['controlled'] = obj.controlled
 			values['owns_ball'] = obj.owns_ball
 			values['sticky_actions'] = obj.sticky_actions
 
