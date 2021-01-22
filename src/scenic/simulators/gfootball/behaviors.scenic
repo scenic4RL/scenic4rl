@@ -25,6 +25,11 @@ behavior BuiltinAIBot():
         take BuiltinAIAction()
 
 
+behavior RunRight():
+    #is_running = ActionCode.sticky_direction(self.sticky_actions)
+    while True:
+        take SetDirection(ActionCode.right)
+
 behavior GreedyPlay():
     while True:
         # if not in dbox, run towards it
