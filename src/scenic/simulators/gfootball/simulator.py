@@ -111,7 +111,7 @@ class GFootBallSimulation(Simulation):
 		return GameDS(my_players, op_players, ball= ball, game_state=game_state, scene = scene)
 
 
-	def __init__(self, scene, settings, timestep=0.1, render=True, record=False, verbosity=0):
+	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0):
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 		self.verbosity = verbosity
 		self.record = record
