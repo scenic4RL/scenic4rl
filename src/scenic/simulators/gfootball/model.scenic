@@ -2,7 +2,7 @@
 import math
 
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
-simulator GFootBallSimulator()
+simulator GFootBallSimulator(timestep=0.1)
 
 #Constants
 pos_inf = 500
