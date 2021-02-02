@@ -1,0 +1,6 @@
+We have installed everything on Python 3.8
+
+---gfootball requires tf 1.15 for training
+
+---Python 3.8 support requires TensorFlow 2.2 or later.
+

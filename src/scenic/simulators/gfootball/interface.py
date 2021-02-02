@@ -177,10 +177,16 @@ def update_ball(ball, obs):
 
 
 def update_game_state(game_state, obs):
-    game_state.frame = obs["frame"]
+
+    game_state.frame = None
+    if "frame" in obs:
+        game_state.frame = obs["frame"]
+
     game_state.score = obs["score"]
     game_state.steps_left = obs["steps_left"]
     game_state.game_mode = obs["game_mode"]
+
+    #print(game_state.steps_left, game_state.score)
 
 
 def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):

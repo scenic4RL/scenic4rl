@@ -80,6 +80,7 @@ class GFootBallSimulator(Simulator):
 
 
 
+
 class GFootBallSimulation(Simulation):
 
 	"""
@@ -125,31 +126,21 @@ class GFootBallSimulation(Simulation):
 		initialize_gfootball_scenario(scene, self.game_ds)
 
 		print("New Simulation")
-		#SET UP CONFIG
-		self.gf_cfg = config.Config(self.settings)
-		pygame.display.set_mode((1, 1), pygame.NOFRAME)
-		self.env = football_env.FootballEnv(self.gf_cfg)
-		self.render = render
 
-		if self.render:
-			self.env.render()
-			pygame.display.set_mode((1, 1), pygame.NOFRAME)
+		from scenic.simulators.gfootball.utilities import env_creator
+		self.env = env_creator.create_environment(env_name=self.settings["level"], settings=self.settings)
+
 
 		self.last_obs = self.env.reset()
 
 		update_control_index(self.last_obs, gameds=self.game_ds)
+		update_objects_from_obs(self.last_obs, self.game_ds)
 
-		#self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player = generate_index_to_player_map(self.last_obs, self.objects)
-		#self.initialize_multiplayer_ds(self.last_obs)
-
-		#input()
 		self.done = False
 
-		#obs = self.last_obs[0]
-		update_objects_from_obs(self.last_obs, self.game_ds)
-		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
 
-
+	def get_environment(self):
+		return self.env
 
 	def executeActions(self, allActions):
 		gameds = self.game_ds
