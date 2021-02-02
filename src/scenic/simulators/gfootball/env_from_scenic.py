@@ -1,5 +1,7 @@
+import gfootball
 import scenic.syntax.translator as translator
 import scenic.core.errors as errors
+from gfootball.env import wrappers, observation_preprocessing
 
 """
 1. Read scenic and generate gfootball scenario
@@ -11,8 +13,25 @@ import scenic.core.errors as errors
 examples/gfootball/try.scenic -S -b --verbosity 2
 """
 
+"""
+Pixel representation requires rendering and is supported only for players on the left team. [currently it doesnt work]
+"""
+def create_single_football_env(scenic_file_path, verbosity=0, iprocess=0, representation=None, stacked=False,
+                               channel_dimensions=(
+                                observation_preprocessing.SMM_WIDTH,
+                                observation_preprocessing.SMM_HEIGHT)):
+    """
 
-def create_single_football_env(scenic_file_path, verbosity, iprocess=0):
+    :param scenic_file_path:
+    :param verbosity:
+    :param iprocess:
+    :param representation: String to define the representation used to build
+      the observation. It can be one of the following: 'pixels', 'pixels_gray', 'extracted', 'simple115'/'simple115v2', None -> raw
+
+    :param channel_dimensions: (width, height) tuple that represents the dimensions of
+       SMM or pixels representation.
+    :return: GFootballEnvironment
+    """
 
 
     verbosity = 0
@@ -27,6 +46,15 @@ def create_single_football_env(scenic_file_path, verbosity, iprocess=0):
     simulation = simulator.createSimulation(scene)
 
     env = simulation.get_environment()
+
+    """Apply representation/observation and stacking wrapper. Code copied from env/__init__.py/_apply_output_wrappers"""
+    if representation is not None:
+        env = gfootball.env._process_representation_wrappers(env, representation,
+                                     channel_dimensions)
+
+    if stacked:
+        env = wrappers.FrameStack(env, 4)
+
     #env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(),
     #                                                             str(iprocess)))
     return env
