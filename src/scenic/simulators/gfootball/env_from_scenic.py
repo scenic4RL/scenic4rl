@@ -12,7 +12,7 @@ examples/gfootball/try.scenic -S -b --verbosity 2
 """
 
 
-def create_single_football_env(scenic_file_path, verbosity):
+def create_single_football_env(scenic_file_path, verbosity, iprocess=0):
 
 
     verbosity = 0
