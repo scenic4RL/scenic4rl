@@ -59,14 +59,19 @@ rllib
 conda activate rllib_tf  
 
 
-Trial 2: under poetry installation of scenic, works using poetry run pip install tensorflow and ray[rllib] --- not recommended, we should poetry add all the required dependencies and then install ray[rllib]
+Trial 2: under poetry installation of scenic, works using poetry run pip install tensorflow and ray[rllib] --- not recommended, we should poetry add all the required dependencies and then install ray[rllib] : for now not done yet
+
+#TODO: in a new poetry environment try to see if the installation works by poetry install ...
 
 a) used following,  but still showing pandas was missing 
 poetry add tensorflow
 poetry add 'ray[rllib]'
 poetry add dm-tree
+poetry add pandas
 
 b) poetry run pip install tensorflow
    poetry run pip install 'ray[rllib]' 
+
+
 
 

@@ -13,9 +13,7 @@ from gfootball.env import wrappers, observation_preprocessing
 examples/gfootball/try.scenic -S -b --verbosity 2
 """
 
-"""
-Pixel representation requires rendering and is supported only for players on the left team. [currently it doesnt work]
-"""
+
 def create_single_football_env(scenic_file_path, verbosity=0, iprocess=0, representation=None, stacked=False,
                                channel_dimensions=(
                                 observation_preprocessing.SMM_WIDTH,
