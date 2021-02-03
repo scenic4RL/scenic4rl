@@ -1,0 +1,61 @@
+
+1. TF 1.15 not supported by Python 3.8
+tensorflow 1.15 files -> won't compile under Puthon 3.8 .. no such compiled wheels
+
+https://pypi.org/project/tensorflow/1.15.0/#files 
+
+python3 -m pip install tensorflow-1.15.0-cp37-cp37m-macosx_10_11_x86_64.whl 
+
+Tried:
+
+conda env with python 3.8: tf15_py38
+python3 -m pip install tensorflow-1.15.0-cp35-cp35m-macosx_10_11_x86_64.whl 
+
+2. Instaling gfootball on py 3.7 + openai baselines on tf 1.15:
+	a) conda doesnt seem to work 
+
+Installing a setup to run gfootball + training 
+
+pygame==2.0.0
+gym [also installs numpy, future, pyglet, scipy, pyglet, Pillow, cloudpickle] 
+six
+absl-py
+opencv-python==4.2.0.34 
+pip install gfootball==2.6 --no-dependencies
+
+
+trial 1: 
+used conda environment: gfootball installs correctly but isnt able to vreate environment (error instanting Player, with some error involving None/Nonetype)
+
+trial2: 
+using pyenv -> try later
+
+3. setup openai baselines with tf2: doesnt run 
+
+
+conda activate openai_tf2
+
+used pip install -e .    on branch tf2
+video test failed using pytest
+
+python -m baselines.run --alg=ppo2 --env=Humanoid-v2 --network=mlp --num_timesteps=1e3
+
+fails with: 
+
+python -m baselines.run --alg=ppo2 --env=Humanoid-v2 --network=mlp --num_timesteps=1e3
+ 
+AttributeError: 'EnvSpec' object has no attribute 'entry_point'
+
+
+4. TF 2 and RLLib on Python 3.8 - runs under conda
+
+Trial 1: using conda
+
+(python3.8.5)
+tf 2.4.1
+ray 1.1
+rllib
+
+conda activate rllib_tf  
+
+
