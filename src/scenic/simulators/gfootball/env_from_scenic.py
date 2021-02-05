@@ -43,7 +43,7 @@ def create_single_football_env(scenic_file_path, verbosity=0, iprocess=0, repres
     )
     simulation = simulator.createSimulation(scene)
 
-    env = simulation.get_environment()
+    env = simulation.get_base_gfootball_env()
 
     """Apply representation/observation and stacking wrapper. Code copied from env/__init__.py/_apply_output_wrappers"""
     if representation is not None:

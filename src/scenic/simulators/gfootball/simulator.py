@@ -10,12 +10,14 @@ from gfootball.env import config
 from gfootball.env import football_env
 from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map, \
 	update_control_index
+from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario, get_default_settings
 from scenic.syntax.veneer import verbosePrint
 from scenic.core.simulators import Simulator, Simulation
 
 import gfootball_engine as libgame
+import scenic
 
 
 class PlayerConfig:
@@ -42,40 +44,39 @@ class GFootBallSimulator(Simulator):
 		self.record = record
 
 
-	def createSimulation(self, scene, verbosity=0):
+	def createSimulation(self, scene, verbosity=0, rl_env=False, scenarios=None):
+		"""
 
-		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
+		:param scene:
+		:param verbosity:
+		:param rl_env: if True returns an gym environment (i.e., analogous to simulation object for RL)
+		:return:
+		"""
+
+
 		self.settings = scene.params.copy()
 
-		manual_control = scene.params["manual_control"]
-
-		#if manual control is enabled, the op player wont be allowed to have any scenic behaviors for now
-		if manual_control:
-			op_players = [obj for obj in scene.objects if is_op_player(obj)]
-			opp_with_bhv = [obj for obj in op_players if obj.behavior is not None]
-			assert len(opp_with_bhv)==0, "For now, if manual control is enabled, the opposition players cannot have scenice behaviors"
+		if rl_env:
+			verbosePrint(f"Creating RL Environment")
+			assert scenarios is not None, "must provide scenario"
 
 
-			#ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
-			# the opposition will be controlled by keyboard
-			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
-			self.settings["players"] = [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
+			#Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
+
+			return None
 
 		else:
-			# ALL MY_PLAYERs and OPPLAYES are controlled by `agent` i.e., the simulator expects actions for every agent
-			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
-			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
 
-			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
-		verbosePrint(f"Parameters: ")
-		for setting, option in self.settings.items():
-			verbosePrint(f'{setting}: {self.settings[setting]}')
+			verbosePrint(f"Parameters: ")
+			for setting, option in self.settings.items():
+				verbosePrint(f'{setting}: {self.settings[setting]}')
 
-		return GFootBallSimulation(scene=scene, settings = self.settings,
-								   timestep=self.timestep,
-							   render=self.render, record=self.record,
-							   verbosity=verbosity)
+			return GFootBallSimulation(scene=scene, settings = self.settings,
+									   timestep=self.timestep,
+								   render=self.render, record=self.record,
+								   verbosity=verbosity)
+
 
 
 
@@ -112,7 +113,32 @@ class GFootBallSimulation(Simulation):
 		return GameDS(my_players, op_players, ball= ball, game_state=game_state, scene = scene)
 
 
-	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0):
+
+	def configure_player_settings(self, scene):
+
+		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
+		manual_control = scene.params["manual_control"]
+
+		# if manual control is enabled, the op player wont be allowed to have any scenic behaviors for now
+		if manual_control:
+			op_players = [obj for obj in scene.objects if is_op_player(obj)]
+			opp_with_bhv = [obj for obj in op_players if obj.behavior is not None]
+			assert len(
+				opp_with_bhv) == 0, "For now, if manual control is enabled, the opposition players cannot have scenice behaviors"
+
+			# ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
+			# the opposition will be controlled by keyboard
+			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+			self.settings["players"] = [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
+
+		else:
+			# ALL MY_PLAYERs and OPPLAYES are controlled by `agent` i.e., the simulator expects actions for every agent
+			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
+
+			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
+
+	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0, scenario=None, is_gym_env=False):
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 		self.verbosity = verbosity
 		self.record = record
@@ -121,25 +147,36 @@ class GFootBallSimulation(Simulation):
 		self.settings = settings
 		self.rewards = []
 		self.last_obs = None
+		self.done = None
+		self.is_gym_env = is_gym_env
+		self.scenario = scenario
 
-		self.game_ds:GameDS = self.get_game_ds(self.scene)
-		initialize_gfootball_scenario(scene, self.game_ds)
+		if not is_gym_env: self.reset()
 
-		print("New Simulation")
+	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
+	def reset(self):
+
+		if self.is_gym_env:
+			self.scene, _ = scenic_helper.generateScene(self.scenario)
+
+		self.configure_player_settings(self.scene)
+		self.game_ds: GameDS = self.get_game_ds(self.scene)
+		initialize_gfootball_scenario(self.scene, self.game_ds)
 
 		from scenic.simulators.gfootball.utilities import env_creator
 		self.env = env_creator.create_environment(env_name=self.settings["level"], settings=self.settings)
 
-
 		self.last_obs = self.env.reset()
-
 		update_control_index(self.last_obs, gameds=self.game_ds)
 		update_objects_from_obs(self.last_obs, self.game_ds)
 
 		self.done = False
 
 
-	def get_environment(self):
+	def set_scecario(self, scenario):
+		self.scenario = scenario
+
+	def get_base_gfootball_env(self):
 		return self.env
 
 	def executeActions(self, allActions):
@@ -173,6 +210,7 @@ class GFootBallSimulation(Simulation):
 		self.rewards.append(rew)
 
 		update_objects_from_obs(self.last_obs, self.game_ds)
+
 		#self.game_ds.print_ds()
 		#input()
 
