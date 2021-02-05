@@ -44,28 +44,10 @@ class GFootBallSimulator(Simulator):
 		self.record = record
 
 
-	def createSimulation(self, scene, verbosity=0, rl_env=False, scenarios=None):
-		"""
-
-		:param scene:
-		:param verbosity:
-		:param rl_env: if True returns an gym environment (i.e., analogous to simulation object for RL)
-		:return:
-		"""
+	def createSimulation(self, scene, verbosity=0):
 
 		self.settings = scene.params.copy()
-		"""
-		if rl_env:
-			verbosePrint(f"Creating RL Environment")
-			assert scenarios is not None, "must provide scenario"
 
-
-			#Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
-
-			return None
-
-		else:
-		"""
 
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
@@ -133,7 +115,7 @@ class GFootBallSimulation(Simulation):
 			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
 	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0, scenario=None, is_gym_env=False):
-		super().__init__(scene, timestep=timestep, verbosity=verbosity)
+
 		self.verbosity = verbosity
 		self.record = record
 		self.timestep = timestep
@@ -145,13 +127,25 @@ class GFootBallSimulation(Simulation):
 		self.is_gym_env = is_gym_env
 		self.scenario = scenario
 
-		if not is_gym_env: self.reset()
+		if not is_gym_env:
+			self.reset()
+		else:
+			self.reset() #to make sure the parent constructor doesnt throw error, we do one dummy reset even when it is a gym environment to initialize correctly
+
+		super().__init__(self.scene, timestep=timestep, verbosity=verbosity)
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
 	def reset(self):
 
 		if self.is_gym_env:
+			assert self.scenario is not None, "must provide scenario"
 			self.scene, _ = scenic_helper.generateScene(self.scenario)
+			self.settings = self.scene.params.copy()
+
+		"""To make sure certain attributes are populated correctly, as we call the parent constructor at the end of this classes constructor"""
+		self.objects = list(self.scene.objects)
+		self.agents = list(obj for obj in self.scene.objects if obj.behavior is not None)
+		""""""
 
 		self.configure_player_settings(self.scene)
 		self.game_ds: GameDS = self.get_game_ds(self.scene)

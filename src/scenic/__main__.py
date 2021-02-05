@@ -142,34 +142,34 @@ def runSimulation(scene):
         print(f'  Ran simulation in {totalTime:.4g} seconds.')
     return result is not None
 
-def runRLTraining(scene):
+def runRLTraining():
     startTime = time.time()
 
 
     if args.verbosity >= 1:
         print('  Beginning RL Training Pipeline...')
 
-    simulator = errors.callBeginningScenicTrace(scenario.getSimulator)
+    #simulator = errors.callBeginningScenicTrace(scenario.getSimulator)
     try:
         from scenic.simulators.gfootball.rl_trainer import basic_training
-        rl_env = simulator.createSimulation(scene, verbosity=args.verbosity, rl_env=True, scenarios=[scenario])
-        print(rl_env)
-        basic_training(rl_env)
+        #rl_env = simulator.createSimulation(scene, verbosity=args.verbosity, rl_env=True, scenarios=[scenario])
+        #print(rl_env)
+        basic_training(scenario)
 
     except SimulationCreationError as e:
         if args.verbosity >= 1:
             print(f'  Failed to create simulation: {e}')
         return False
-    except Exception as e:
-        if args.verbosity >= 1:
-            print(f'  Failed to run rl training: {e}')
-        return False
+    #except Exception as e:
+    #    if args.verbosity >= 1:
+    #        print(f'  Failed to run rl training: {e}')
+    #    return False
 
     if args.verbosity >= 1:
         totalTime = time.time() - startTime
         print(f'  Ran RL Training in {totalTime:.4g} seconds.')
 
-    return result is not None
+    return True
 
 if args.gather_stats is None:   # Generate scenes interactively until killed
     import matplotlib.pyplot as plt
@@ -177,9 +177,9 @@ if args.gather_stats is None:   # Generate scenes interactively until killed
 
     if args.rl:
         assert not args.simulate, "Can't run standard scenic simulation while doing RL training"
-        scene, _ = generateScene()
-        success = runRLTraining(scene)
         print("Run RL Training")
+        success = runRLTraining()
+
 
     else:
         while True:

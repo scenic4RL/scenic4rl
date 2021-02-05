@@ -1,4 +1,4 @@
-from datetime import time
+import time
 import scenic.core.errors as errors
 
 """Copied from __main__.py"""
