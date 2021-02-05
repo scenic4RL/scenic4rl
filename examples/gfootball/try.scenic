@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 
-param game_duration = 100
+param game_duration = 1000
 param deterministic = False
 
 
