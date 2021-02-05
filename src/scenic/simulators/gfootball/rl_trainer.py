@@ -1,5 +1,5 @@
 
 
 
-def basic_training(rl_env):
+def basic_training():
     pass

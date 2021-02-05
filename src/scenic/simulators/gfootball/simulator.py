@@ -53,9 +53,8 @@ class GFootBallSimulator(Simulator):
 		:return:
 		"""
 
-
 		self.settings = scene.params.copy()
-
+		"""
 		if rl_env:
 			verbosePrint(f"Creating RL Environment")
 			assert scenarios is not None, "must provide scenario"
@@ -66,21 +65,16 @@ class GFootBallSimulator(Simulator):
 			return None
 
 		else:
+		"""
 
+		verbosePrint(f"Parameters: ")
+		for setting, option in self.settings.items():
+			verbosePrint(f'{setting}: {self.settings[setting]}')
 
-			verbosePrint(f"Parameters: ")
-			for setting, option in self.settings.items():
-				verbosePrint(f'{setting}: {self.settings[setting]}')
-
-			return GFootBallSimulation(scene=scene, settings = self.settings,
-									   timestep=self.timestep,
-								   render=self.render, record=self.record,
-								   verbosity=verbosity)
-
-
-
-
-
+		return GFootBallSimulation(scene=scene, settings = self.settings,
+								   timestep=self.timestep,
+							   render=self.render, record=self.record,
+							   verbosity=verbosity)
 
 class GFootBallSimulation(Simulation):
 
