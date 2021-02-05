@@ -39,6 +39,11 @@ simOpts.add_argument('--count', help='number of successful simulations to run (d
 simOpts.add_argument('--max-sims-per-scene', type=int, default=1, metavar='N',
                      help='max # of rejected simulations before sampling a new scene (default 1)')
 
+# RL Simulation options
+rlOpts = parser.add_argument_group('RL Algorithm options')
+rlOpts.add_argument('--rl', action='store_true',
+                         help='Run RL Training')
+
 # Interactive rendering options
 intOptions = parser.add_argument_group('static scene diagramming options')
 intOptions.add_argument('-d', '--delay', type=float,
@@ -137,26 +142,64 @@ def runSimulation(scene):
         print(f'  Ran simulation in {totalTime:.4g} seconds.')
     return result is not None
 
+def runRLTraining(scene):
+    startTime = time.time()
 
+
+    if args.verbosity >= 1:
+        print('  Beginning RL Training Pipeline...')
+
+    simulator = errors.callBeginningScenicTrace(scenario.getSimulator)
+    try:
+        from scenic.simulators.gfootball.rl_trainer import basic_training
+        rl_env = simulator.createSimulation(scene, verbosity=args.verbosity, rl_env=True, scenarios=[scenario])
+        print(rl_env)
+        basic_training(rl_env)
+
+    except SimulationCreationError as e:
+        if args.verbosity >= 1:
+            print(f'  Failed to create simulation: {e}')
+        return False
+    except Exception as e:
+        if args.verbosity >= 1:
+            print(f'  Failed to run rl training: {e}')
+        return False
+
+    if args.verbosity >= 1:
+        totalTime = time.time() - startTime
+        print(f'  Ran RL Training in {totalTime:.4g} seconds.')
+
+    return result is not None
 
 if args.gather_stats is None:   # Generate scenes interactively until killed
     import matplotlib.pyplot as plt
     successCount = 0
-    while True:
+
+    if args.rl:
+        assert not args.simulate, "Can't run standard scenic simulation while doing RL training"
         scene, _ = generateScene()
-        if args.simulate:
-            success = runSimulation(scene)
-            if success:
-                successCount += 1
-                if 0 < args.count <= successCount:
-                    break
-        else:
-            if delay is None:
-                scene.show(zoom=args.zoom)
+        success = runRLTraining(scene)
+        print("Run RL Training")
+
+    else:
+        while True:
+            scene, _ = generateScene()
+
+            if args.simulate:
+                success = runSimulation(scene)
+                if success:
+                    successCount += 1
+                    if 0 < args.count <= successCount:
+                        break
+
             else:
-                scene.show(zoom=args.zoom, block=False)
-                plt.pause(delay)
-                plt.clf()
+                if delay is None:
+                    scene.show(zoom=args.zoom)
+                else:
+                    scene.show(zoom=args.zoom, block=False)
+                    plt.pause(delay)
+                    plt.clf()
+
 else:   # Gather statistics over the specified number of scenes
     its = []
     startTime = time.time()
