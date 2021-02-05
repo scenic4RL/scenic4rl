@@ -1,6 +1,6 @@
 import gym
 from scenic.simulators.gfootball.simulator import GFootBallSimulation
-
+from gfootball.env import football_action_set
 
 #Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
 from scenic.simulators.gfootball.utilities import scenic_helper
@@ -8,16 +8,22 @@ from scenic.simulators.gfootball.utilities import scenic_helper
 
 def basic_training(scenario):
     #settings = scenario.settings
-    """
-    rl_env = GFootBallSimulation(scene=None, settings = None,
-                                 scenario=scenario, is_gym_env=True,
-							   render=False, verbosity=1)
-    """
-    rl_env = GFScenicEnv()
+
+    rl_env = GFScenicEnv(initial_scenario = scenario)
+    run_built_in_ai_game_with_rl_env(rl_env)
 
 
 
-class GFScenicEnv(gym.env):
+def run_built_in_ai_game_with_rl_env(rl_env):
+    rl_env.render()
+    obs = rl_env.reset()
+
+    while True:
+        o, r, d, _ = rl_env.step([football_action_set.action_shot]*6)
+        if d: break
+
+
+class GFScenicEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, initial_scenario):
@@ -25,31 +31,43 @@ class GFScenicEnv(gym.env):
 
         #self.initial_scenario = initial_scenario
         self.scenario = initial_scenario
-
+        self.create_new_simulation = True #if set, initialize_new_simulation, will create a new simulation object, otherwise it will just return
+        self.initialize_new_simulation()
 
         self.gf_gym_env = self.simulation.get_underlying_gym_env()
         # Define action and observation space
         self.action_space = self.gf_gym_env.action_space
         self.observation_space = self.gf_gym_env.observation_space
 
+    def initialize_new_simulation(self):
+
+        if not self.create_new_simulation:
+            return
+        # generate a scene from the current scenario
+        self.scene, _ = scenic_helper.generateScene(self.scenario)
+
+        # initialize a new simulation object
+        self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
+                                              render=False, verbosity=1)
+
+        self.create_new_simulation = False
+
     def reset(self):
         # Reset the state of the environment to an initial state
 
-        #generate a scene from the current scenario
-        self.scene, _ = scenic_helper.generateScene(self.scenario)
-
-        #initialize a new simulation object
-        self.simulation = GFootBallSimulation(scene=self.scene, settings=None, for_gym_env=True,
-                                              render=False, verbosity=1)
+        self.initialize_new_simulation()
+        return self.simulation.reset()
 
     def set_scecario(self, scenario):
         self.scenario = scenario
+        self.create_new_simulation = True
 
     def step(self, action):
         # Execute one time step within the environment
-        return self.gf_gym_env.step(action)
+        return self.simulation.step(action)
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
-        self.gf_gym_env.render()
+        #For weird pygame rendering issue, rendering must be called in utilities/env_creator/create_environment
+        return None
 

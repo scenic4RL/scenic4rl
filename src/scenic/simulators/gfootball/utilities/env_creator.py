@@ -18,7 +18,6 @@ def create_environment(env_name='',
                        stacked=False,
                        representation=None,
                        rewards='scoring',
-                       render=False,
                        number_of_left_players_agent_controls=1,
                        number_of_right_players_agent_controls=0,
                        channel_dimensions=(
@@ -102,6 +101,8 @@ def create_environment(env_name='',
       Google Research Football environment.
     """
     assert env_name
+
+    render = settings["render"]
 
     dump_frequency = settings["dump_frequency"]
     scenario_config = config.Config({'level': env_name}).ScenarioConfig()

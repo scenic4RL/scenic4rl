@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
+from gfootball.env import football_action_set
 from typing import Dict, List
 
 import gym
@@ -50,7 +50,6 @@ class GFootBallSimulator(Simulator):
 
 		self.settings = scene.params.copy()
 
-
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
 			verbosePrint(f'{setting}: {self.settings[setting]}')
@@ -63,7 +62,7 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
+	def __init__(self, scene, settings, timestep=None, render=None, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
 
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
@@ -71,30 +70,37 @@ class GFootBallSimulation(Simulation):
 		self.verbosity = verbosity
 		self.record = record
 		self.timestep = timestep
-		self.settings = settings
+
 		self.rewards = []
 		self.last_obs = None
 		self.done = None
 		self.for_gym_env = for_gym_env
 
 		self.settings = self.scene.params.copy()
+		self.settings.update(settings)
+		#MUST BE DONE TO CONFIGURE PLAYER SETTINGS FROM SCENIC PARAMETERS, FOR RL TRAINING, UPDATED PLAYER SETTINGS CAN BE PROVIDED via gf_env_settings
+		self.configure_player_settings(self.scene)
 
-		if for_gym_env:
-			self.gf_env_settings = gf_env_settings
-		else:
-			self.gf_env_settings = self.settings
+		self.gf_env_settings = self.settings.copy()
 
+		if gf_env_settings is not None:
+			self.gf_env_settings.update(gf_env_settings)
+
+		#self.render = self.gf_env_settings["render"]
 
 		self.env = self.create_gfootball_environment()
 
 		if not for_gym_env:
 			self.reset()
 
+		#if self.gf_env_settings["render"] and not for_gym_env: self.env.render()
+
+
 
 	def create_gfootball_environment(self):
 		from scenic.simulators.gfootball.utilities import env_creator
 
-		self.configure_player_settings(self.scene)
+
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(self.scene, self.game_ds)
 
@@ -173,7 +179,9 @@ class GFootBallSimulation(Simulation):
 
 	def executeActions(self, allActions):
 		gameds = self.game_ds
-		self.action = [-1] * gameds.get_num_controlled()
+
+		#when no behavior is specified, built in AI takes charge
+		self.action = [football_action_set.action_builtin_ai] * gameds.get_num_controlled()
 
 
 		for agent, act in allActions.items():
@@ -182,23 +190,22 @@ class GFootBallSimulation(Simulation):
 
 
 
-	#askEddie: How to Report end of an episode (i.e., simulation????)
-	def step(self):
+	def step(self, action=None):
 		#input()
 		#print("in step")
 		# Run simulation for one timestep
 		if self.done:
-			#self.last_obs = self.env.reset()
-			#self.done = False
 			print(f"Reward Sum: {sum(self.rewards)}")
 			return sum(self.rewards)
-			#self.endSimulation()
-			#signal scenic backend to stop simulation
 
-			#raise Exception
+			#signal scenic backend to stop simulation
 			#askEddie: Signal end of simulation
 
-		self.last_obs, rew, self.done, info = self.env.step(self.action)
+		if self.for_gym_env:
+			#TODO: For now pass whatever the RL training is passing, however when training with scenarios having agents using scenic behavior it may needed to be changed
+			self.last_obs, rew, self.done, info = self.env.step(action)
+		else:
+			self.last_obs, rew, self.done, info = self.env.step(self.action)
 		self.rewards.append(rew)
 
 		update_objects_from_obs(self.last_obs, self.game_ds)

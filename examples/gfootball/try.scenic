@@ -4,6 +4,7 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 param game_duration = 1000
 param deterministic = False
+param render = True
 
 
 #how to specify that if there is one/ more than one player on one side, there must be one GK??
