@@ -3,6 +3,8 @@ from __future__ import division
 from __future__ import print_function
 
 from typing import Dict, List
+
+import gym
 import pygame
 import math
 import gfootball
@@ -58,13 +60,92 @@ class GFootBallSimulator(Simulator):
 							   render=self.render, record=self.record,
 							   verbosity=verbosity)
 
-class GFootBallSimulation(Simulation):
+
+class GFootBallSimulation(Simulation, gym.Env):
+
+	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0,
+				 scenario=None, is_gym_env=False, gf_env_settings={}):
+
+
+		if is_gym_env:
+			# To make sure the parent constructor doesn't complain populate self.scene with a dummy scene from the scenario
+			self.scene = scenic_helper.generateScene(self.scenario)
+		else:
+			self.scene = scene
+
+		super().__init__(self.scene, timestep=timestep, verbosity=verbosity)
+
+		self.verbosity = verbosity
+		self.record = record
+		self.timestep = timestep
+
+		self.settings = settings
+		self.rewards = []
+		self.last_obs = None
+		self.done = None
+		self.is_gym_env = is_gym_env
+		self.scenario = scenario
+
+		if is_gym_env:
+			self.gf_env_settings = gf_env_settings
+		else:
+			self.gf_env_settings = self.settings
+
+
+		self.env = self.create_gfootball_environment()
+
+		#Define action and observation space
+		self.observation_space = self.env.observation_space
+		self.action_space = self.env.action_space
+
+		if not is_gym_env:
+			self.reset()
+		else:
+			self.reset() #to make sure the parent constructor doesnt throw error, we do one extra-dummy reset to initialize self.objects and self.agents correctly correctly
+
+
+	"""Should be called each time a new scene is generated"""
+	def create_gfootball_environment(self):
+		from scenic.simulators.gfootball.utilities import env_creator
+
+		"""To proper operation of scenic"""
+		self.objects = list(self.scene.objects)
+		self.agents = list(obj for obj in self.scene.objects if obj.behavior is not None)
+
+		self.configure_player_settings(self.scene)
+		env = env_creator.create_environment(env_name=self.gf_env_settings["level"], settings=self.gf_env_settings)
+		return env
+
+	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
+	def reset(self):
+
+		if self.is_gym_env:
+			assert self.scenario is not None, "must provide scenario"
+			self.scene, _ = scenic_helper.generateScene(self.scenario)
+			self.settings = self.scene.params.copy()
+
+
+
+		"""Each Time"""
+		self.configure_player_settings(self.scene)
+		self.game_ds: GameDS = self.get_game_ds(self.scene)
+		initialize_gfootball_scenario(self.scene, self.game_ds)
+
+
+
+		self.last_obs = self.env.reset()
+		update_control_index(self.last_obs, gameds=self.game_ds)
+		update_objects_from_obs(self.last_obs, self.game_ds)
+
+		self.done = False
+
+		return self.last_obs
 
 	"""
-	def initialize_multiplayer_ds(self, obs):
-		self.multiplayer = True
-		self.num_controlled = len(obs)
-	"""
+		def initialize_multiplayer_ds(self, obs):
+			self.multiplayer = True
+			self.num_controlled = len(obs)
+		"""
 
 	def get_game_ds(self, scene):
 
@@ -73,7 +154,7 @@ class GFootBallSimulation(Simulation):
 		op_players = []
 
 		"""Extracts Ball and Players"""
-		#from scenic.simulators.gfootball import model
+		# from scenic.simulators.gfootball import model
 		from scenic.simulators.gfootball.interface import is_player, is_ball, is_op_player, is_my_player
 		for obj in self.objects:
 			if is_ball(obj):
@@ -85,10 +166,7 @@ class GFootBallSimulation(Simulation):
 			elif is_op_player(obj):
 				op_players.append(obj)
 
-
-		return GameDS(my_players, op_players, ball= ball, game_state=game_state, scene = scene)
-
-
+		return GameDS(my_players, op_players, ball=ball, game_state=game_state, scene=scene)
 
 	def configure_player_settings(self, scene):
 
@@ -113,53 +191,6 @@ class GFootBallSimulation(Simulation):
 			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
 
 			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
-
-	def __init__(self, scene, settings, timestep=None, render=True, record=False, verbosity=0, scenario=None, is_gym_env=False):
-
-		self.verbosity = verbosity
-		self.record = record
-		self.timestep = timestep
-		self.scene = scene
-		self.settings = settings
-		self.rewards = []
-		self.last_obs = None
-		self.done = None
-		self.is_gym_env = is_gym_env
-		self.scenario = scenario
-
-		if not is_gym_env:
-			self.reset()
-		else:
-			self.reset() #to make sure the parent constructor doesnt throw error, we do one dummy reset even when it is a gym environment to initialize correctly
-
-		super().__init__(self.scene, timestep=timestep, verbosity=verbosity)
-
-	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
-	def reset(self):
-
-		if self.is_gym_env:
-			assert self.scenario is not None, "must provide scenario"
-			self.scene, _ = scenic_helper.generateScene(self.scenario)
-			self.settings = self.scene.params.copy()
-
-		"""To make sure certain attributes are populated correctly, as we call the parent constructor at the end of this classes constructor"""
-		self.objects = list(self.scene.objects)
-		self.agents = list(obj for obj in self.scene.objects if obj.behavior is not None)
-		""""""
-
-		self.configure_player_settings(self.scene)
-		self.game_ds: GameDS = self.get_game_ds(self.scene)
-		initialize_gfootball_scenario(self.scene, self.game_ds)
-
-		from scenic.simulators.gfootball.utilities import env_creator
-		self.env = env_creator.create_environment(env_name=self.settings["level"], settings=self.settings)
-
-		self.last_obs = self.env.reset()
-		update_control_index(self.last_obs, gameds=self.game_ds)
-		update_objects_from_obs(self.last_obs, self.game_ds)
-
-		self.done = False
-
 
 	def set_scecario(self, scenario):
 		self.scenario = scenario
@@ -194,10 +225,12 @@ class GFootBallSimulation(Simulation):
 			#raise Exception
 			#askEddie: Signal end of simulation
 
-		self.last_obs, rew, self.done, _ = self.env.step(self.action)
+		self.last_obs, rew, self.done, info = self.env.step(self.action)
 		self.rewards.append(rew)
 
 		update_objects_from_obs(self.last_obs, self.game_ds)
+
+		return self.last_obs, rew, self.done, info
 
 		#self.game_ds.print_ds()
 		#input()
