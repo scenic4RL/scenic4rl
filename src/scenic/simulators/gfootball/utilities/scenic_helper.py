@@ -1,6 +1,7 @@
 from datetime import time
 import scenic.core.errors as errors
 
+"""Copied from __main__.py"""
 def generateScene(scenario, verbosity=0, show_params=False):
     startTime = time.time()
     scene, iterations = errors.callBeginningScenicTrace(
