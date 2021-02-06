@@ -17,7 +17,8 @@ def basic_training(scenario):
     gf_env_settings = {
         "stacked": True,
         "rewards": 'scoring,checkpoints',
-        "representation" : 'extracted'
+        "representation" : 'extracted',
+        "players" : [f"agent:left_players=1"]
     }
 
     rl_env = GFScenicEnv(initial_scenario = scenario, gf_env_settings=gf_env_settings)
@@ -29,7 +30,7 @@ def run_built_in_ai_game_with_rl_env(rl_env):
     obs = rl_env.reset()
 
     while True:
-        o, r, d, _ = rl_env.step([football_action_set.action_shot]*6)
+        o, r, d, _ = rl_env.step([football_action_set.action_shot]) #football_action_set.action_builtin_ai
         if d: break
 
 

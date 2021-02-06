@@ -193,7 +193,7 @@ class GFootBallSimulation(Simulation):
 
 	def step(self, action=None):
 
-		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before anda fter calling this function
+		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before and after calling this function
 		#input()
 		#print("in step")
 		# Run simulation for one timestep
