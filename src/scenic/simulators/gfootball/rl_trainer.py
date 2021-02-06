@@ -1,3 +1,4 @@
+import gfootball
 import gym
 from scenic.simulators.gfootball.simulator import GFootBallSimulation
 from gfootball.env import football_action_set
@@ -9,9 +10,18 @@ from scenic.simulators.gfootball.utilities import scenic_helper
 def basic_training(scenario):
     #settings = scenario.settings
 
-    rl_env = GFScenicEnv(initial_scenario = scenario)
-    run_built_in_ai_game_with_rl_env(rl_env)
+    #env = gfootball.env.create_environment(env_name="11_vs_11_stochastic", stacked=True, representation='extracted', rewards="scoring,checkpoints")
+    #run_built_in_ai_game_with_rl_env(env)
 
+
+    gf_env_settings = {
+        "stacked": True,
+        "rewards": 'scoring,checkpoints',
+        "representation" : 'extracted'
+    }
+
+    rl_env = GFScenicEnv(initial_scenario = scenario, gf_env_settings=gf_env_settings)
+    run_built_in_ai_game_with_rl_env(rl_env)
 
 
 def run_built_in_ai_game_with_rl_env(rl_env):
@@ -26,8 +36,10 @@ def run_built_in_ai_game_with_rl_env(rl_env):
 class GFScenicEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, initial_scenario):
+    def __init__(self, initial_scenario, gf_env_settings = {}):
         super(GFScenicEnv, self).__init__()
+
+        self.gf_env_settings = gf_env_settings
 
         #self.initial_scenario = initial_scenario
         self.scenario = initial_scenario
@@ -48,7 +60,7 @@ class GFScenicEnv(gym.Env):
 
         # initialize a new simulation object
         self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
-                                              render=False, verbosity=1)
+                                              render=False, verbosity=1, gf_env_settings=self.gf_env_settings)
 
         self.create_new_simulation = False
 
@@ -71,3 +83,14 @@ class GFScenicEnv(gym.Env):
         #For weird pygame rendering issue, rendering must be called in utilities/env_creator/create_environment
         return None
 
+
+
+
+def test_gfootball_env_wrapper_code():
+
+
+    env = gfootball.env.create_environment(env="11_vs_11_stochastic", stacked=True, representation='extracted')
+
+
+if __name__=="__main__":
+    test_gfootball_env_wrapper_code()

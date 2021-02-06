@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import gfootball
+import gym
 import pygame
 from gfootball.env import config
 from gfootball.env import football_env
@@ -13,8 +14,21 @@ from gfootball.env import wrappers
 Modified from gfootball/env/__init__.py/create_environment
 """
 
+"""
+A wrapper which saves the raw state for scenic, the simulator can access `latest_raw_observation` field to read the latest raw observation after reset or step
+"""
+class ScenicWrapper(gym.ObservationWrapper):
+
+    def __init__(self, env, simulation_obj):
+        gym.ObservationWrapper.__init__(self, env)
+        self.simulation_obj = simulation_obj
+
+    def observation(self, observation):
+        self.latest_raw_observation = observation
+        return observation
 
 def create_environment(env_name='',
+                       simulation_obj=None,
                        stacked=False,
                        representation=None,
                        rewards='scoring',
@@ -103,6 +117,9 @@ def create_environment(env_name='',
     assert env_name
 
     render = settings["render"]
+    if "representation" in settings:
+        representation = settings["representation"]
+    stacked = settings["stacked"]
 
     dump_frequency = settings["dump_frequency"]
     scenario_config = config.Config({'level': env_name}).ScenarioConfig()
@@ -141,6 +158,9 @@ def create_environment(env_name='',
     c = config.Config(config_values)
 
     env = football_env.FootballEnv(c)
+
+    env = ScenicWrapper(env, simulation_obj)
+    scenic_wrapper = env
     """
     if multiagent_to_singleagent:
         env = wrappers.MultiAgentToSingleAgent(
@@ -166,4 +186,4 @@ def create_environment(env_name='',
         env.render()
         pygame.display.set_mode((1, 1), pygame.NOFRAME)
 
-    return env
+    return env, scenic_wrapper

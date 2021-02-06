@@ -72,7 +72,7 @@ class GFootBallSimulation(Simulation):
 		self.timestep = timestep
 
 		self.rewards = []
-		self.last_obs = None
+		self.last_raw_obs = None
 		self.done = None
 		self.for_gym_env = for_gym_env
 
@@ -104,19 +104,20 @@ class GFootBallSimulation(Simulation):
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(self.scene, self.game_ds)
 
-		env = env_creator.create_environment(env_name=self.gf_env_settings["level"], settings=self.gf_env_settings)
+		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings)
 		return env
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
 	def reset(self):
 
-		self.last_obs = self.env.reset()
+		obs = self.env.reset()
+		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
 
-		update_control_index(self.last_obs, gameds=self.game_ds)
-		update_objects_from_obs(self.last_obs, self.game_ds)
+		update_control_index(self.last_raw_obs, gameds=self.game_ds)
+		update_objects_from_obs(self.last_raw_obs, self.game_ds)
 		self.done = False
 
-		return self.last_obs
+		return obs
 
 	"""
 		def initialize_multiplayer_ds(self, obs):
@@ -191,6 +192,8 @@ class GFootBallSimulation(Simulation):
 
 
 	def step(self, action=None):
+
+		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before anda fter calling this function
 		#input()
 		#print("in step")
 		# Run simulation for one timestep
@@ -203,15 +206,20 @@ class GFootBallSimulation(Simulation):
 
 		if self.for_gym_env:
 			#TODO: For now pass whatever the RL training is passing, however when training with scenarios having agents using scenic behavior it may needed to be changed
-			self.last_obs, rew, self.done, info = self.env.step(action)
+			action_to_take = action
 		else:
-			self.last_obs, rew, self.done, info = self.env.step(self.action)
+			action_to_take = self.action
+
+
+
+		obs, rew, self.done, info = self.env.step(action_to_take)
+		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
 		self.rewards.append(rew)
 
-		update_objects_from_obs(self.last_obs, self.game_ds)
+		update_objects_from_obs(self.last_raw_obs, self.game_ds)
 
 		if self.for_gym_env:
-			return self.last_obs, rew, self.done, info
+			return obs, rew, self.done, info
 
 		else:
 			return None
