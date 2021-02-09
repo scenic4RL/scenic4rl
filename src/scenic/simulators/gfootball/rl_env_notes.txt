@@ -1,0 +1,90 @@
+1. Create RL environment from Simulator Object?
+
+        --- implement gym.Env class
+        --- implement following functions:
+            --- init: Define action and observation space, gym.spaces objects
+            --- reset: returns first observation
+            --- step: returns obs, reward, done, info
+            --- render:
+        ---Example from https://towardsdatascience.com/creating-a-custom-openai-gym-environment-for-stock-trading-be532be3910e in bottom
+
+2. Snippets from MultiAgent RlLib:    https://github.com/google-research/football/blob/master/gfootball/examples/run_multiagent_rllib.py
+
+    ---
+    from ray.tune.registry import register_env
+    register_env('gfootball', lambda _: RllibGFootball(args.num_agents)) #name=='gfootball', ENv class: RllibGFootball
+
+3. Snippet from  run_ppo2 https://github.com/google-research/football/blob/master/gfootball/examples/run_ppo2.py
+    uses "environment" object created by gfootball.create_environment
+
+
+4. Scenic Simulation
+
+        simulator.simulate  -> simulation.run https://github.com/BerkeleyLearnVerify/Scenic/blob/2.x/src/scenic/core/simulators.py
+            # Runs Simulation
+            # Throws a RejectSimulationException if a requirement is violated.
+
+           --- what is a monitor ? Line 116
+
+           Steps in simulation.run
+                1. initialize dynamic scenario
+                2. Runs simulation Loop
+                    - compose blocks of compositional scenarios
+                    - CHECK if requirement failed
+                    - run Monitors ???
+                    - compute actions of all objects
+                    - Execute Actions of all objects
+                    - Runs the simulation for one time step + and read its state back into Scenic
+
+        Draft plan: Extend simulation class
+5. Draft RL env design
+
+   init ->
+        -> Also call base gym environment init ???
+   reset->
+        1. implement a new function reset
+        2. keep first reset in init ??
+
+   step
+        1. return o, r, d, info  -> Based on single agent training/ multiple agent training:
+        2. Implement Some of the base simulation class activites too ??? compose scene, check violation, execute actions of agents ?????
+
+   render -> delegate to original environment
+
+   --> different simulation classes 1)for RL 2)for Scenic simulation ??
+
+6. About wrappers
+        1. Using convert functions
+            some wrappers wrappers have convert functions, but Frame observations do not
+            see https://github.com/google-research/football/blob/master/gfootball/env/wrappers.py
+            line 116,
+        2. Find some way to access the unwrapped environment/ Raw observation for Scenic
+
+
+#example from: https://towardsdatascience.com/creating-a-custom-openai-gym-environment-for-stock-trading-be532be3910e
+import gym
+from gym import spaces
+
+class CustomEnv(gym.Env):
+  """Custom Environment that follows gym interface"""
+  metadata = {'render.modes': ['human']}
+
+  def __init__(self, arg1, arg2, ...):
+    super(CustomEnv, self).__init__()
+    # Define action and observation space
+    # They must be gym.spaces objects
+    # Example when using discrete actions:
+    self.action_space = spaces.Discrete(N_DISCRETE_ACTIONS)
+    # Example for using image as input:
+    self.observation_space = spaces.Box(low=0, high=255, shape=
+                    (HEIGHT, WIDTH, N_CHANNELS), dtype=np.uint8)
+
+  def step(self, action):
+    # Execute one time step within the environment
+    ...
+  def reset(self):
+    # Reset the state of the environment to an initial state
+    ...
+  def render(self, mode='human', close=False):
+    # Render the environment to the screen
+    ...

@@ -6,7 +6,7 @@ from scenic.core.regions import regionFromShapelyObject
 import math
 
 from scenic.simulators.gfootball.utilities import *
-#TODO combine mumtiple behavior
+
 
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
@@ -72,6 +72,11 @@ behavior BuiltinAIBot():
     while True:
         take BuiltinAIAction()
 
+
+behavior RunRight():
+    #is_running = ActionCode.sticky_direction(self.sticky_actions)
+    while True:
+        take SetDirection(ActionCode.right)
 
 behavior GreedyPlay():
     while True:

@@ -2,7 +2,7 @@
 import math
 
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
-simulator GFootBallSimulator()
+simulator GFootBallSimulator(timestep=0.1) #1 step is 100ms
 
 #Constants
 pos_inf = 500
@@ -30,17 +30,13 @@ param manual_control = False
 param action_set = 'v2'   # 'v2', 'default'
 param custom_display_stats = None
 param display_game_stats = True
-param dump_full_episodes = False
-param dump_scores = False
 param players =  ['agent:left_players=1', 'keyboard:right_players=1']
 #param level =  '11_vs_11_stochastic'
 param physics_steps_per_frame =  10
+param render = True
 param render_resolution_x = 1280
 param real_time =  True
-param tracesdir = 'dumps'
-param video_format =  'avi'
-param video_quality_level= 0
-param write_video = False
+
 
 param level = "dynamic"
 #GAME PARAMETERS
@@ -52,6 +48,23 @@ param end_episode_on_out_of_play =  False
 param end_episode_on_possession_change = False
 param right_team_difficulty  = 0.0
 param left_team_difficulty = 0.0
+
+#Observation/RL Env Parameters
+param stacked = False
+param rewards = "scoring,checkpoints" # ['scoring', 'scoring,checkpoints']
+
+#Logging parameters
+param tracesdir = 'dumps'
+param logdir = 'dumps'
+param video_format =  'avi'
+param video_quality_level= 0
+param write_video = False
+param write_goal_dumps = False #'If True, sampled traces after scoring are dumped.'
+param write_full_episode_dumps = False #'If True, trace is dumped after every episode.'
+param dump_full_episodes = False
+param dump_scores = False
+param dump_frequency = 0 # In runPPO2 dump_frequency = 50 was used
+
 
 # Set up geometric attributes
 field_width  = 200
@@ -157,11 +170,11 @@ class Player:
     #direction_vec[dynamic]: Vector
 
     tired_factor[dynamic]: (0,1)#float
-    yellow_cards[dynamic]: float
+    yellow_cards[dynamic]: int
     red_card[dynamic]: False
     role[dynamic]: Uniform("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
 
-    controlled[dynamic]: False #IS this the player controlled by RL/ User Logic
+    #controlled[dynamic]: False #IS this the player controlled by RL/ User Logic
     #designated: False #dont need for single-agent, hence
 
     #in this link, it says action is a 10 element array, but actually it returns a 13 element array

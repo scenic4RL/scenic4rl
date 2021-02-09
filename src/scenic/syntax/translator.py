@@ -1871,7 +1871,7 @@ class ASTSurgeon(NodeTransformer):
 					if not isinstance(sl, Index) and not isinstance(sl, ast.Name):
 						self.parseError(sl, 'malformed attributes for property default')
 
-					if isinstance(sl, Index):
+					if isinstance(sl, Index): #We donot need to do this for ast.Name objects
 						sl = sl.value
 
 					if isinstance(sl, Name):

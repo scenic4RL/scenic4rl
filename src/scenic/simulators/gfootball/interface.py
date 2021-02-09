@@ -177,10 +177,16 @@ def update_ball(ball, obs):
 
 
 def update_game_state(game_state, obs):
-    game_state.frame = obs["frame"]
+
+    game_state.frame = None
+    if "frame" in obs:
+        game_state.frame = obs["frame"]
+
     game_state.score = obs["score"]
     game_state.steps_left = obs["steps_left"]
     game_state.game_mode = obs["game_mode"]
+
+    #print(game_state.steps_left, game_state.score)
 
 
 def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
@@ -256,7 +262,7 @@ def update_objects_from_obs_prev(last_obs, objects, game_state, my_player_to_idx
             obj.tired_factor = info[idx]["tired_factor"]
             obj.red_card = info[idx]["red_card"]
             obj.yellow_cards = info[idx]["yellow_cards"]
-            obj.controlled = info[idx]["controlled"]
+            #obj.controlled = info[idx]["controlled"]
             obj.owns_ball = info[idx]["owns_ball"]
 
             obj.velocity, obj.speed = get_velocity_and_speed(obj.position, obj.position_prev)
@@ -317,16 +323,16 @@ def extract_info_from_single_obs_prev(obs):
             info_map['yellow_cards'] = int(yellows)
             info_map['red_card'] = red_card
 
-            info_map["controlled"] = (obs["active"] == idx)
+            #info_map["controlled"] = (obs["active"] == idx)
 
             info_map["owns_ball"] = False
             ball_own_team_code = 0 if tp == "left_team" else 1
             if ball_owned_team == ball_own_team_code and ball_owned_player == idx:
                 info_map["owns_ball"] = True
 
-            info_map["sticky_actions"] = None
-            if info_map["controlled"]:
-                info_map["sticky_actions"] = list(obs["sticky_actions"])
+            #info_map["sticky_actions"] = None
+            #if info_map["controlled"]:
+            info_map["sticky_actions"] = list(obs["sticky_actions"])
 
     return my_player_idx_info_map, op_player_idx_info_map
 
