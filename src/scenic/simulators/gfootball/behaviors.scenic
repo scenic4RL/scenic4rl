@@ -20,6 +20,54 @@ def set_dir_if_not(action, sticky_actions):
         return NoAction()
 
 
+behavior IdleBehavior():
+    while True:
+        take NoAction()
+
+# TODO: wait does not work
+behavior RunInCircle():
+    while True:
+        for i in range(1,9):
+            do moveInDirection(i) for 2 seconds
+
+behavior MoveInDirection(direction_code):
+    i = 0
+    while True:
+        if (i == 1):
+            take SetDirection(5)
+        elif (i == 6):
+            take SetDirection(1)
+        i += 1
+        i = i % 10
+
+behavior MoveToPosition(x, y):
+    while True:
+        ball = simulation().game_ds.ball
+
+        self_x = self.position.x
+        self_y = self.position.y
+
+        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+        direction = math.atan2(y-self_y, x-self_x) / math.pi * 180
+
+        if distance < 3:
+            act = NoAction()
+
+        elif math.fabs(x-self_x) > math.fabs(y-self_y):
+            dir = ActionCode.left if self_x-x>0 else ActionCode.right
+            act = SetDirection(dir)
+            #act = set_dir_if_not(act, self.sticky_actions)
+        else:
+            dir = ActionCode.bottom if self_y-y>0 else ActionCode.top
+            act = SetDirection(dir)
+            #act = set_dir_if_not(act, self.sticky_actions)
+
+        print(self.x, self.y, act)
+        take act
+
+
+
+
 behavior BuiltinAIBot():
     while True:
         take BuiltinAIAction()
