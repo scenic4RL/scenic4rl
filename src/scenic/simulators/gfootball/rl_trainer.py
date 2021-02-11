@@ -1,5 +1,6 @@
 import gfootball
 import gym
+from scenic.simulators.gfootball.rl import pfrl_training
 from scenic.simulators.gfootball.simulator import GFootBallSimulation
 from gfootball.env import football_action_set
 
@@ -11,6 +12,7 @@ def basic_training(scenario):
     #settings = scenario.settings
 
     #env = gfootball.env.create_environment(env_name="11_vs_11_stochastic", stacked=True, representation='extracted', rewards="scoring,checkpoints")
+    #env2 = gfootball.env.create_environment(env_name="11_vs_11_stochastic", stacked=True, representation='extracted', rewards="scoring,checkpoints", other_config_options={"action_set":"v2"})
     #run_built_in_ai_game_with_rl_env(env)
 
 
@@ -22,12 +24,16 @@ def basic_training(scenario):
     }
 
     rl_env = GFScenicEnv(initial_scenario = scenario, gf_env_settings=gf_env_settings)
-    run_built_in_ai_game_with_rl_env(rl_env)
+    #run_built_in_ai_game_with_rl_env(rl_env)
+    pfrl_training.pfrl_training(rl_env)
+
+
+
 
 
 def run_built_in_ai_game_with_rl_env(rl_env):
     rl_env.render()
-    obs = rl_env.reset()
+    _ = rl_env.reset()
 
     while True:
         o, r, d, _ = rl_env.step([football_action_set.action_shot]) #football_action_set.action_builtin_ai

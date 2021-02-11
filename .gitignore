@@ -131,3 +131,6 @@ dumps/
 *.dump
 gfootball_src
 
+rl_prac/*.zip
+
+
