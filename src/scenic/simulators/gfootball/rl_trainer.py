@@ -1,6 +1,6 @@
 import gfootball
 import gym
-from scenic.simulators.gfootball.rl import pfrl_training
+#from scenic.simulators.gfootball.rl import pfrl_training
 from scenic.simulators.gfootball.simulator import GFootBallSimulation
 from gfootball.env import football_action_set
 
@@ -25,7 +25,7 @@ def basic_training(scenario):
 
     rl_env = GFScenicEnv(initial_scenario = scenario, gf_env_settings=gf_env_settings)
     #run_built_in_ai_game_with_rl_env(rl_env)
-    pfrl_training.pfrl_training(rl_env)
+    #pfrl_training.pfrl_training(rl_env)
 
 
 
@@ -94,8 +94,6 @@ class GFScenicEnv(gym.Env):
 
 
 def test_gfootball_env_wrapper_code():
-
-
     env = gfootball.env.create_environment(env="11_vs_11_stochastic", stacked=True, representation='extracted')
 
 

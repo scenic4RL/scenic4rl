@@ -9,18 +9,18 @@ env = gfootball.env.create_environment("academy_empty_goal_close", number_of_lef
 
 #env.render()
 
+from stable_baselines3 import PPO
 
-
-from stable_baselines3 import A2C
-
-model = A2C.load("saved_model")
+model = PPO.load("./saved_models/PPO_basic_5000")
 
 obs = env.reset()
 pygame.display.set_mode((1, 1), pygame.NOFRAME)
-for i in range(500):
+eval=0
+while eval < 5:
     action, _state = model.predict(obs, deterministic=True)
     obs, reward, done, info = env.step(action)
 
     env.render()
     if done:
       obs = env.reset()
+      eval +=1
