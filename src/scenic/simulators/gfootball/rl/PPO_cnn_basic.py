@@ -36,7 +36,7 @@ class PPOScenicBasic:
     def train(self):
         ALGO = PPO
         n_eval_episodes = 10
-        total_training_timesteps = 5000
+        total_training_timesteps = 100000
         save_dir = "./saved_models"
         logdir = "./tboard"
 
