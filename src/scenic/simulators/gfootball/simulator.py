@@ -199,6 +199,7 @@ class GFootBallSimulation(Simulation):
 		# Run simulation for one timestep
 		if self.done:
 			print(f"Reward Sum: {sum(self.rewards)}")
+			self.env.close()
 			return sum(self.rewards)
 
 			#signal scenic backend to stop simulation
