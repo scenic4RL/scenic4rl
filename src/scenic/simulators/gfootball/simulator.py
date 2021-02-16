@@ -215,6 +215,7 @@ class GFootBallSimulation(Simulation):
 
 		obs, rew, self.done, info = self.env.step(action_to_take)
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
+
 		self.rewards.append(rew)
 
 		update_objects_from_obs(self.last_raw_obs, self.game_ds)
@@ -228,7 +229,7 @@ class GFootBallSimulation(Simulation):
 		#self.game_ds.print_ds()
 		#input()
 
-		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
+
 
 	def getProperties(self, obj, properties):
 		# Extract  properties

@@ -4,7 +4,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.policies import ActorCriticCnnPolicy
 import os
-import datetime
+
 
 
 # settings = scenario.settings
@@ -48,10 +48,7 @@ class PPOScenicBasic:
 
         model = ALGO("CnnPolicy", env, verbose=1, tensorboard_log=logdir)
 
-
-        currentDT = datetime.datetime.now()
-        fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
-        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}_{fstr}")
+        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}")
 
         model.save(f"{save_dir}/PPO_basic_{total_training_timesteps}")
 
