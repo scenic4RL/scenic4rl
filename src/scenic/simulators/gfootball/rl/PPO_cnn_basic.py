@@ -1,5 +1,4 @@
-
-
+import socket
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -24,7 +23,8 @@ class PPOScenicBasic:
             "stacked": True,
             "rewards": 'scoring,checkpoints',
             "representation": 'extracted',
-            "players": [f"agent:left_players=1"]
+            "players": [f"agent:left_players=1"],
+            "real_time": False
         }
 
         from scenic.simulators.gfootball.rl_trainer import GFScenicEnv
@@ -47,7 +47,8 @@ class PPOScenicBasic:
         env = Monitor(env)
 
         model = ALGO("CnnPolicy", env, verbose=1, tensorboard_log=logdir)
-        model.learn(total_timesteps=total_training_timesteps, tb_log_name="final")
+
+        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}")
 
         model.save(f"{save_dir}/PPO_basic_{total_training_timesteps}")
 
