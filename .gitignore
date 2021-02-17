@@ -134,4 +134,5 @@ gfootball_src
 rl_prac/*.zip
 *.zip
 src/scenic/simulators/gfootball/rl/saved_models/*
+src/scenic/simulators/gfootball/rl/tboard/C02X32G8JGH5*
 

@@ -7,13 +7,10 @@ param offsides = False
 param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 #param end_episode_on_possession_change = True
-param render = True
+param render = False
 
-ego = Ball at 70 @ 28
+ego = Ball at 72 @ 0
 
 MyGK at -98 @ 0
 MyAM at 70 @ 0
 MyCF at 70 @ 30
-
-OpGK at 98 @ 0
-OpCB at 85 @ 15
