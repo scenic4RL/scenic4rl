@@ -29,32 +29,16 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
 
     module_path = gfootball.scenarios.__path__[0]
 
-    """
-    from scenic.simulators.gfootball.model import Player, Ball
-    ball = None
-    my_players = []
-    op_players = []
+    param_names_for_gfootball_scenario_file = ["game_duration", "deterministic", "offsides", "end_episode_on_score",
+                                          "end_episode_on_out_of_play", "end_episode_on_possession_change",
+                                               "right_team_difficulty", "left_team_difficulty"]
 
-    from scenic.simulators.gfootball.interface import is_player, is_my_player, is_op_player, is_ball
-    for obj in objects:
-        #print(obj, type(obj))
-
-        # change with isinstance
-        if is_my_player(obj):
-            my_players.append(obj)
-
-        elif is_op_player(obj):
-            op_players.append(obj)
-
-        elif is_ball(obj):
-            # print(f"Ball {dir(obj)}")
-            ball = obj
-    """
-
+    params_to_write = {k:v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
+    #params_to_write = scene.params
     print(f"...Writing GFootBall Scenario to {module_path}")
 
     with open(module_path + "/" + scene.params["level"]+".py", "w+") as file:
-        code_str = get_scenario_python_str(scene.params, own_players=gameds.my_players, opo_players=gameds.op_players, ball=gameds.ball)
+        code_str = get_scenario_python_str(params_to_write, own_players=gameds.my_players, opo_players=gameds.op_players, ball=gameds.ball)
         print(code_str)
         file.write(code_str)
 

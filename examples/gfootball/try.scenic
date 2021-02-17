@@ -6,14 +6,15 @@ param deterministic = False
 param offsides = False
 param end_episode_on_score = True
 param end_episode_on_out_of_play = True
-#param end_episode_on_possession_change = True
-param render = True
+param end_episode_on_possession_change = True
 
-ego = Ball at 70 @ 28
+#param render = False
+
+ego = Ball at 70 @ 29
 
 MyGK at -98 @ 0
-MyAM at 70 @ 0
-MyCF at 70 @ 30
+MyCF at 70 @ 0
+MyAM at 70 @ 30
 
 OpGK at 98 @ 0
-OpCB at 85 @ 15
+OpCB at 75 @ 10
