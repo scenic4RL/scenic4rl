@@ -2,7 +2,7 @@ import gfootball
 from scenic.simulators.gfootball.interface import get_scenario_python_str
 from scenic.simulators.gfootball.utilities import translator
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
-
+from scenic.syntax.veneer import verbosePrint
 
 def initialize_gfootball_scenario(scene, gameds:GameDS):
     # set basic scenario attributes
@@ -17,8 +17,8 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
         'end_episode_on_score': True,
         'end_episode_on_out_of_play': False,
         'end_episode_on_possession_change': False,
-        'right_team_difficulty': 0.0,
-        'left_team_difficulty': 0.0
+        'right_team_difficulty': 0.0,    ??
+        'left_team_difficulty': 0.0      ??
     }
     
     # Set default parameters for scene
@@ -35,11 +35,11 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
 
     params_to_write = {k:v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
     #params_to_write = scene.params
-    print(f"...Writing GFootBall Scenario to {module_path}")
+    verbosePrint(f"...Writing GFootBall Scenario to {module_path}")
 
     with open(module_path + "/" + scene.params["level"]+".py", "w+") as file:
         code_str = get_scenario_python_str(params_to_write, own_players=gameds.my_players, opo_players=gameds.op_players, ball=gameds.ball)
-        print(code_str)
+        verbosePrint(code_str)
         file.write(code_str)
 
 

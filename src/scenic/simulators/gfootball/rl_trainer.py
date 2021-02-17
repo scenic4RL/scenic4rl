@@ -61,8 +61,8 @@ class GFScenicEnv(gym.Env):
     def initialize_new_simulation(self):
 
         #TODO: Why using create_new_simulation ???
-        if not self.create_new_simulation:
-            return
+        #if not self.create_new_simulation:
+        #    return
         # generate a scene from the current scenario
         self.scene, _ = scenic_helper.generateScene(self.scenario)
 
@@ -70,7 +70,7 @@ class GFScenicEnv(gym.Env):
         self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
                                               render=False, verbosity=1, gf_env_settings=self.gf_env_settings)
 
-        self.create_new_simulation = False
+        #self.create_new_simulation = False
 
     def reset(self):
         # Reset the state of the environment to an initial state
@@ -80,7 +80,7 @@ class GFScenicEnv(gym.Env):
 
     def set_scecario(self, scenario):
         self.scenario = scenario
-        self.create_new_simulation = True
+        #self.create_new_simulation = True
 
     def step(self, action):
         # Execute one time step within the environment
