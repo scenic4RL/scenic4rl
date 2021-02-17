@@ -66,6 +66,6 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    scenario_file = f"{cwd}/academy/academy_run_pass_and_shoot_with_keeper.scenic"
+    scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
     scenario = buildScenario(scenario_file)
     PPOScenicBasic(scenario).train()

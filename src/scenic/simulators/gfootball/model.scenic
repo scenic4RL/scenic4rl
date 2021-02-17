@@ -33,7 +33,7 @@ param display_game_stats = True
 param players =  ['agent:left_players=1', 'keyboard:right_players=1']
 #param level =  '11_vs_11_stochastic'
 param physics_steps_per_frame =  10
-param render = True
+#param render = True
 param render_resolution_x = 1280
 param real_time =  True
 

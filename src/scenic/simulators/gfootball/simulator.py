@@ -62,7 +62,7 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=None, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
 
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
@@ -70,7 +70,7 @@ class GFootBallSimulation(Simulation):
 		self.verbosity = verbosity
 		self.record = record
 		self.timestep = timestep
-
+		self.render = render
 		self.rewards = []
 		self.last_raw_obs = None
 		self.done = None
@@ -104,7 +104,7 @@ class GFootBallSimulation(Simulation):
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(self.scene, self.game_ds)
 
-		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings)
+		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings, render=self.render)
 		return env
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
