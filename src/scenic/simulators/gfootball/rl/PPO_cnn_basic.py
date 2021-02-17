@@ -5,13 +5,15 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.policies import ActorCriticCnnPolicy
 import os
 import datetime
-
-
+from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.callbacks import EvalCallback
 # settings = scenario.settings
 
 # env = gfootball.env.create_environment(env_name="11_vs_11_stochastic", stacked=True, representation='extracted', rewards="scoring,checkpoints")
 # env2 = gfootball.env.create_environment(env_name="11_vs_11_stochastic", stacked=True, representation='extracted', rewards="scoring,checkpoints", other_config_options={"action_set":"v2"})
 # run_built_in_ai_game_with_rl_env(env)
+from stable_baselines3.common.vec_env import DummyVecEnv
+
 
 class PPOScenicBasic:
 
@@ -29,6 +31,8 @@ class PPOScenicBasic:
 
         from scenic.simulators.gfootball.rl_trainer import GFScenicEnv
         self.rl_env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+
+        self.rl_env.eval_env = self.rl_env
         # run_built_in_ai_game_with_rl_env(rl_env)
         # pfrl_training.pfrl_training(rl_env)
 
@@ -36,7 +40,8 @@ class PPOScenicBasic:
     def train(self):
         ALGO = PPO
         n_eval_episodes = 10
-        total_training_timesteps = 100000
+        total_training_timesteps = 5000
+        eval_freq = 500
         save_dir = "./saved_models"
         logdir = "./tboard"
 
@@ -48,10 +53,16 @@ class PPOScenicBasic:
 
         model = ALGO("CnnPolicy", env, verbose=1, tensorboard_log=logdir)
 
+        #eval_callback = EvalCallback(self.eval_env, best_model_save_path=save_dir,
+        #                             log_path=logdir, eval_freq=eval_freq,
+        #                             deterministic=True, render=False)
+
+        #eval_callback = EvalCallback(model.get_env(), eval_freq=eval_freq, deterministic=True, render=False)
+
 
         currentDT = datetime.datetime.now()
         fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
-        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}_{fstr}")
+        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}_{fstr}") #callback=eval_callback
 
         model.save(f"{save_dir}/PPO_basic_{total_training_timesteps}")
 

@@ -60,6 +60,7 @@ class GFScenicEnv(gym.Env):
 
     def initialize_new_simulation(self):
 
+        #TODO: Why using create_new_simulation ???
         if not self.create_new_simulation:
             return
         # generate a scene from the current scenario

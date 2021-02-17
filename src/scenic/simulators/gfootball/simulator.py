@@ -200,6 +200,11 @@ class GFootBallSimulation(Simulation):
 		if self.done:
 			print(f"Reward Sum: {sum(self.rewards)}")
 			self.env.close()
+
+			#if self.for_gym_env:
+			#the code may not ever come here for gym ??
+			assert not self.for_gym_env, "Must not come here ??"
+
 			return sum(self.rewards)
 
 			#signal scenic backend to stop simulation
@@ -250,6 +255,7 @@ class GFootBallSimulation(Simulation):
 			values['heading'] = obj.heading					      #same as direction
 			values['speed'] = obj.speed							#TODO: test this value
 			values['velocity'] = obj.velocity
+			#print(f"ball position {values['position']}")
 
 		elif obj in self.game_ds.my_players or obj in self.game_ds.op_players:
 
