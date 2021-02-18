@@ -173,6 +173,7 @@ def update_ball(ball, obs):
     velocity1 = Vector(delx, dely)
     speed1 = math.sqrt(delx*delx + dely*dely)
 
+    #print(f"ball position {ball.position}")
     ball.velocity, ball.speed = get_velocity_and_speed(ball.position, ball.position_prev)
 
 
@@ -212,6 +213,7 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
     if len(own_players ) >0:
         code_str += f"\tbuilder.SetTeam(Team.e_Left)\n"
         from scenic.simulators.gfootball.utilities.constants import RoleCode
+        own_players.sort(key=lambda x: 0 if x.role == 'GK' else 1)
         for player in own_players:
             player_pos_sim = translator.pos_scenic_to_sim(player.position)
             code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
@@ -222,7 +224,7 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
     # addOponentPlayers:
     if len(opo_players ) >0:
         code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
-
+        opo_players.sort(key=lambda x: 0 if x.role == 'GK' else 1)
         for player in opo_players:
             player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=True, mirrory=True)
             #MIRRORING the position of the opponent player, as it seems the simulator mirrors it automatically
