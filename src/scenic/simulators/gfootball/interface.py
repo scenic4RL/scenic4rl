@@ -173,7 +173,7 @@ def update_ball(ball, obs):
     velocity1 = Vector(delx, dely)
     speed1 = math.sqrt(delx*delx + dely*dely)
 
-    print(f"ball position {ball.position}")
+    #print(f"ball position {ball.position}")
     ball.velocity, ball.speed = get_velocity_and_speed(ball.position, ball.position_prev)
 
 

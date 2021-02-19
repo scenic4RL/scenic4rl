@@ -35,23 +35,27 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
 
     params_to_write = {k:v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
     #params_to_write = scene.params
-    verbosePrint(f"...Writing GFootBall Scenario to {module_path}")
 
-    with open(module_path + "/" + scene.params["level"]+".py", "w+") as file:
+    out_file_name = module_path + "/" + scene.params["level"]+".py"
+    verbosePrint(f"...Writing GFootBall Scenario to {out_file_name}")
+
+    with open(out_file_name, "w+") as file:
         code_str = get_scenario_python_str(params_to_write, own_players=gameds.my_players, opo_players=gameds.op_players, ball=gameds.ball)
         verbosePrint(code_str)
         file.write(code_str)
 
+    """
     print("scene id:", id(scene))
     with open(module_path + "/" + scene.params["level"] + ".py", "r+") as file:
         txt = file.read()
         print("Scenario File: ")
         print(txt)
         print("##"*80)
+    """
 
 
 
-
+"""
 
 def get_default_settings(player2="keyboard"):
     settings = {
@@ -64,3 +68,5 @@ def get_default_settings(player2="keyboard"):
     }
 
     return settings
+    
+"""

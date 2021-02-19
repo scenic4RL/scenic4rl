@@ -14,7 +14,7 @@ from scenic.simulators.gfootball.interface import update_objects_from_obs, gener
 	update_control_index
 from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
-from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario, get_default_settings
+from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario#, get_default_settings
 from scenic.syntax.veneer import verbosePrint
 from scenic.core.simulators import Simulator, Simulation
 
@@ -50,10 +50,11 @@ class GFootBallSimulator(Simulator):
 
 		self.settings = scene.params.copy()
 
+		"""
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
 			verbosePrint(f'{setting}: {self.settings[setting]}')
-
+		"""
 		return GFootBallSimulation(scene=scene, settings = self.settings,
 								   timestep=self.timestep,
 							   render=self.render, record=self.record,
@@ -104,6 +105,7 @@ class GFootBallSimulation(Simulation):
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(self.scene, self.game_ds)
 
+		#print("Game Level", self.gf_env_settings["level"])
 		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], settings=self.gf_env_settings, render=self.render)
 		return env
 
@@ -112,7 +114,7 @@ class GFootBallSimulation(Simulation):
 		#if not self.first_time:
 		#	self.env.close()
 		#	self.env = self.create_gfootball_environment()
-		print("in simulator reset")
+		#print("in simulator reset")
 		#print("id self.env", id(self.env))
 		#print("id scenic_wrapper", id(self.scenic_wrapper))
 
@@ -120,8 +122,8 @@ class GFootBallSimulation(Simulation):
 		obs = self.env.reset()
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
 		#print("id last_obs", id(self.scenic_wrapper.latest_raw_observation))
-		print(f"game_ds", id(self.game_ds))
-		print("ball: ", self.last_raw_obs[0]["ball"])
+		#print(f"game_ds", id(self.game_ds))
+		print("in simulator: ball: ", self.last_raw_obs[0]["ball"])
 
 		update_control_index(self.last_raw_obs, gameds=self.game_ds)
 		update_objects_from_obs(self.last_raw_obs, self.game_ds)
