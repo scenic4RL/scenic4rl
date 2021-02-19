@@ -2,6 +2,8 @@ import random
 import socket
 
 import gym
+from scenic.simulators.gfootball import rl_trainer
+from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -28,14 +30,15 @@ class UnifromTeacherEnvironment(gym.Env):
         all_tasks = [target_task] + sub_tasks
 
         self.target_task = buildScenario(target_task)
-        self.sub_tasks = [buildScenario(task) for task in subtasks]
+        self.sub_tasks = [buildScenario(task) for task in sub_tasks]
 
         gf_env_settings = {
             "stacked": True,
             "rewards": 'scoring,checkpoints',
             "representation": 'extracted',
             "players": [f"agent:left_players=1"],
-            "real_time": False
+            "real_time": False,
+            "action_set": "default"
         }
 
         from scenic.simulators.gfootball.rl_trainer import GFScenicEnv
@@ -73,3 +76,21 @@ class UnifromTeacherEnvironment(gym.Env):
 
 
 
+if __name__ == "__main__":
+    import os
+
+    cwd = os.getcwd()
+    print("Current working Directory: ", cwd)
+
+    # scenario_file = f"{cwd}/academy/academy_run_pass_and_shoot_with_keeper.scenic"
+
+    # n_task = 3
+
+    target_task = f"{cwd}/exp_0_0/test_env.scenic"
+    subtasks = [
+        f"{cwd}/exp_0_0/test_env_2.scenic",
+        f"{cwd}/exp_0_0/test_env_3.scenic"
+    ]
+
+    env = UnifromTeacherEnvironment(target_task, subtasks)
+    rl_trainer.run_built_in_ai_game_with_rl_env(env, trials=15)
