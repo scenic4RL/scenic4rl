@@ -3,10 +3,17 @@ from scenic.simulators.gfootball.interface import get_scenario_python_str
 from scenic.simulators.gfootball.utilities import translator
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.syntax.veneer import verbosePrint
+import os
 
+SCENARIO_SUBFOLDER_NAME = 'scenic_exp'
 
-def get_level_name():
-    pass
+def get_level_name(path, scene):
+    import uuid
+    new_index = len(os.listdir(f"{path}/{SCENARIO_SUBFOLDER_NAME}/"))
+    #return f"{scene.name}"
+    return "dynamic"
+
+    #return f"{uuid.uuid4()}_{scene.name}"
 
 def initialize_gfootball_scenario(scene, gameds:GameDS):
     # set basic scenario attributes
@@ -40,7 +47,11 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
     params_to_write = {k:v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
     #params_to_write = scene.params
 
-    out_file_name = module_path + "/" + scene.params["level"]+".py"
+    level_name = get_level_name(module_path, scene)
+    #out_file_name = module_path + "/" + scene.params["level"]+ ".py"
+    #out_file_name = f"{module_path}/{SCENARIO_SUBFOLDER_NAME}/{level_name}.py"
+    out_file_name = f"{module_path}/{level_name}.py"
+
     verbosePrint(f"...Writing GFootBall Scenario to {out_file_name}")
 
     with open(out_file_name, "w+") as file:
@@ -56,6 +67,9 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
         print(txt)
         print("##"*80)
     """
+    return f"{level_name}"
+
+    #return f"{SCENARIO_SUBFOLDER_NAME}.{level_name}"
 
 
 

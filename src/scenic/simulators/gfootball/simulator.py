@@ -103,10 +103,11 @@ class GFootBallSimulation(Simulation):
 		from scenic.simulators.gfootball.utilities import env_creator
 
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
-		initialize_gfootball_scenario(self.scene, self.game_ds)
-
+		level_name = initialize_gfootball_scenario(self.scene, self.game_ds)
+		print(level_name)
+		#self.render=False
 		#print("Game Level", self.gf_env_settings["level"])
-		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], settings=self.gf_env_settings, render=self.render)
+		env, self.scenic_wrapper = env_creator.create_environment(env_name=level_name, settings=self.gf_env_settings, render=self.render)
 		return env
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
