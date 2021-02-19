@@ -33,21 +33,21 @@ param display_game_stats = True
 param players =  ['agent:left_players=1', 'keyboard:right_players=1']
 #param level =  '11_vs_11_stochastic'
 param physics_steps_per_frame =  10
-param render = True
+#param render = True
 param render_resolution_x = 1280
 param real_time =  True
 
 
 param level = "dynamic"
-#GAME PARAMETERS
-param game_duration =  400
-param deterministic =  False
-param offsides =  False
-param end_episode_on_score =  False
-param end_episode_on_out_of_play =  False
-param end_episode_on_possession_change = False
-param right_team_difficulty  = 0.0
-param left_team_difficulty = 0.0
+#GAME PARAMETERS #These parameters will only be written in the gfootball_scenari_file when explicitely specified in the scenic scenario
+#param game_duration =  400
+#param deterministic =  False
+#param offsides =  False
+#param end_episode_on_score =  False
+#param end_episode_on_out_of_play =  False
+#param end_episode_on_possession_change = False
+#param right_team_difficulty  = 0.0
+#param left_team_difficulty = 0.0
 
 #Observation/RL Env Parameters
 param stacked = False

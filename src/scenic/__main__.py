@@ -39,10 +39,6 @@ simOpts.add_argument('--count', help='number of successful simulations to run (d
 simOpts.add_argument('--max-sims-per-scene', type=int, default=1, metavar='N',
                      help='max # of rejected simulations before sampling a new scene (default 1)')
 
-# RL Simulation options
-rlOpts = parser.add_argument_group('RL Algorithm options')
-rlOpts.add_argument('--rl', action='store_true',
-                         help='Run RL Training')
 
 # Interactive rendering options
 intOptions = parser.add_argument_group('static scene diagramming options')
@@ -77,6 +73,13 @@ parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
 
 # Positional arguments
 parser.add_argument('scenicFile', help='a Scenic file to run', metavar='FILE')
+
+
+# RL Simulation options
+rlOpts = parser.add_argument_group('RL Algorithm options')
+rlOpts.add_argument('--rl', action='store_true',
+                         help='Run RL Training')
+
 
 # Parse arguments and set up configuration
 args = parser.parse_args()
@@ -145,16 +148,17 @@ def runSimulation(scene):
 def runRLTraining():
     startTime = time.time()
 
-
     if args.verbosity >= 1:
         print('  Beginning RL Training Pipeline...')
 
     #simulator = errors.callBeginningScenicTrace(scenario.getSimulator)
     try:
-        from scenic.simulators.gfootball.rl_trainer import basic_training
+        #from scenic.simulators.gfootball.rl_trainer import basic_training
         #rl_env = simulator.createSimulation(scene, verbosity=args.verbosity, rl_env=True, scenarios=[scenario])
+        from scenic.simulators.gfootball.rl.PPO_cnn_basic import PPO_cnn_basic
+        PPO_cnn_basic(scenario).train()
         #print(rl_env)
-        basic_training(scenario)
+        #basic_training(scenario)
 
     except SimulationCreationError as e:
         if args.verbosity >= 1:

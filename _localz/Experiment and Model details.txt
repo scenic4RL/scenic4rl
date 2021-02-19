@@ -1,0 +1,46 @@
+Physical Therapy - 510 642 0607
+
+
+PPO
+	- Multiple Process Single Machine
+
+
+IMPALA
+	- distributed, 500 actors
+
+Ape-X DQN
+	- distributed, 150 actors
+
+In all experiments: Stacked SMM + same network architecture
+
+
+Checkpoint reward helps: PPO/Impala more, DQN performance similar with both reward function
+
+
+Runtime:
+
+11v11-medium:
+DQN : 500M [both rewards have similar performance]
+IMPALA: 500M  [checkpoint reward works better]
+PPO: 50M [only checkpoint]
+
+
+
+(Empty Goal Close, Empty Goal, Run to Score) , both PPO / IMPALA: 1M Steps [both reward function]
+
+other tasks 5M to 50M steps 
+
+
+
+Netwrok:
+gfootball_impala_cnn: 
+ ---inspired by Large architecture from (Es- peholt et al., 2018) i.e., impala_cnn
+
+
+
+gfootball_impala_cnn:
+https://github.com/google-research/football/blob/master/gfootball/examples/models.py
+
+imapala_cnn:
+a cnn architecture defined in openai_baselines
+https://github.com/openai/baselines/blob/master/baselines/common/models.py

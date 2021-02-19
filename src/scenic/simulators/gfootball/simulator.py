@@ -62,7 +62,7 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=None, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
 
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
@@ -70,7 +70,7 @@ class GFootBallSimulation(Simulation):
 		self.verbosity = verbosity
 		self.record = record
 		self.timestep = timestep
-
+		self.render = render
 		self.rewards = []
 		self.last_raw_obs = None
 		self.done = None
@@ -104,7 +104,7 @@ class GFootBallSimulation(Simulation):
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(self.scene, self.game_ds)
 
-		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings)
+		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings, render=self.render)
 		return env
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
@@ -193,12 +193,18 @@ class GFootBallSimulation(Simulation):
 
 	def step(self, action=None):
 
-		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before anda fter calling this function
+		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before and after calling this function
 		#input()
 		#print("in step")
 		# Run simulation for one timestep
 		if self.done:
 			print(f"Reward Sum: {sum(self.rewards)}")
+			self.env.close()
+
+			#if self.for_gym_env:
+			#the code may not ever come here for gym ??
+			assert not self.for_gym_env, "Must not come here ??"
+
 			return sum(self.rewards)
 
 			#signal scenic backend to stop simulation
@@ -214,6 +220,7 @@ class GFootBallSimulation(Simulation):
 
 		obs, rew, self.done, info = self.env.step(action_to_take)
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
+
 		self.rewards.append(rew)
 
 		update_objects_from_obs(self.last_raw_obs, self.game_ds)
@@ -227,7 +234,7 @@ class GFootBallSimulation(Simulation):
 		#self.game_ds.print_ds()
 		#input()
 
-		#update_objects_from_obs(self.last_obs, self.objects, self.game_state, self.my_player_to_idx, self.my_idx_to_player, self.op_player_to_idx, self.op_idx_to_player, self.num_controlled)
+
 
 	def getProperties(self, obj, properties):
 		# Extract  properties
@@ -248,6 +255,7 @@ class GFootBallSimulation(Simulation):
 			values['heading'] = obj.heading					      #same as direction
 			values['speed'] = obj.speed							#TODO: test this value
 			values['velocity'] = obj.velocity
+			#print(f"ball position {values['position']}")
 
 		elif obj in self.game_ds.my_players or obj in self.game_ds.op_players:
 

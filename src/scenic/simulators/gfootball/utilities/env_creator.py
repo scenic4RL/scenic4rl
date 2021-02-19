@@ -37,7 +37,8 @@ def create_environment(env_name='',
                        channel_dimensions=(
                                observation_preprocessing.SMM_WIDTH,
                                observation_preprocessing.SMM_HEIGHT),
-                       settings={}):
+                       settings={},
+                       render = False):
     """Creates a Google Research Football environment.
 
     Args:
@@ -116,10 +117,11 @@ def create_environment(env_name='',
     """
     assert env_name
 
-    render = settings["render"]
+    #render = settings["render"]
     if "representation" in settings:
         representation = settings["representation"]
     stacked = settings["stacked"]
+
 
     dump_frequency = settings["dump_frequency"]
     scenario_config = config.Config({'level': env_name}).ScenarioConfig()
@@ -178,11 +180,10 @@ def create_environment(env_name='',
             (number_of_left_players_agent_controls +
              number_of_right_players_agent_controls == 1), stacked)
 
-    pygame.display.set_mode((1, 1), pygame.NOFRAME)
 
-    render = settings["render"]
 
     if render:
+        pygame.display.set_mode((1, 1), pygame.NOFRAME)
         env.render()
         pygame.display.set_mode((1, 1), pygame.NOFRAME)
 
