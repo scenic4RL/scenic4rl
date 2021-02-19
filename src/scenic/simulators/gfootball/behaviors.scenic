@@ -24,53 +24,70 @@ behavior IdleBehavior():
     while True:
         take NoAction()
 
-# TODO: wait does not work
+
 behavior RunInCircle():
     while True:
         for i in range(1,9):
-            do moveInDirection(i) for 2 seconds
+            do MoveInDirection(i) for 1 seconds
 
 behavior MoveInDirection(direction_code):
-    i = 0
     while True:
-        if (i == 1):
-            take SetDirection(5)
-        elif (i == 6):
-            take SetDirection(1)
-        i += 1
-        i = i % 10
+        take SetDirection(direction_code)
 
-behavior MoveToPosition(x, y):
+
+
+'''
+Move a player to position x,y
+'''
+behavior MoveToPosition(x, y, sprint=False):
     while True:
-        ball = simulation().game_ds.ball
+        #ball = simulation().game_ds.ball
 
         self_x = self.position.x
         self_y = self.position.y
 
         distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
-        direction = math.atan2(y-self_y, x-self_x) / math.pi * 180
 
-        if distance < 3:
-            act = NoAction()
+        corresponding_dir = lookup_direction(x-self_x, y-self_y)
 
-        elif math.fabs(x-self_x) > math.fabs(y-self_y):
-            dir = ActionCode.left if self_x-x>0 else ActionCode.right
-            act = SetDirection(dir)
-            #act = set_dir_if_not(act, self.sticky_actions)
+        if distance < 0.2:
+            take ReleaseDirection()
         else:
-            dir = ActionCode.bottom if self_y-y>0 else ActionCode.top
-            act = SetDirection(dir)
-            #act = set_dir_if_not(act, self.sticky_actions)
+            take SetDirection(corresponding_dir)
+            if sprint:
+                take Sprint()
 
-        print(self.x, self.y, act)
-        take act
+        # print(self.x, self.y, direction, corresponding_dir)
 
+'''
+Pass the ball to player.
+TODO: check owns ball or not
+'''
+behavior PassToPlayer(player, pass_type="long"):
+    assert pass_type in ("long", "short", "high", "shoot")
 
+    self_x = self.position.x
+    self_y = self.position.y
+
+    # aim at target player
+    do MoveInDirection(lookup_direction(player.position.x - self_x, player.position.y - self_y)) for 0.5 seconds
+
+    if pass_type == "shoot":
+        take Shoot()
+    else:
+        take Pass(pass_type)
 
 
 behavior BuiltinAIBot():
     while True:
         take BuiltinAIAction()
+
+# TODO: may not be necessary
+# behavior AimAndShoot(goal="right"):
+#     assert goal in ("left", "right")
+#     area = left_goal if goal=="left" else right_goal
+#     do MoveInDirection(lookup_direction(player.position.x - self_x, player.position.y - self_y)) for 0.5 seconds
+
 
 
 behavior RunRight():
@@ -104,7 +121,7 @@ behavior GreedyPlay():
             dir_angle = math.degrees(angle from self to right_goal_midpoint)
             ang_wrto_x = dir_angle + 90
             if ang_wrto_x>180: ang_wrto_x -= 360
-            elif ang_wrto_x<-180: ang_wrto_x += 360
+            elif ang_wrto_x < -180: ang_wrto_x += 360
 
             if dis_to_goal<35 or self in right_pbox:
                 sticky_dir = bool(sum(self.sticky_actions[0:8]))

@@ -4,7 +4,7 @@ from scenic.core.simulators import Action
 from scenic.simulators.gfootball.utilities import constants
 
 from scenic.simulators.gfootball.utilities.constants import ActionCode
-
+import math
 
 
 class SetDirection(Action):
@@ -18,17 +18,38 @@ class SetDirection(Action):
     def __str__(self):
         return f"direction {self.direction}"
 
+class Pass(Action):
+    def __init__(self, type="short"):
+        allowed_type = {"long":9, "short":11, "high":10}
+        assert type in allowed_type
+        self.code = allowed_type[type]
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "pass"
 
 
 class Shoot(Action):
     def __init__(self):
-        self.code = 12
+        self.code = constants.ActionCode.shot
 
     def applyTo(self, obj, sim):
         pass
 
     def __str__(self):
         return "shoot"
+
+class Sprint(Action):
+    def __init__(self):
+        self.code = constants.ActionCode.sprint
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "sprint"
 
 class ReleaseDirection(Action):
     def __init__(self):
@@ -69,3 +90,17 @@ class Sliding(Action):
 
     def __str__(self):
         return "sliding"
+
+
+
+# ------Helper Functions------
+def lookup_direction(dx, dy):
+    # direction is [0,360] with 0/360 = North clockwise
+    direction = math.atan2(dx, dy) * 180 / math.pi
+    if direction < 0:
+        direction += 360
+
+    # lookup action based on direction
+    action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
+    corresponding_dir = action_lookup[round(direction / 45)]
+    return corresponding_dir
