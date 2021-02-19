@@ -28,11 +28,12 @@ class TestBasic:
             "rewards": 'scoring, checkpoints',
             "representation": 'extracted',
             "players": [f"agent:left_players=1"],
-            "real_time": False
+            "real_time": False,
+            "action_set": "default"
         }
 
         from scenic.simulators.gfootball.rl_trainer import GFScenicEnv
-        self.rl_env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
+        self.rl_env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False)
 
         #self.rl_env.eval_env = self.rl_env
         from scenic.simulators.gfootball.rl_trainer import run_built_in_ai_game_with_rl_env

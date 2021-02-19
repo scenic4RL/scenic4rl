@@ -89,6 +89,7 @@ class GFootBallSimulation(Simulation):
 		#self.render = self.gf_env_settings["render"]
 
 		self.env = self.create_gfootball_environment()
+		#self.first_time = True
 
 		if not for_gym_env:
 			self.reset()
@@ -100,23 +101,33 @@ class GFootBallSimulation(Simulation):
 	def create_gfootball_environment(self):
 		from scenic.simulators.gfootball.utilities import env_creator
 
-
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		initialize_gfootball_scenario(self.scene, self.game_ds)
 
-		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings, render=self.render)
+		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], settings=self.gf_env_settings, render=self.render)
 		return env
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
 	def reset(self):
+		#if not self.first_time:
+		#	self.env.close()
+		#	self.env = self.create_gfootball_environment()
+		print("in simulator reset")
+		#print("id self.env", id(self.env))
+		#print("id scenic_wrapper", id(self.scenic_wrapper))
+
 
 		obs = self.env.reset()
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
+		#print("id last_obs", id(self.scenic_wrapper.latest_raw_observation))
+		print(f"game_ds", id(self.game_ds))
+		print("ball: ", self.last_raw_obs[0]["ball"])
 
 		update_control_index(self.last_raw_obs, gameds=self.game_ds)
 		update_objects_from_obs(self.last_raw_obs, self.game_ds)
 		self.done = False
 
+		#self.first_time = False
 		return obs
 
 	"""
@@ -171,7 +182,6 @@ class GFootBallSimulation(Simulation):
 			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
 
-
 	def get_base_gfootball_env(self):
 		return self.env
 
@@ -215,7 +225,6 @@ class GFootBallSimulation(Simulation):
 			action_to_take = action
 		else:
 			action_to_take = self.action
-
 
 
 		obs, rew, self.done, info = self.env.step(action_to_take)

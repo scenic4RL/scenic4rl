@@ -42,6 +42,15 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
         verbosePrint(code_str)
         file.write(code_str)
 
+    print("scene id:", id(scene))
+    with open(module_path + "/" + scene.params["level"] + ".py", "r+") as file:
+        txt = file.read()
+        print("Scenario File: ")
+        print(txt)
+        print("##"*80)
+
+
+
 
 
 def get_default_settings(player2="keyboard"):

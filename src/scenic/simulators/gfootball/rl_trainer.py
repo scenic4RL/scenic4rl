@@ -35,11 +35,13 @@ def run_built_in_ai_game_with_rl_env(rl_env):
     rl_env.render()
 
     for _ in range(3):
+
         _ = rl_env.reset()
-        input()
+        #input("Enter to run simulation:\n")
         while True:
             o, r, d, i = rl_env.step([football_action_set.action_shot]) #football_action_set.action_builtin_ai
-            print(r, d, i)
+            #print(r, d, i)
+            #input("step?")
             if d: break
 
 
@@ -51,21 +53,38 @@ class GFScenicEnv(gym.Env):
 
         self.gf_env_settings = gf_env_settings
         self.allow_render = allow_render
-        #self.initial_scenario = initial_scenario
         self.scenario = initial_scenario
-        self.create_new_simulation = True #if set, initialize_new_simulation, will create a new simulation object, otherwise it will just return
-        self.initialize_new_simulation(allow_render)
+        # self.initial_scenario = initial_scenario
 
-        self.gf_gym_env = self.simulation.get_underlying_gym_env()
-        # Define action and observation space
-        self.action_space = self.gf_gym_env.action_space
-        self.observation_space = self.gf_gym_env.observation_space
+        #self.create_new_simulation = True #if set, initialize_new_simulation, will create a new simulation object, otherwise it will just return
+        #self.gf_gym_env = None
+        #self.initialize_new_simulation(render=allow_render)
 
+        from gym.spaces.discrete import Discrete
+        from gym.spaces import Box
+        from numpy import uint8
+
+        assert self.gf_env_settings["action_set"] == "default"
+        assert self.gf_env_settings["representation"]=="extracted"
+        assert self.gf_env_settings["stacked"] == True
+
+        self.observation_space = Box(low=0, high=255, shape=(72, 96, 16), dtype=uint8)
+        self.action_space = Discrete(19)
+
+
+
+    """
     def initialize_new_simulation(self, render=False):
 
-        #TODO: Why using create_new_simulation ???
+
+        #    del self.gf_gym_env
+        #    self.gf_gym_env = None
+        #TODO: Why using create_new_simulation ??? - IF Omitted it doesnt even work!!!!
         if not self.create_new_simulation:
             return
+
+        #if self.gf_gym_env is not None:
+        #    self.gf_gym_env.close()
         # generate a scene from the current scenario
         self.scene, _ = scenic_helper.generateScene(self.scenario)
 
@@ -73,12 +92,38 @@ class GFScenicEnv(gym.Env):
         self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
                                               render=render, verbosity=1, gf_env_settings=self.gf_env_settings)
 
+        self.gf_gym_env = self.simulation.get_underlying_gym_env()
+        # Define action and observation space
+        self.action_space = self.gf_gym_env.action_space
+        self.observation_space = self.gf_gym_env.observation_space
+
         self.create_new_simulation = False
+
+
+        #try:
+        #    self.gf_gym_env.render()
+        #except Exception as e:
+        #    print(e)
+    """
 
     def reset(self):
         # Reset the state of the environment to an initial state
 
-        self.initialize_new_simulation()
+        #self.initialize_new_simulation(render=self.allow_render)
+        #self.create_new_simulation = True
+        self.scene, _ = scenic_helper.generateScene(self.scenario)
+
+
+        if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
+        self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
+                                              render=self.allow_render, verbosity=1, gf_env_settings=self.gf_env_settings)
+
+        self.gf_gym_env = self.simulation.get_underlying_gym_env()
+        # Define action and observation space
+        #self.action_space = self.gf_gym_env.action_space
+        #self.observation_space = self.gf_gym_env.observation_space
+        print(id(self.scene), id(self.simulation), id(self.gf_gym_env))
+
         return self.simulation.reset()
 
     def set_scecario(self, scenario):

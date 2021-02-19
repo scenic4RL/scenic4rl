@@ -155,8 +155,8 @@ def runRLTraining():
     try:
         #from scenic.simulators.gfootball.rl_trainer import basic_training
         #rl_env = simulator.createSimulation(scene, verbosity=args.verbosity, rl_env=True, scenarios=[scenario])
-        from scenic.simulators.gfootball.rl.PPO_cnn_basic import PPO_cnn_basic
-        PPO_cnn_basic(scenario).train()
+        from scenic.simulators.gfootball.rl.PPO_cnn_basic import PPOScenicBasic
+        PPOScenicBasic(scenario).train()
         #print(rl_env)
         #basic_training(scenario)
 

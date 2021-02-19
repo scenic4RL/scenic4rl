@@ -19,9 +19,9 @@ A wrapper which saves the raw state for scenic, the simulator can access `latest
 """
 class ScenicWrapper(gym.ObservationWrapper):
 
-    def __init__(self, env, simulation_obj):
+    def __init__(self, env):
         gym.ObservationWrapper.__init__(self, env)
-        self.simulation_obj = simulation_obj
+        #self.simulation_obj = simulation_obj
 
     def observation(self, observation):
         self.latest_raw_observation = observation
@@ -161,7 +161,7 @@ def create_environment(env_name='',
 
     env = football_env.FootballEnv(c)
 
-    env = ScenicWrapper(env, simulation_obj)
+    env = ScenicWrapper(env)
     scenic_wrapper = env
     """
     if multiagent_to_singleagent:
@@ -179,7 +179,6 @@ def create_environment(env_name='',
             env, rewards, representation, channel_dimensions,
             (number_of_left_players_agent_controls +
              number_of_right_players_agent_controls == 1), stacked)
-
 
 
     if render:
