@@ -1,7 +1,7 @@
 import gfootball
 import gym
 #from scenic.simulators.gfootball.rl import pfrl_training
-from scenic.simulators.gfootball.simulator import GFootBallSimulation
+
 from gfootball.env import football_action_set
 
 #Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
@@ -31,10 +31,10 @@ def basic_training(scenario):
 
 
 
-def run_built_in_ai_game_with_rl_env(rl_env):
+def run_built_in_ai_game_with_rl_env(rl_env, trials=3):
     rl_env.render()
 
-    for _ in range(3):
+    for _ in range(trials):
 
         _ = rl_env.reset()
         #input("Enter to run simulation:\n")
@@ -115,6 +115,7 @@ class GFScenicEnv(gym.Env):
 
 
         if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
+        from scenic.simulators.gfootball.simulator import GFootBallSimulation
         self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
                                               render=self.allow_render, verbosity=1, gf_env_settings=self.gf_env_settings)
 
@@ -122,7 +123,7 @@ class GFScenicEnv(gym.Env):
         # Define action and observation space
         #self.action_space = self.gf_gym_env.action_space
         #self.observation_space = self.gf_gym_env.observation_space
-        print(id(self.scene), id(self.simulation), id(self.gf_gym_env))
+        #print(id(self.scene), id(self.simulation), id(self.gf_gym_env))
 
         return self.simulation.reset()
 
