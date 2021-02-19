@@ -4,6 +4,10 @@ from scenic.simulators.gfootball.utilities import translator
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.syntax.veneer import verbosePrint
 
+
+def get_level_name():
+    pass
+
 def initialize_gfootball_scenario(scene, gameds:GameDS):
     # set basic scenario attributes
 

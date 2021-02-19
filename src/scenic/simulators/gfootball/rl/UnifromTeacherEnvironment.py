@@ -52,14 +52,14 @@ class UnifromTeacherEnvironment(gym.Env):
         self.observation_space = self.target_env.observation_space
         self.action_space = self.target_env.action_space
 
-
+        """
         #assign name
         for i, task_path in enumerate(all_tasks):
             si = task_path.rfind("/") + 1
             ei = task_path.rfind(".")
             task_name = task_path[si:ei]
             self.all_envs[i].name = task_name
-
+        """
 
 
     def step(self, action):
