@@ -9,7 +9,7 @@ SCENARIO_SUBFOLDER_NAME = 'scenic_exp'
 
 def get_level_name(path, scene):
     import uuid
-    new_index = len(os.listdir(f"{path}/{SCENARIO_SUBFOLDER_NAME}/"))
+    #new_index = len(os.listdir(f"{path}/{SCENARIO_SUBFOLDER_NAME}/"))
     #return f"{scene.name}"
     return "dynamic"
 
