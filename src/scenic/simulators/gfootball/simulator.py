@@ -104,7 +104,7 @@ class GFootBallSimulation(Simulation):
 
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
 		level_name = initialize_gfootball_scenario(self.scene, self.game_ds)
-		print(level_name)
+		#print("creating gfootball with level: ", level_name)
 		#self.render=False
 		#print("Game Level", self.gf_env_settings["level"])
 		env, self.scenic_wrapper = env_creator.create_environment(env_name=level_name, settings=self.gf_env_settings, render=self.render)
@@ -124,7 +124,10 @@ class GFootBallSimulation(Simulation):
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
 		#print("id last_obs", id(self.scenic_wrapper.latest_raw_observation))
 		#print(f"game_ds", id(self.game_ds))
-		print("in simulator: ball: ", self.last_raw_obs[0]["ball"])
+		#print("in simulator: ball: ", self.last_raw_obs[0]["ball"])
+		print("IN Reset Simulation")
+		self.game_ds.print_mini()
+
 
 		update_control_index(self.last_raw_obs, gameds=self.game_ds)
 		update_objects_from_obs(self.last_raw_obs, self.game_ds)

@@ -4,6 +4,7 @@ from scenic.simulators.gfootball.utilities import translator
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.syntax.veneer import verbosePrint
 import os
+import numpy as np
 
 SCENARIO_SUBFOLDER_NAME = 'scenic_exp'
 
@@ -15,10 +16,102 @@ def get_level_name(path, scene):
 
     #return f"{uuid.uuid4()}_{scene.name}"
 
+class SceneInfo():
+
+    def __init__(self, params, ball, my_players, op_players):
+
+        """
+        :param params:      dictionary of parameters
+        :param ball:        tuple position x, y
+        :param my_players:  list of (x,y,role)
+        :param op_players:  list of (x,y,role)
+        """
+
+        self.params = params
+        self.ball = ball
+        self.my_players = my_players
+        self.op_players = op_players
+
+
 def initialize_gfootball_scenario(scene, gameds:GameDS):
+    import scenic
+
+    #data_path = scenic.__path__[0]
+    #data paths and other variable
+
+
+
+    module_path = gfootball.scenarios.__path__[0]
+    level_name = get_level_name(module_path, scene)
+
+    out_file_name = f"{module_path}/{level_name}.py"
+    data_file_path = scenic.__path__[0] + f"/simulators/gfootball/scene_data/{level_name}"
+
+    #1. Write file in gf/scenarios folder
+
+    #   copy template file: template_gf_scenario.py
+    #   later: change data file location dynamically
+    #   (later - only write if it doesnt exist)
+
+    verbosePrint(f"...Writing GFootBall Scenario to {out_file_name}")
+
+    with open(out_file_name, "w+") as gout:
+
+        tmplt_path = scenic.__path__[0]+"/simulators/gfootball/utilities/template_gf_scenario.py"
+        with open(tmplt_path, "r+") as gin:
+            code_str = gin.read()
+            """Prepend Data File Path"""
+            pre = f"data_path = '{data_file_path}'\n"
+            code_str = pre+code_str
+            #verbosePrint(code_str)
+            gout.write(code_str)
+
+    #2. Write data in data file
+    #   -> create a folder in a platform-independent way
+    #
+
+
+    #prepare the SceneInfo object
+    param_names_for_gfootball_scenario_file = ["game_duration", "deterministic", "offsides", "end_episode_on_score",
+                                          "end_episode_on_out_of_play", "end_episode_on_possession_change",
+                                               "right_team_difficulty", "left_team_difficulty"]
+
+    params_to_write = {k:v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
+    ball_sim = translator.pos_scenic_to_sim(gameds.ball.position)
+    ball = (ball_sim.x, ball_sim.y)
+
+    #generate player tuples
+    own_player_tuples = []
+    op_player_tuples = []
+    for players, player_tuple_array, mirror in zip([gameds.my_players, gameds.op_players],
+                                           [own_player_tuples, op_player_tuples],
+                                           [False, True]):
+        if len(players) > 0:
+            from scenic.simulators.gfootball.utilities.constants import RoleCode
+
+            for player in players:
+                import gfootball_engine as libgame
+
+                player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=mirror, mirrory=mirror)
+                player_tup = (player_pos_sim.x, player_pos_sim.y, libgame.e_PlayerRole.e_PlayerRole_GK)
+                player_tuple_array.append(player_tup)
+
+            player_tuple_array.sort(key=lambda x: 0 if x[2] == 'e_PlayerRole_GK' else 1)
+
+    scene_info = SceneInfo(params=params_to_write, ball=ball, my_players=own_player_tuples, op_players=op_player_tuples)
+
+    import pickle
+    pickle.dump(scene_info, open(data_file_path, "wb"))
+
+    return f"{level_name}"
+
+    #return f"{SCENARIO_SUBFOLDER_NAME}.{level_name}"
+
+
+def initialize_gfootball_scenario_v0(scene, gameds: GameDS):
     # set basic scenario attributes
 
-    #scene_attrs = {}
+    # scene_attrs = {}
 
     """
     default_scene_params = {
@@ -31,31 +124,32 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
         'right_team_difficulty': 0.0,    ??
         'left_team_difficulty': 0.0      ??
     }
-    
+
     # Set default parameters for scene
     scene_attrs.update(default_scene_params)
     """
     # UPDATE SCENE PARAMETERS
-    #scene_attrs.update(scene.params)
+    # scene_attrs.update(scene.params)
 
     module_path = gfootball.scenarios.__path__[0]
 
     param_names_for_gfootball_scenario_file = ["game_duration", "deterministic", "offsides", "end_episode_on_score",
-                                          "end_episode_on_out_of_play", "end_episode_on_possession_change",
+                                               "end_episode_on_out_of_play", "end_episode_on_possession_change",
                                                "right_team_difficulty", "left_team_difficulty"]
 
-    params_to_write = {k:v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
-    #params_to_write = scene.params
+    params_to_write = {k: v for k, v in scene.params.items() if k in param_names_for_gfootball_scenario_file}
+    # params_to_write = scene.params
 
     level_name = get_level_name(module_path, scene)
-    #out_file_name = module_path + "/" + scene.params["level"]+ ".py"
-    #out_file_name = f"{module_path}/{SCENARIO_SUBFOLDER_NAME}/{level_name}.py"
+    # out_file_name = module_path + "/" + scene.params["level"]+ ".py"
+    # out_file_name = f"{module_path}/{SCENARIO_SUBFOLDER_NAME}/{level_name}.py"
     out_file_name = f"{module_path}/{level_name}.py"
 
     verbosePrint(f"...Writing GFootBall Scenario to {out_file_name}")
 
     with open(out_file_name, "w+") as file:
-        code_str = get_scenario_python_str(params_to_write, own_players=gameds.my_players, opo_players=gameds.op_players, ball=gameds.ball)
+        code_str = get_scenario_python_str(params_to_write, own_players=gameds.my_players,
+                                           opo_players=gameds.op_players, ball=gameds.ball)
         verbosePrint(code_str)
         file.write(code_str)
 
@@ -68,23 +162,3 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
         print("##"*80)
     """
     return f"{level_name}"
-
-    #return f"{SCENARIO_SUBFOLDER_NAME}.{level_name}"
-
-
-
-"""
-
-def get_default_settings(player2="keyboard"):
-    settings = {
-        'action_set': "full",
-        'dump_full_episodes': False,
-        'real_time': True,
-        'players': ['agent:left_players=1', f'{player2}:right_players=1'],
-        # 'players': ['agent:left_players=1'],
-        'level': GFOOTBALL_SCENARIO_FILENAME[:-3]
-    }
-
-    return settings
-    
-"""
