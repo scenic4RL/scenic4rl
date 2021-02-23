@@ -12,9 +12,9 @@ param end_episode_on_possession_change = True
 ego = Ball at 0@0
 
 MyGK at -98 @ 0
-MyAM in right_pbox
-MyCF in right_pbox
-MyCM in right_pbox
+MyAM
+MyCM
 
 OpGK at 98 @ 0
-OpCB at 75 @ 10
+OpAM
+OpCM

@@ -125,7 +125,7 @@ class GFootBallSimulation(Simulation):
 		#print("id last_obs", id(self.scenic_wrapper.latest_raw_observation))
 		#print(f"game_ds", id(self.game_ds))
 		#print("in simulator: ball: ", self.last_raw_obs[0]["ball"])
-		print("IN Reset Simulation")
+		print("In Reset Simulation")
 		self.game_ds.print_mini()
 
 

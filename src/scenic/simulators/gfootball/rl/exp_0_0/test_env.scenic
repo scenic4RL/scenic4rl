@@ -13,8 +13,7 @@ ego = Ball in right_pbox
 
 MyGK at -98 @ 0
 MyAM in right_pbox
-MyCF in right_pbox
 MyCM in right_pbox
 
 OpGK at 98 @ 0
-OpCB at 75 @ 10
+OpCB in right_pbox

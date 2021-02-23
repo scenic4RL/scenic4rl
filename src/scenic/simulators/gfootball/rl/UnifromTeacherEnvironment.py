@@ -52,6 +52,8 @@ class UnifromTeacherEnvironment(gym.Env):
         self.observation_space = self.target_env.observation_space
         self.action_space = self.target_env.action_space
 
+        self.counts = {i:0 for i in range(len(self.all_envs))}
+
         """
         #assign name
         for i, task_path in enumerate(all_tasks):
@@ -67,8 +69,11 @@ class UnifromTeacherEnvironment(gym.Env):
 
     def reset(self):
         #Teacher Algorithm Here
-        self.current_env = random.choice(self.all_envs)
-        #print(f"Selecting Environment {self.current_env.name}")
+        sel = random.randint(0, len(self.all_envs)-1)
+        self.current_env = self.all_envs[sel]
+        self.counts[sel]+=1
+        #print(sel)
+
         return self.current_env.reset()
 
     def render(self, mode='human', close=False):
@@ -94,3 +99,4 @@ if __name__ == "__main__":
 
     env = UnifromTeacherEnvironment(target_task, subtasks)
     rl_trainer.run_built_in_ai_game_with_rl_env(env, trials=15)
+    #print(env.counts)

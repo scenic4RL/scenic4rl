@@ -9,12 +9,12 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 
-ego = Ball at 10@10
+ego = Ball in left_pbox
 
 MyGK at -98 @ 0
-MyAM in right_pbox
-MyCF in right_pbox
-MyCM in right_pbox
+MyCB in left_pbox
+
 
 OpGK at 98 @ 0
-OpCB at 75 @ 10
+OpCF in left_pbox
+OpAM in left_pbox
