@@ -148,7 +148,10 @@ class PPO_GF_Impala:
             features_extractor_class=GfootballImpalaCNN,
             features_extractor_kwargs=dict(features_dim=256),
         )
-        model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir)
+        model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
+                     clip_range=0.08, gamma=0.993, learning_rate = 0.000343, batch_size=512,
+                     n_epochs=2, ent_coef=0.003, max_grad_norm=0.64,
+                     vf_coef=0.5, gae_lambda = 0.95)
 
         #eval_callback = EvalCallback(self.eval_env, best_model_save_path=save_dir,
         #                             log_path=logdir, eval_freq=eval_freq,
