@@ -132,8 +132,8 @@ class PPO_GF_Impala:
 
     def train(self):
         ALGO = PPO
-        n_eval_episodes = 10
-        total_training_timesteps = 5000
+        n_eval_episodes = 20
+        total_training_timesteps = 2000000
         eval_freq = 500
         save_dir = "./saved_models"
         logdir = "./tboard"
@@ -149,8 +149,8 @@ class PPO_GF_Impala:
             features_extractor_kwargs=dict(features_dim=256),
         )
         model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
-                     clip_range=0.08, gamma=0.993, learning_rate = 0.000343, batch_size=512,
-                     n_epochs=2, ent_coef=0.003, max_grad_norm=0.64,
+                     clip_range=0.08, gamma=0.993, learning_rate = 0.0003, batch_size=512,
+                     n_epochs=4, ent_coef=0.003, max_grad_norm=0.64,
                      vf_coef=0.5, gae_lambda = 0.95)
 
         #eval_callback = EvalCallback(self.eval_env, best_model_save_path=save_dir,
@@ -164,7 +164,7 @@ class PPO_GF_Impala:
         fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
         model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}_{fstr}") #callback=eval_callback
 
-        model.save(f"{save_dir}/PPO_basic_{total_training_timesteps}")
+        model.save(f"{save_dir}/PPO_impala_cnn_{total_training_timesteps}")
 
         mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=n_eval_episodes)
         print(f"Eval Mean Rewards: {mean_reward:0.4f} Episodes: {n_eval_episodes}")
@@ -177,6 +177,15 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
+    scenario_file = f"{cwd}/exp_0_0/academy_rps_only_keeper.scenic"
     scenario = buildScenario(scenario_file)
     PPO_GF_Impala(scenario).train()
+
+
+"""
+HT 0:  on exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic
+ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
+                     clip_range=0.08, gamma=0.993, learning_rate = 0.000343, batch_size=512,
+                     n_epochs=2, ent_coef=0.003, max_grad_norm=0.64,
+                     vf_coef=0.5, gae_lambda = 0.95)
+"""
