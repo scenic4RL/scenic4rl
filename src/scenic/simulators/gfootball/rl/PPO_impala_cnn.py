@@ -133,7 +133,7 @@ class PPO_GF_Impala:
     def train(self):
         ALGO = PPO
         n_eval_episodes = 20
-        total_training_timesteps = 2000000
+        total_training_timesteps = 1000000
         eval_freq = 500
         save_dir = "./saved_models"
         logdir = "./tboard"
