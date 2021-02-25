@@ -151,7 +151,7 @@ class PPO_GF_Impala:
         )
         model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
                      clip_range=0.08, gamma=0.993, learning_rate = 0.0003, batch_size=512,
-                     n_epochs=4, ent_coef=0.003, max_grad_norm=0.64,
+                     n_epochs=8, ent_coef=0.003, max_grad_norm=0.64,
                      vf_coef=0.5, gae_lambda = 0.95)
 
         #eval_callback = EvalCallback(self.eval_env, best_model_save_path=save_dir,

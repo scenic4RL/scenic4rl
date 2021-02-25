@@ -15,4 +15,3 @@ MyGK at -99 @ 0
 MyCF at 0 @ 0
 
 OpGK at 99 @ 0
-#OpCB at 75 @ 10
