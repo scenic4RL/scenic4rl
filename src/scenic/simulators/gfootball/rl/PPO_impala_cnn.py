@@ -132,9 +132,9 @@ class PPO_GF_Impala:
 
     def train(self):
         ALGO = PPO
-        n_eval_episodes = 20
-        total_training_timesteps = 2000000
-        eval_freq = 500
+        n_eval_episodes = 10
+        total_training_timesteps = 500000
+        eval_freq = 20000
         save_dir = "./saved_models"
         logdir = "./tboard"
 
@@ -157,12 +157,12 @@ class PPO_GF_Impala:
         #                             log_path=logdir, eval_freq=eval_freq,
         #                             deterministic=True, render=False)
 
-        #eval_callback = EvalCallback(model.get_env(), eval_freq=eval_freq, deterministic=True, render=False)
+        eval_callback = EvalCallback(model.get_env(), eval_freq=eval_freq, deterministic=True, render=False)
 
 
         currentDT = datetime.datetime.now()
         fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
-        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}_{fstr}") #callback=eval_callback
+        model.learn(total_timesteps=total_training_timesteps, tb_log_name=f"{socket.gethostname()}_{fstr}", callback=eval_callback) #callback=eval_callback
 
         model.save(f"{save_dir}/PPO_impala_cnn_{total_training_timesteps}")
 
