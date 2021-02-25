@@ -82,10 +82,6 @@ class GFScenicEnv(gym.Env):
                                               render=self.allow_render, verbosity=1, gf_env_settings=self.gf_env_settings)
 
         self.gf_gym_env = self.simulation.get_underlying_gym_env()
-        # Define action and observation space
-        #self.action_space = self.gf_gym_env.action_space
-        #self.observation_space = self.gf_gym_env.observation_space
-        #print(id(self.scene), id(self.simulation), id(self.gf_gym_env))
 
         return self.simulation.reset()
 
