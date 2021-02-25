@@ -26,15 +26,17 @@ import datetime
 class UnifromTeacherEnvironment(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, target_task, sub_tasks):
+    def __init__(self, target_task, sub_tasks, use_checkpoint_reward=True):
         all_tasks = [target_task] + sub_tasks
 
         self.target_task = buildScenario(target_task)
         self.sub_tasks = [buildScenario(task) for task in sub_tasks]
-
+        self.use_checkpoint_reward = use_checkpoint_reward
+        if use_checkpoint_reward: rewards = "scoring,checkpoints"
+        else: rewards = "scoring"
         gf_env_settings = {
             "stacked": True,
-            "rewards": 'scoring,checkpoints',
+            "rewards": rewards,
             "representation": 'extracted',
             "players": [f"agent:left_players=1"],
             "real_time": False,
@@ -53,6 +55,7 @@ class UnifromTeacherEnvironment(gym.Env):
         self.action_space = self.target_env.action_space
 
         self.counts = {i:0 for i in range(len(self.all_envs))}
+        self.evaluation = False
 
         """
         #assign name
@@ -69,12 +72,20 @@ class UnifromTeacherEnvironment(gym.Env):
 
     def reset(self):
         #Teacher Algorithm Here
-        sel = random.randint(0, len(self.all_envs)-1)
+        if self.evaluation:
+            sel = 0
+        else:
+            sel = random.randint(0, len(self.all_envs)-1)
+
         self.current_env = self.all_envs[sel]
         self.counts[sel]+=1
-        #print(sel)
+        #print("Evaluation On? ", self.evaluation, "Selected Env", sel)
 
         return self.current_env.reset()
+
+    def set_evalautaion_status(self, status:bool):
+        self.evaluation=status
+        #print(f"setting evaluation status: {self.evaluation}")
 
     def render(self, mode='human', close=False):
         return self.current_env.render(mode=mode, close=close)
