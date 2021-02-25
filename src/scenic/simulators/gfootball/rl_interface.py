@@ -24,11 +24,7 @@ def basic_training(scenario):
     }
 
     rl_env = GFScenicEnv(initial_scenario = scenario, gf_env_settings=gf_env_settings)
-    #run_built_in_ai_game_with_rl_env(rl_env)
-    #pfrl_training.pfrl_training(rl_env)
-
-
-
+    run_built_in_ai_game_with_rl_env(rl_env)
 
 
 def run_built_in_ai_game_with_rl_env(rl_env, trials=3):
@@ -72,40 +68,6 @@ class GFScenicEnv(gym.Env):
         self.action_space = Discrete(19)
 
 
-
-    """
-    def initialize_new_simulation(self, render=False):
-
-
-        #    del self.gf_gym_env
-        #    self.gf_gym_env = None
-        #TODO: Why using create_new_simulation ??? - IF Omitted it doesnt even work!!!!
-        if not self.create_new_simulation:
-            return
-
-        #if self.gf_gym_env is not None:
-        #    self.gf_gym_env.close()
-        # generate a scene from the current scenario
-        self.scene, _ = scenic_helper.generateScene(self.scenario)
-
-        # initialize a new simulation object
-        self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
-                                              render=render, verbosity=1, gf_env_settings=self.gf_env_settings)
-
-        self.gf_gym_env = self.simulation.get_underlying_gym_env()
-        # Define action and observation space
-        self.action_space = self.gf_gym_env.action_space
-        self.observation_space = self.gf_gym_env.observation_space
-
-        self.create_new_simulation = False
-
-
-        #try:
-        #    self.gf_gym_env.render()
-        #except Exception as e:
-        #    print(e)
-    """
-
     def reset(self):
         # Reset the state of the environment to an initial state
 
@@ -139,8 +101,6 @@ class GFScenicEnv(gym.Env):
         # Render the environment to the screen
         #For weird pygame rendering issue, rendering must be called in utilities/env_creator/create_environment
         return None
-
-
 
 
 def test_gfootball_env_wrapper_code():

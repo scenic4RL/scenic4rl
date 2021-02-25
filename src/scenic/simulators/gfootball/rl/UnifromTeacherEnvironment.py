@@ -2,7 +2,7 @@ import random
 import socket
 
 import gym
-from scenic.simulators.gfootball import rl_trainer
+from scenic.simulators.gfootball import rl_interface
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3 import PPO
@@ -41,7 +41,7 @@ class UnifromTeacherEnvironment(gym.Env):
             "action_set": "default"
         }
 
-        from scenic.simulators.gfootball.rl_trainer import GFScenicEnv
+        from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 
         self.target_env = GFScenicEnv(initial_scenario=self.target_task, gf_env_settings=gf_env_settings)
         self.subtask_envs = [GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings) for scenario in self.sub_tasks]
@@ -98,5 +98,5 @@ if __name__ == "__main__":
     ]
 
     env = UnifromTeacherEnvironment(target_task, subtasks)
-    rl_trainer.run_built_in_ai_game_with_rl_env(env, trials=15)
+    rl_interface.run_built_in_ai_game_with_rl_env(env, trials=15)
     #print(env.counts)
