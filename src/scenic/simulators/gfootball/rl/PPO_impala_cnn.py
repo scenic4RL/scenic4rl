@@ -27,6 +27,7 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
         assert is_image_space(observation_space), (
             "You should use CNN only with images"
         )
+        assert features_dim==256, "To replicate the same network"
         n_input_channels = observation_space.shape[0]
 
         self.conv_layers_config = [(16, 2), (32, 2), (32, 2), (32, 2)]
@@ -39,7 +40,9 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
         ]
-        self.pools = [nn.MaxPool2d(kernel_size=3, stride=2) for _ in range(4)]
+
+        #https://www.tensorflow.org/api_docs/python/tf/nn/pool  -> If padding = "SAME": output_spatial_shape[i] = ceil(input_spatial_shape[i] / strides[i])
+        self.pools = [nn.MaxPool2d(kernel_size=3, stride=2, padding=1) for _ in range(4)]
 
         self.resblocks_1 = [
             self.create_basic_res_block(16, 16),
@@ -65,7 +68,7 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
             )
             n_flatten = n_flatten.shape[1]
 
-        self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU()) #n_flatten=480
+        self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU()) #n_flatten=960
 
 
     def create_basic_res_block(self, in_channel, out_channel):
@@ -85,10 +88,13 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
             conv_out = self.conv_blocks[i](conv_out)
             conv_out = self.pools[i](conv_out)
 
-            for j in range(num_blocks):
-                block_input = conv_out
-                conv_out = self.resblocks_1[i](conv_out)
-                conv_out += block_input
+            block_input = conv_out
+            conv_out = self.resblocks_1[i](conv_out)
+            conv_out += block_input
+
+            block_input = conv_out
+            conv_out = self.resblocks_2[i](conv_out)
+            conv_out += block_input
 
         conv_out = self.relu(conv_out)
         conv_out = self.flatten(conv_out)
