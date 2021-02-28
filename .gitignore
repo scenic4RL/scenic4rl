@@ -138,3 +138,4 @@ src/scenic/simulators/gfootball/rl/tboard/C02X32G8JGH5*
 nohup.out
 src/scenic/simulators/gfootball/scene_data/*
 *.param
+*/tboard/*
