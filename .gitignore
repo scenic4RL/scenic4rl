@@ -136,4 +136,5 @@ rl_prac/*.zip
 src/scenic/simulators/gfootball/rl/saved_models/*
 src/scenic/simulators/gfootball/rl/tboard/C02X32G8JGH5*
 nohup.out
-src/scenic/simulators/gfootball/scene_data/dynamic
+src/scenic/simulators/gfootball/scene_data/*
+*.param
