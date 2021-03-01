@@ -139,3 +139,5 @@ nohup.out
 src/scenic/simulators/gfootball/scene_data/*
 *.param
 */tboard/*
+rl_training/tboard/*
+nohup*.out
