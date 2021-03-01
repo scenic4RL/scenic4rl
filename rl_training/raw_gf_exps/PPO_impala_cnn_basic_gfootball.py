@@ -1,19 +1,9 @@
-import socket
-import gym
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
-import os
-import datetime
-from stable_baselines3.common.callbacks import BaseCallback
-from stable_baselines3.common.callbacks import EvalCallback
 import gfootball
 
 from rl_training import train_template
 from rl_training.gfootball_impala_cnn import GfootballImpalaCNN
-
-
-
 
 def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
 
