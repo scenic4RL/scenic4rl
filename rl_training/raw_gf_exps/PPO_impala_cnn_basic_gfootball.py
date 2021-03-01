@@ -10,7 +10,6 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
 
     env = gfootball.env.create_environment(scenario_name, number_of_left_players_agent_controls=1, render=False, representation="extracted",
                                                    rewards=rewards)
-    env = Monitor(env)
     features_extractor_class = GfootballImpalaCNN
 
     train_template.train(env=env, ALGO=PPO, features_extractor_class = features_extractor_class,
