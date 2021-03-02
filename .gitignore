@@ -140,4 +140,6 @@ src/scenic/simulators/gfootball/scene_data/*
 *.param
 */tboard/*
 rl_training/tboard/*
+rl_training/raw_gf_exps/tboard/*
+
 nohup*.out
