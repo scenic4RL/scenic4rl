@@ -2,8 +2,8 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 import gfootball
 
-from rl_training import parallel_train_template
-from rl_training.gfootball_impala_cnn import GfootballImpalaCNN
+import parallel_train_template
+from gfootball_impala_cnn import GfootballImpalaCNN
 
 import time
 import numpy as np
@@ -54,14 +54,14 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
     n_eval_episodes = 10
-    total_training_timesteps = 2000
-    eval_freq = 1000
+    total_training_timesteps = 500000
+    eval_freq = 2000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
     rewards = 'scoring,checkpoints'
 
-    n_procs = 2
+    n_procs = 4
 
     train(scenario_name="academy_empty_goal_close", n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
