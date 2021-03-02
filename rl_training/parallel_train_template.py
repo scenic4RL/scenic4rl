@@ -6,7 +6,7 @@ import datetime
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.callbacks import EvalCallback
 
-
+#from stable_baselines3.common.callbacks import EventCallback
 from stable_baselines3.common.vec_env import VecEnvWrapper
 
 #from stable_baselines3.common.evaluation import ResultsWriter
@@ -41,9 +41,11 @@ class ResultsWriter(object):
             self.logger.writerow(epinfo)
             self.f.flush()
 
+
+
 """SEE https://github.com/hill-a/stable-baselines/issues/470"""
 class VecMonitor(VecEnvWrapper):
-    def __init__(self, venv, filename=None, keep_buf=0, info_keywords=()):
+    def __init__(self, venv, filename=None, keep_buf=0, info_keywords=('g')):
         VecEnvWrapper.__init__(self, venv)
         self.eprets = None
         self.eplens = None
@@ -75,6 +77,7 @@ class VecMonitor(VecEnvWrapper):
         for i in range(len(dones)):
             if dones[i]:
                 info = infos[i].copy()
+                info['g']=0
                 ret = self.eprets[i]
                 eplen = self.eplens[i]
                 epinfo = {'r': ret, 'l': eplen, 't': round(time.time() - self.tstart, 6)}
@@ -96,7 +99,8 @@ def train(env, eval_env, ALGO, features_extractor_class, scenario_name, n_eval_e
     os.makedirs(save_dir, exist_ok=True)
     os.makedirs(logdir, exist_ok=True)
 
-    #env = Monitor(env)
+    env = VecMonitor(env)
+    eval_env = Monitor(eval_env)
 
     policy_kwargs = dict(
         features_extractor_class=features_extractor_class,
@@ -119,7 +123,7 @@ def train(env, eval_env, ALGO, features_extractor_class, scenario_name, n_eval_e
     #                             log_path=logdir, eval_freq=eval_freq,
     #                             deterministic=True, render=False)
 
-    eval_callback = EvalCallback(eval_env, eval_freq=eval_freq, deterministic=True, render=False)
+    #eval_callback = EvalCallback(eval_env, eval_freq=eval_freq, deterministic=True, render=False)
 
     currentDT = datetime.datetime.now()
     fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
@@ -138,10 +142,12 @@ def train(env, eval_env, ALGO, features_extractor_class, scenario_name, n_eval_e
 
     model.save(f"{save_dir}/PPO_impala_cnn_{total_training_timesteps}")
 
-    mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=n_eval_episodes)
+    """
+    mean_reward, std_reward = evaluate_policy(model, eval_env, n_eval_episodes=n_eval_episodes)
 
     eval_str = f"\nEval Mean Rewards: {mean_reward:0.4f} Episodes: {n_eval_episodes}\n"
     print(eval_str)
 
     with open(parameter_out_file_name, "a+") as parout:
         parout.write(eval_str)
+    """
