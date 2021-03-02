@@ -95,7 +95,7 @@ class VecMonitor(VecEnvWrapper):
                 newinfos[i] = info
         return obs, rews, dones, newinfos
 
-def train(env, eval_env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, dump_info):
+def train(env, eval_env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, n_procs, dump_info):
     os.makedirs(save_dir, exist_ok=True)
     os.makedirs(logdir, exist_ok=True)
 
@@ -107,17 +107,22 @@ def train(env, eval_env, ALGO, features_extractor_class, scenario_name, n_eval_e
         features_extractor_kwargs=dict(features_dim=256),
     )
 
+
+    n_steps = 2048//n_procs
+    if n_steps<128: n_steps=128
+
     parameters = dict(clip_range=0.08, gamma=0.993, learning_rate=0.0003,
                       batch_size=512, n_epochs=10, ent_coef=0.003, max_grad_norm=0.64,
-                      vf_coef=0.5, gae_lambda=0.95,
+                      vf_coef=0.5, gae_lambda=0.95, n_steps=n_steps,
                       scenario=scenario_name)
+
 
     model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
                  clip_range=parameters["clip_range"], gamma=parameters["gamma"],
                  learning_rate=parameters["learning_rate"],
                  batch_size=parameters["batch_size"], n_epochs=parameters["n_epochs"], ent_coef=parameters["ent_coef"],
                  max_grad_norm=parameters["max_grad_norm"], vf_coef=parameters["vf_coef"],
-                 gae_lambda=parameters["gae_lambda"])
+                 gae_lambda=parameters["gae_lambda"], n_steps=parameters["n_steps"])
 
     # eval_callback = EvalCallback(self.eval_env, best_model_save_path=save_dir,
     #                             log_path=logdir, eval_freq=eval_freq,

@@ -44,7 +44,7 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
     parallel_train_template.train(env=env, eval_env=eval_env, ALGO=PPO, features_extractor_class = features_extractor_class,
           scenario_name=scenario_name, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "n_procs": n_procs})
+          save_dir=save_dir, logdir=logdir, n_procs=n_procs, dump_info={"rewards": rewards, "n_procs": n_procs})
 
 
 
