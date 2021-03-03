@@ -25,7 +25,7 @@ def make_env(scenario_name, rank, seed=0):
 
     def _init():
         env = gfootball.env.create_environment(scenario_name, number_of_left_players_agent_controls=1, render=False, representation="extracted",
-                                                   rewards=rewards)
+                                               stacked=True, rewards=rewards)
         # Important: use a different seed for each environment
         env.seed(seed + rank)
         return env
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     logdir = f"{cwd}/tboard"
     rewards = 'scoring,checkpoints'
 
-    n_procs = 4
+    n_procs = 8
 
     train(scenario_name="academy_empty_goal_close", n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,

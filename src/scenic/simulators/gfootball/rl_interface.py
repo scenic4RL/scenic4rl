@@ -1,3 +1,5 @@
+from random import randint
+
 import gfootball
 import gym
 #from scenic.simulators.gfootball.rl import pfrl_training
@@ -6,6 +8,7 @@ from gfootball.env import football_action_set
 
 #Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
 from scenic.simulators.gfootball.utilities import scenic_helper
+from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
 
 def basic_training(scenario):
@@ -103,5 +106,42 @@ def test_gfootball_env_wrapper_code():
     env = gfootball.env.create_environment(env="11_vs_11_stochastic", stacked=True, representation='extracted')
 
 
+def lock_step_test():
+    import os
+    cwd = os.getcwd()
+
+    scenario_file = f"{cwd}/rl/exp_0_0/academy_empty_goal_close.scenic"
+    scenario = buildScenario(scenario_file)
+
+    gf_env_settings = {
+        "stacked": True,
+        "rewards": 'scoring,checkpoints',
+        "representation": 'extracted',
+        "players": [f"agent:left_players=1"],
+        "real_time": False,
+        "action_set": "default"
+    }
+
+    from scenic.simulators.gfootball.rl_interface import GFScenicEnv
+    sce_env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+
+    env = gfootball.env.create_environment("academy_empty_goal_close", number_of_left_players_agent_controls=1, render=False,
+                                           representation="extracted", stacked=True,
+                                           rewards="scoring,checkpoints")
+
+    obs_s = sce_env.reset()
+    obs = env.reset()
+
+    import numpy as np
+    print(obs_s.shape, obs.shape)
+    for _ in range(20):
+        a = randint(0,18)
+        o_s, r_s, d_s, i_s  = sce_env.step(a)
+        o, r, d, i = env.step(a)
+        print(a, "scenic", np.sum(o_s), r_s, d_s, i_s, "raw", np.sum(o), r, d, i)
+        if d_s or d : break
+
+
 if __name__=="__main__":
-    test_gfootball_env_wrapper_code()
+    #test_gfootball_env_wrapper_code()
+    lock_step_test()
