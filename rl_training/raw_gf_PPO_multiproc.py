@@ -54,14 +54,14 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
     n_eval_episodes = 10
-    total_training_timesteps = 500000
+    total_training_timesteps = 1000000
     eval_freq = 2000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
     rewards = 'scoring,checkpoints'
 
-    n_procs = 8
+    n_procs = 16 
 
     train(scenario_name="academy_empty_goal_close", n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
