@@ -136,7 +136,7 @@ def lock_step_test():
 
     rew = 0
     rew_s = 0
-    for _ in range(500):
+    for _ in range(10):
         o_s = sce_env.reset()
         prev_s = o_s
         o = env.reset()

@@ -32,6 +32,10 @@ class SceneInfo():
         self.my_players = my_players
         self.op_players = op_players
 
+    def __str__(self):
+        return str(self.ball)  + str (self.my_players)
+
+
 
 def initialize_gfootball_scenario(scene, gameds:GameDS):
     import scenic
@@ -64,6 +68,7 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
             pre = f"data_path = '{data_file_path}'\n"
             code_str = pre+code_str
             #verbosePrint(code_str)
+            #print(code_str)
             gout.write(code_str)
 
     #2. Write data in data file
@@ -83,6 +88,22 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
     #generate player tuples
     own_player_tuples = []
     op_player_tuples = []
+
+    import gfootball_engine as libgame
+    role_map = {"GK": libgame.e_PlayerRole.e_PlayerRole_GK,
+                "CB": libgame.e_PlayerRole.e_PlayerRole_CB,
+                "LB": libgame.e_PlayerRole.e_PlayerRole_LB,
+                "RB": libgame.e_PlayerRole.e_PlayerRole_RB,
+                "DM": libgame.e_PlayerRole.e_PlayerRole_DM,
+                "CM": libgame.e_PlayerRole.e_PlayerRole_CM,
+                "LM": libgame.e_PlayerRole.e_PlayerRole_LM,
+                "RM": libgame.e_PlayerRole.e_PlayerRole_RM,
+                "AM": libgame.e_PlayerRole.e_PlayerRole_AM,
+                "CF": libgame.e_PlayerRole.e_PlayerRole_CF,
+                "CMM": libgame.e_PlayerRole.e_PlayerRole_CM,
+                "CML": libgame.e_PlayerRole.e_PlayerRole_CM,
+                "CMR": libgame.e_PlayerRole.e_PlayerRole_CM,}
+
     for players, player_tuple_array, mirror in zip([gameds.my_players, gameds.op_players],
                                            [own_player_tuples, op_player_tuples],
                                            [False, True]):
@@ -90,16 +111,14 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
             from scenic.simulators.gfootball.utilities.constants import RoleCode
 
             for player in players:
-                import gfootball_engine as libgame
-
                 player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=mirror, mirrory=mirror)
-                player_tup = (player_pos_sim.x, player_pos_sim.y, libgame.e_PlayerRole.e_PlayerRole_GK)
+                player_tup = (player_pos_sim.x, player_pos_sim.y, role_map[player.role])
                 player_tuple_array.append(player_tup)
 
             player_tuple_array.sort(key=lambda x: 0 if x[2] == 'e_PlayerRole_GK' else 1)
 
     scene_info = SceneInfo(params=params_to_write, ball=ball, my_players=own_player_tuples, op_players=op_player_tuples)
-
+    #print(scene_info)
     import pickle
     pickle.dump(scene_info, open(data_file_path, "wb"))
 
