@@ -20,7 +20,7 @@ def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, t
 
     parameters = dict(clip_range=0.08, gamma=0.993, learning_rate=0.0003,
                       batch_size=512, n_epochs=10, ent_coef=0.003, max_grad_norm=0.64,
-                      vf_coef=0.5, gae_lambda=0.95,
+                      vf_coef=0.5, gae_lambda=0.95, n_steps = 2048,
                       scenario=scenario_name)
 
     model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
