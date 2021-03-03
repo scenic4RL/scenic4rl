@@ -129,18 +129,42 @@ def lock_step_test():
                                            representation="extracted", stacked=True,
                                            rewards="scoring,checkpoints")
 
-    obs_s = sce_env.reset()
-    obs = env.reset()
+
 
     import numpy as np
-    print(obs_s.shape, obs.shape)
-    for _ in range(20):
-        a = randint(0,18)
-        o_s, r_s, d_s, i_s  = sce_env.step(a)
-        o, r, d, i = env.step(a)
-        print(a, "scenic", np.sum(o_s), r_s, d_s, i_s, "raw", np.sum(o), r, d, i)
-        if d_s or d : break
 
+
+    rew = 0
+    rew_s = 0
+    for _ in range(500):
+        o_s = sce_env.reset()
+        prev_s = o_s
+        o = env.reset()
+        #print(o_s.shape, o.shape)
+        d_s = False
+        d = False
+        while True:
+            a = randint(0,18)
+
+            if not d_s:
+                #print(a)
+                o_s, r_s, d_s, i_s  = sce_env.step(a)
+                rew_s += i_s["score_reward"]
+            if not d:
+                o, r, d, i = env.step(a)
+                rew += i["score_reward"]
+
+
+            #print(a, "scenic", np.sum(o_s), r_s, d_s, i_s, "raw", np.sum(o), r, d, i)
+            #print((o_s==prev_s).all())
+            #print(np.where(o_s[:,:,2]), np.where(o_s[:,:,3])) # active_player, ball
+            #print(np.where(o[:, :, 2]), np.where(o[:, :, 3]))
+            #print()
+            prev_s=o_s
+            if d_s and d : break
+
+
+    print(rew, rew_s)
 
 if __name__=="__main__":
     #test_gfootball_env_wrapper_code()

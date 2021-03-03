@@ -14,4 +14,4 @@ ego = Ball at 77@0
 MyGK at -99 @ 0
 MyCB at 75 @ 0
 
-OpGK at -97 @ 0
+OpGK at -99 @ -10
