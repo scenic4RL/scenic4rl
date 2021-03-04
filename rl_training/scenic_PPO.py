@@ -1,8 +1,8 @@
 from scenic.simulators.gfootball import rl_interface
 from stable_baselines3 import PPO
 from scenic.simulators.gfootball.rl_interface import GFScenicEnv
-from rl_training import train_template
-from rl_training.gfootball_impala_cnn import GfootballImpalaCNN
+import train_template
+from gfootball_impala_cnn import GfootballImpalaCNN
 
 
 def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
@@ -42,8 +42,8 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_0/academy_empty_goal_close.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 4000
-    eval_freq = 2000
+    total_training_timesteps = 500000
+    eval_freq = 5000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
