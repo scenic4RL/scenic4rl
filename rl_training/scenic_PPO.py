@@ -1,3 +1,4 @@
+from scenic.simulators.gfootball import rl_interface
 from stable_baselines3 import PPO
 from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 from rl_training import train_template
@@ -19,6 +20,9 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
 
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
     features_extractor_class = GfootballImpalaCNN
+
+    #rl_interface.run_built_in_ai_game_with_rl_env(env, trials=50)
+
 
     train_template.train(env=env, ALGO=PPO, features_extractor_class = features_extractor_class,
           scenario_name=scenario_name, n_eval_episodes=n_eval_episodes,

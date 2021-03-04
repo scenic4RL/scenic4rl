@@ -28,15 +28,6 @@ class ScenicWrapper(gym.ObservationWrapper):
         return observation
 
 def create_environment(env_name='',
-                       simulation_obj=None,
-                       stacked=False,
-                       representation=None,
-                       rewards='scoring',
-                       number_of_left_players_agent_controls=1,
-                       number_of_right_players_agent_controls=0,
-                       channel_dimensions=(
-                               observation_preprocessing.SMM_WIDTH,
-                               observation_preprocessing.SMM_HEIGHT),
                        settings={},
                        render = False):
     """Creates a Google Research Football environment.
@@ -115,14 +106,31 @@ def create_environment(env_name='',
     Returns:
       Google Research Football environment.
     """
+
+
+    #simulation_obj=None
+    #stacked=False
+    #representation=None
+    #rewards='scoring'
+    """For now keep it fixed, would need to change once multi agent training is started"""
+    number_of_left_players_agent_controls=1
+    number_of_right_players_agent_controls=0
+    """"""
+
+    channel_dimensions=(
+           observation_preprocessing.SMM_WIDTH,
+           observation_preprocessing.SMM_HEIGHT)
+
+
     assert env_name
 
     #render = settings["render"]
     if "representation" in settings:
         representation = settings["representation"]
+    else: representation=None
+
+    rewards = settings["rewards"]
     stacked = settings["stacked"]
-
-
     dump_frequency = settings["dump_frequency"]
     scenario_config = config.Config({'level': env_name}).ScenarioConfig()
     """

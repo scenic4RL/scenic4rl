@@ -32,16 +32,25 @@ def basic_training(scenario):
 
 def run_built_in_ai_game_with_rl_env(rl_env, trials=3):
     rl_env.render()
-
+    tot_r_arr = []
     for _ in range(trials):
+        tot_r = 0
 
         _ = rl_env.reset()
         #input("Enter to run simulation:\n")
         while True:
             o, r, d, i = rl_env.step([football_action_set.action_shot]) #football_action_set.action_builtin_ai
+            tot_r += r
             #print(r, d, i)
             #input("step?")
             if d: break
+
+        tot_r_arr.append(tot_r)
+
+    print(tot_r_arr)
+
+
+
 
 
 class GFScenicEnv(gym.Env):
