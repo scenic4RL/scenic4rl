@@ -26,22 +26,15 @@ import datetime
 class UnifromTeacherEnvironment(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, target_task, sub_tasks, use_checkpoint_reward=True):
+    def __init__(self, target_task, sub_tasks, gf_env_settings):
         all_tasks = [target_task] + sub_tasks
 
         self.target_task = buildScenario(target_task)
         self.sub_tasks = [buildScenario(task) for task in sub_tasks]
-        self.use_checkpoint_reward = use_checkpoint_reward
-        if use_checkpoint_reward: rewards = "scoring,checkpoints"
-        else: rewards = "scoring"
-        gf_env_settings = {
-            "stacked": True,
-            "rewards": rewards,
-            "representation": 'extracted',
-            "players": [f"agent:left_players=1"],
-            "real_time": False,
-            "action_set": "default"
-        }
+        #self.use_checkpoint_reward = use_checkpoint_reward
+        #if use_checkpoint_reward: rewards = "scoring,checkpoints"
+        #else: rewards = "scoring"
+
 
         from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 
@@ -79,7 +72,7 @@ class UnifromTeacherEnvironment(gym.Env):
 
         self.current_env = self.all_envs[sel]
         self.counts[sel]+=1
-        #print("Evaluation On? ", self.evaluation, "Selected Env", sel)
+        #print("Evaluation Status? ", self.evaluation, "Selected Env", sel)
 
         return self.current_env.reset()
 
@@ -98,6 +91,15 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
+    gf_env_settings = {
+        "stacked": True,
+        "rewards": 'scoring,checkpoints',
+        "representation": 'extracted',
+        "players": [f"agent:left_players=1"],
+        "real_time": False,
+        "action_set": "default"
+    }
+
     # scenario_file = f"{cwd}/academy/academy_run_pass_and_shoot_with_keeper.scenic"
 
     # n_task = 3
@@ -108,6 +110,6 @@ if __name__ == "__main__":
         f"{cwd}/exp_0_0/test_env_3.scenic"
     ]
 
-    env = UnifromTeacherEnvironment(target_task, subtasks)
+    env = UnifromTeacherEnvironment(target_task, subtasks, gf_env_settings)
     rl_interface.run_built_in_ai_game_with_rl_env(env, trials=15)
     #print(env.counts)

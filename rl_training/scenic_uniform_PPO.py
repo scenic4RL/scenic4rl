@@ -1,11 +1,18 @@
-from scenic.simulators.gfootball import rl_interface
+import socket
+import warnings
+from typing import Union
+import gym
+from scenic.simulators.gfootball.rl.UnifromTeacherEnvironment import UnifromTeacherEnvironment
+from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3 import PPO
-from scenic.simulators.gfootball.rl_interface import GFScenicEnv
-import train_template
+from stable_baselines3.common.monitor import Monitor
+import datetime
+import numpy as np
 from gfootball_impala_cnn import GfootballImpalaCNN
+import train_template
 
 
-def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
+def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
     gf_env_settings = {
         "stacked": True,
         "rewards": 'scoring,checkpoints',
@@ -15,17 +22,14 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
         "action_set": "default"
     }
 
-    from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
-    scenario = buildScenario(scenario_file)
-
-    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+    env = UnifromTeacherEnvironment(target_task=target_scenario, sub_tasks=subtask_scenarios, gf_env_settings=gf_env_settings)
     features_extractor_class = GfootballImpalaCNN
 
     #rl_interface.run_built_in_ai_game_with_rl_env(env, trials=50)
 
 
     train_template.train(env=env, ALGO=PPO, features_extractor_class = features_extractor_class,
-          scenario_name=scenario_name, n_eval_episodes=n_eval_episodes,
+          scenario_name=target_scenario, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
           save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards})
 
@@ -38,6 +42,14 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
+    target_task = f"{cwd}/exp_0_2/academy_rps_only_keeper.scenic"
+    subtasks = [
+        f"{cwd}/exp_0_2/no_keeper.scenic",
+        f"{cwd}/exp_0_2/no_keeper_close.scenic",
+        f"{cwd}/exp_0_2/no_keeper_no_pass.scenic",
+        f"{cwd}/exp_0_2/rps_with_keeper_close.scenic"
+    ]
+
     scenario_file = f"{cwd}/exp_0_0/academy_rps_only_keeper.scenic"
     n_eval_episodes = 5
     total_training_timesteps = 10000
@@ -48,10 +60,6 @@ if __name__ == "__main__":
     rewards = 'scoring,checkpoints'
     print(save_dir, logdir)
 
-    train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
+    train(target_task, subtasks, n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
           save_dir=save_dir, logdir=logdir, rewards=rewards)
-
-"""
-HT 0:  academy_empty_goal_close
-"""
