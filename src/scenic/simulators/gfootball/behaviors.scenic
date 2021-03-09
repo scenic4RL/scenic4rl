@@ -20,9 +20,108 @@ def set_dir_if_not(action, sticky_actions):
         return NoAction()
 
 
+behavior IdleBehavior():
+    while True:
+        take NoAction()
+
+
+behavior RunInCircle():
+    while True:
+        for i in range(1,9):
+            print(i)
+            do MoveInDirection(i) for 1 seconds
+
+behavior MoveInDirection(direction_code):
+    while True:
+        take SetDirection(direction_code)
+
+
+'''
+Move a player to follow the object (e.g. Ball)'s position
+'''
+behavior FollowObject(object_to_follow, sprint=False, opponent=False):
+    while True:
+        #ball = simulation().game_ds.ball
+        x = object_to_follow.position.x
+        y = object_to_follow.position.y
+        #print(x,y)
+
+        self_x = self.position.x
+        self_y = self.position.y
+
+        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+
+        if opponent:
+            corresponding_dir = lookup_direction(self_x-x, self_y-y)
+        else:
+            corresponding_dir = lookup_direction(x - self_x, y - self_y)
+
+        if distance < 0.5:
+            if sprint:
+                take ReleaseSprint()
+            take ReleaseDirection()
+        else:
+            take SetDirection(corresponding_dir)
+            if sprint:
+                take Sprint()
+'''
+Move a player to position x,y
+'''
+behavior MoveToPosition(x, y, sprint=False, opponent=False):
+    while True:
+        #ball = simulation().game_ds.ball
+
+        self_x = self.position.x
+        self_y = self.position.y
+
+        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+
+        if opponent:
+            corresponding_dir = lookup_direction(self_x - x, self_y - y)
+        else:
+            corresponding_dir = lookup_direction(x - self_x, y - self_y)
+
+        if distance < 0.5:
+            if sprint:
+                take ReleaseSprint()
+            take ReleaseDirection()
+            break
+        else:
+            take SetDirection(corresponding_dir)
+            if sprint:
+                take Sprint()
+
+        # print(self.x, self.y, direction, corresponding_dir)
+
+'''
+Pass the ball to player.
+'''
+behavior PassToPlayer(player, pass_type="long"):
+    do PassToPoint(player.position.x, player.position.y, pass_type)
+
+behavior PassToPoint(x, y, pass_type="long"):
+    assert pass_type in ("long", "short", "high", "shoot")
+    if (not self.owns_ball):
+        print("Warning: Player don't have ball for passing!")
+
+    self_x = self.position.x
+    self_y = self.position.y
+
+    # aim at target player
+    # do MoveInDirection(lookup_direction(x - self_x, y - self_y)) for 0.3 seconds
+    while self.owns_ball:
+        take SetDirection(lookup_direction(x - self_x, y - self_y))
+
+        if pass_type == "shoot":
+            take Shoot()
+        else:
+            take Pass(pass_type)
+
+
 behavior BuiltinAIBot():
     while True:
         take BuiltinAIAction()
+
 
 
 behavior RunRight():
@@ -56,7 +155,7 @@ behavior GreedyPlay():
             dir_angle = math.degrees(angle from self to right_goal_midpoint)
             ang_wrto_x = dir_angle + 90
             if ang_wrto_x>180: ang_wrto_x -= 360
-            elif ang_wrto_x<-180: ang_wrto_x += 360
+            elif ang_wrto_x < -180: ang_wrto_x += 360
 
             if dis_to_goal<35 or self in right_pbox:
                 sticky_dir = bool(sum(self.sticky_actions[0:8]))
