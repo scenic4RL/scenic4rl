@@ -16,6 +16,7 @@ trainer = ppo.PPOTrainer(env="my_env", config={
 
 ----
 custom model: https://docs.ray.io/en/stable/rllib-models.html 
+model options: https://github.com/ray-project/ray/blob/master/rllib/models/catalog.py 
 vison net example: https://github.com/ray-project/ray/blob/master/rllib/models/torch/visionnet.py
 
 from ray.rllib.models import ModelCatalog

@@ -1,6 +1,8 @@
 from ray import tune
 from ray.rllib.agents.ppo import PPOTrainer
 from ray.tune.registry import register_env
+from ray import tune
+
 """
 tune.run(PPOTrainer, config={"env": "CartPole-v0", "framework": "torch"})  # "log_level": "INFO" for verbose,
                                                      # "framework": "tfe"/"tf2" for eager,
@@ -31,6 +33,8 @@ def env_creator(env_config):
 
 ray.init()
 register_env("my_env", env_creator)
+
+"""
 #trainer = ppo.PPOTrainer(env="my_env")
 trainer = ppo.PPOTrainer(env="my_env", config={
 
@@ -45,6 +49,31 @@ trainer = ppo.PPOTrainer(env="my_env", config={
     
 })
 
+
 for i in range(10):
     print("training loop iter: ", i)
     trainer.train()
+"""
+from ray.rllib.agents.ppo import PPOTrainer
+tune.run(PPOTrainer, config={"env": "my_env", 
+"num_workers": 4,
+'model': {
+                'dim':96,
+              'conv_filters': [
+                  [96,16,96]
+              ],
+              'fcnet_hiddens': [256, 256],
+              'use_lstm': False,
+          }
+}) 
+
+"""
+why the recurring error AttributeError: module 'gfootball.scenarios.dynamic' has no attribute 'build_scenario'?? - gets solved after input
+
+
+also solve the following
+
+scene_info = pickle.load(open(data_path, "rb"))
+EOFError: Ran out of input
+
+"""
