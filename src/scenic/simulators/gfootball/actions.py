@@ -41,6 +41,16 @@ class Shoot(Action):
     def __str__(self):
         return "shoot"
 
+class Dribble(Action):
+    def __init__(self):
+        self.code = constants.ActionCode.dribble
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "dribble"
+
 class Sprint(Action):
     def __init__(self):
         self.code = constants.ActionCode.sprint
@@ -60,6 +70,26 @@ class ReleaseDirection(Action):
 
     def __str__(self):
         return "release Direction"
+
+class ReleaseDribble(Action):
+    def __init__(self):
+        self.code = constants.ActionCode.release_dribble
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "release dribble"
+
+class ReleaseSprint(Action):
+    def __init__(self):
+        self.code = constants.ActionCode.release_sprint
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "release sprint"
 
 class NoAction(Action):
     def __init__(self):
@@ -81,7 +111,7 @@ class BuiltinAIAction(Action):
     def __str__(self):
         return "Built-in AI"
 
-class Sliding(Action):
+class Slide(Action):
     def __init__(self):
         self.code = ActionCode.sliding
 
@@ -89,9 +119,27 @@ class Sliding(Action):
         pass
 
     def __str__(self):
-        return "sliding"
+        return "slide"
+
+class MoveTowardsPoint(Action):
+    def __init__(self, x, y, self_x, self_y, opponent = False):
+        self.x = x
+        self.y = y
+        self.opponent = opponent
 
 
+        if opponent:
+            corresponding_dir = lookup_direction(self_x - x, self_y - y)
+        else:
+            corresponding_dir = lookup_direction(x - self_x, y - self_y)
+
+        self.code = corresponding_dir
+
+    def applyTo(self, obj, sim):
+        pass
+
+    def __str__(self):
+        return "MoveTowardsPoint {}, {}, op={}".format(self.x, self.y, self.opponent)
 
 # ------Helper Functions------
 def lookup_direction(dx, dy):
@@ -104,3 +152,35 @@ def lookup_direction(dx, dy):
     action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
     corresponding_dir = action_lookup[round(direction / 45)]
     return corresponding_dir
+
+
+def player_with_ball(ds, ball, team=None):
+    """
+    Return the player with ball. Use team=0,1 to specify team
+    @param ds:
+    @param ball:
+    @param team: 0 or 1
+    @return:
+    """
+    assert (team is None) or (team in (0,1))
+    if (team is not None) and (team != ball.owned_team):
+        return None
+
+    if (ball.owned_team == 0):
+        return ds.my_players[ball.owned_player_idx]
+    if (ball.owned_team == 1):
+        return ds.op_players[ball.owned_player_idx]
+    return None
+
+def get_closest_player_dis(position, players):
+    min_distance = None
+    closest_player = None
+
+    for p in players:
+        dist = math.sqrt(math.pow(p.x - position[0], 2) + math.pow(p.y - position[1], 2))
+        if dist == 0:
+            continue
+        if min_distance is None or dist < min_distance:
+            closest_player = p
+            min_distance = dist
+    return closest_player, min_distance

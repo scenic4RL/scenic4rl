@@ -28,6 +28,7 @@ behavior IdleBehavior():
 behavior RunInCircle():
     while True:
         for i in range(1,9):
+            print(i)
             do MoveInDirection(i) for 1 seconds
 
 behavior MoveInDirection(direction_code):
@@ -35,11 +36,38 @@ behavior MoveInDirection(direction_code):
         take SetDirection(direction_code)
 
 
+'''
+Move a player to follow the object (e.g. Ball)'s position
+'''
+behavior FollowObject(object_to_follow, sprint=False, opponent=False):
+    while True:
+        #ball = simulation().game_ds.ball
+        x = object_to_follow.position.x
+        y = object_to_follow.position.y
+        #print(x,y)
 
+        self_x = self.position.x
+        self_y = self.position.y
+
+        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+
+        if opponent:
+            corresponding_dir = lookup_direction(self_x-x, self_y-y)
+        else:
+            corresponding_dir = lookup_direction(x - self_x, y - self_y)
+
+        if distance < 0.5:
+            if sprint:
+                take ReleaseSprint()
+            take ReleaseDirection()
+        else:
+            take SetDirection(corresponding_dir)
+            if sprint:
+                take Sprint()
 '''
 Move a player to position x,y
 '''
-behavior MoveToPosition(x, y, sprint=False):
+behavior MoveToPosition(x, y, sprint=False, opponent=False):
     while True:
         #ball = simulation().game_ds.ball
 
@@ -48,10 +76,16 @@ behavior MoveToPosition(x, y, sprint=False):
 
         distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
 
-        corresponding_dir = lookup_direction(x-self_x, y-self_y)
+        if opponent:
+            corresponding_dir = lookup_direction(self_x - x, self_y - y)
+        else:
+            corresponding_dir = lookup_direction(x - self_x, y - self_y)
 
-        if distance < 0.2:
+        if distance < 0.5:
+            if sprint:
+                take ReleaseSprint()
             take ReleaseDirection()
+            break
         else:
             take SetDirection(corresponding_dir)
             if sprint:
@@ -61,32 +95,32 @@ behavior MoveToPosition(x, y, sprint=False):
 
 '''
 Pass the ball to player.
-TODO: check owns ball or not
 '''
 behavior PassToPlayer(player, pass_type="long"):
+    do PassToPoint(player.position.x, player.position.y, pass_type)
+
+behavior PassToPoint(x, y, pass_type="long"):
     assert pass_type in ("long", "short", "high", "shoot")
+    if (not self.owns_ball):
+        print("Warning: Player don't have ball for passing!")
 
     self_x = self.position.x
     self_y = self.position.y
 
     # aim at target player
-    do MoveInDirection(lookup_direction(player.position.x - self_x, player.position.y - self_y)) for 0.5 seconds
+    # do MoveInDirection(lookup_direction(x - self_x, y - self_y)) for 0.3 seconds
+    while self.owns_ball:
+        take SetDirection(lookup_direction(x - self_x, y - self_y))
 
-    if pass_type == "shoot":
-        take Shoot()
-    else:
-        take Pass(pass_type)
+        if pass_type == "shoot":
+            take Shoot()
+        else:
+            take Pass(pass_type)
 
 
 behavior BuiltinAIBot():
     while True:
         take BuiltinAIAction()
-
-# TODO: may not be necessary
-# behavior AimAndShoot(goal="right"):
-#     assert goal in ("left", "right")
-#     area = left_goal if goal=="left" else right_goal
-#     do MoveInDirection(lookup_direction(player.position.x - self_x, player.position.y - self_y)) for 0.5 seconds
 
 
 

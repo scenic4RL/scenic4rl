@@ -4,43 +4,68 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
 param game_duration = 600
 param deterministic = False
+param offsides = False
 
+# ----- Constants -----
+init_target_distance = 35
 
-behavior PassRunReceive():
-    print(target_point.x, target_point.y)
+danger_cone_angle = 80 deg
+danger_cone_radius = 20
 
-    do PassToPlayer(a2, "short")
+pass_distance = 10
+
+behavior PassRunReceive(target_point):
+    ds = simulation().game_ds
+    teammate, _ = get_closest_player_dis(self.position, ds.my_players)
+
+    do FollowObject(ball) until self.owns_ball
+    do PassToPlayer(teammate, "short")
     print("first pass. Now start running")
-    do MoveToPosition(target_point.x, target_point.y, True) until (self.owns_ball and (distance from self to target_point)<2)
+    do MoveToPosition(target_point.x, target_point.y, sprint=True) until self.owns_ball
     print("received ball")
 
-    do BuiltinAIBot()
+    do IdleBehavior() for 2 seconds
+    terminate
 
+
+behavior SafePass():
+    while True:
+        if not self.owns_ball:
+            print("No Ball!!!")
+        else:
+            danger_cone = SectorRegion(self, danger_cone_radius, self.heading, danger_cone_angle)
+            safe_players = [p for p in simulation().game_ds.my_players if p not in danger_cone]
+            print("pass")
+            do PassToPlayer(get_closest_player_dis(self.position, safe_players)[0], "short")
+            break
 
 behavior WaitThenPass():
-    do IdleBehavior() until (self.owns_ball and (distance from a1 to target_point) < 2)
-    print("pass back")
-    do PassToPlayer(a1, "short")
-    do BuiltinAIBot()
+    ds = simulation().game_ds
+    try:
+        do IdleBehavior()
+    interrupt when (self.owns_ball and get_closest_player_dis(self.position, ds.op_players)[1] < pass_distance):
+        do SafePass()
 
-ego = MyGK with behavior IdleBehavior()
+# ----- Set up players -----
+ego = MyGK facing toward right_goal_midpoint, with behavior IdleBehavior()
+o0 = OpGK facing toward left_goal_midpoint, with behavior IdleBehavior()
 
-a1_pos = Point on LeftReg_CM
-view_cone = SectorRegion(a1_pos, 50, -1.59, 40 deg) # center, radius, heading, angle
+p1_pos = Point on workspace
+relative_target_heading = Range(-179,179) deg
+target_pos = Point at p1_pos offset along relative_target_heading by 0 @ init_target_distance
+require (target_pos in workspace)
 
-a2_pos = Point at Range(10, 15) @ Range(10, 15) relative to a1_pos
-require(not a2_pos in view_cone)
+o1_pos = Point at p1_pos offset along relative_target_heading by 0 @ init_target_distance/2
+require (o1_pos in workspace)
 
-target_point = Point at Range(20, 25) @ Range(-15, -10) relative to a1_pos
-require(not target_point in view_cone)
+# spawn teammates on the sides
+teammate_h = Uniform(-1,1) * danger_cone_angle/2 relative to relative_target_heading
+teammate_pt = Point at p1_pos offset along teammate_h by 0 @ danger_cone_radius
+require (teammate_pt in workspace)
+
+ball = Ball ahead of p1_pos by 3
+p1 = MyPlayer with role "CM", at p1_pos, with behavior PassRunReceive(target_pos)
+p2 = MyPlayer with role "CM", at teammate_pt, with behavior WaitThenPass()
+o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(ball, opponent=True)
 
 
-a1 = MyPlayer with role "CM", facing toward right_goal_midpoint, at a1_pos, with behavior PassRunReceive()
-a2 = MyPlayer with role "CM", at a2_pos, with behavior WaitThenPass()
-
-# TODO: add enemy when the freeze bug is fixed
-#o1 = OpPlayer with role "CF", ahead of a1 by 10, with behavior IdleBehavior()
-o0 = OpGK with behavior IdleBehavior()
-
-#Ball
-ball = Ball ahead of a1 by 3

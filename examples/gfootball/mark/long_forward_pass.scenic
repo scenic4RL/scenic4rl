@@ -8,32 +8,43 @@ param deterministic = False
 
 
 behavior GetThenPass(target):
-    #do BuiltinAIBot() until self.owns_ball
-    print("pass")
-    do PassToPlayer(target, "high")
+    do IdleBehavior() until (self.owns_ball and (distance from a2 to target_point) < 15)
+    do PassToPoint(target.x, target.y, "high")
+    print("finish passing")
     # do MoveToPosition(o0.position.x, o0.position.y)
     do IdleBehavior()
 
 behavior RunForwardAndShoot():
     do MoveToPosition(target_point.x, target_point.y, True) until self.owns_ball
-    print("shoot")
-    take Shoot()
-    do IdleBehavior()
+    while self.owns_ball:
+        take Shoot()
+        print("shoot")
+    do BuiltinAIBot()
 
+behavior CatchOrTerminate():
+    print(self.heading)
+    try:
+        do IdleBehavior()
+    interrupt when self.owns_ball:
+        print(self.heading)
+        do BuiltinAIBot() for 2 seconds
+        terminate
 
-target_point = Point on RightReg_GK
-#require (distance from right_goal_midpoint to target_point) < 10
+target_cone = SectorRegion(right_goal_midpoint, 40, 90 deg, 60 deg) # 90 deg=left
+target_point = Point on target_cone
+require (distance from target_point to right_goal_midpoint) > 20
 
 ego = MyGK with behavior IdleBehavior()
 
-#a2 = MyPlayer with role "CF", on RightReg_LB, facing toward right_goal_midpoint, with behavior RunForwardAndShoot()
+a2 = MyPlayer with role "CF", on Uniform(RightReg_LB, RightReg_RB, RightReg_CB), facing toward target_point, with behavior RunForwardAndShoot()
 
-a1 = MyPlayer with role "CB", on LeftReg_CF, with behavior GetThenPass(target_point)
+a1 = MyPlayer with role "CB", on Uniform(LeftReg_CF, LeftReg_LM, LeftReg_RM), facing toward right_goal_midpoint, with behavior GetThenPass(target_point)
 
 
 
-o0 = OpGK with behavior IdleBehavior()
+o0 = OpGK facing toward left_goal_midpoint, with behavior CatchOrTerminate()
 #o1 = OpPlayer with role "CB", with behavior MoveToPosition(0,0)
 
 
-ball = Ball ahead of a1 by 8
+# ball = Ball ahead of a1 by 8
+ball = Ball ahead of a1 by 15
