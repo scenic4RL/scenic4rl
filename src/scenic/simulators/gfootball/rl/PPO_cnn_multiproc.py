@@ -27,7 +27,7 @@ class PPOScenicBasic:
             "real_time": False
         }
 
-        from scenic.simulators.gfootball.rl_trainer import GFScenicEnv
+        from scenic.simulators.gfootball.rl_interface import GFScenicEnv
         self.rl_env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
         # run_built_in_ai_game_with_rl_env(rl_env)
         # pfrl_training.pfrl_training(rl_env)

@@ -3,7 +3,7 @@ https://stackoverflow.com/questions/37987839/how-can-i-run-tensorboard-on-a-remo
 ssh -L 16006:127.0.0.1:6006 olivier@my_server_ip
 ssh -L <local_port>:127.0.0.1:<server_port>  -i
 
-ssh -L 16006:127.0.0.1:6006 -i "raywiz-test.pem" ubuntu@ec2-34-216-63-194.us-west-2.compute.amazonaws.com
+ssh -L 16006:127.0.0.1:6006 -i "raywiz-test.pem" ubuntu@ec2-34-223-110-130.us-west-2.compute.amazonaws.com
 
 tensorboard --logdir tboard/ &
 

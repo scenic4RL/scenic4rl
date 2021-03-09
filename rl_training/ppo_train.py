@@ -9,7 +9,7 @@ from stable_baselines3.common.policies import ActorCriticCnnPolicy
 import os
 
 # Create save dir
-from rl_training.gf_impala_cnn import Custom_Basic_CNN
+from rl_training.gfootball_impala_cnn import Custom_Basic_CNN
 
 ALGO = PPO
 n_eval_episodes = 10

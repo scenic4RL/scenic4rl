@@ -19,24 +19,15 @@ A wrapper which saves the raw state for scenic, the simulator can access `latest
 """
 class ScenicWrapper(gym.ObservationWrapper):
 
-    def __init__(self, env, simulation_obj):
+    def __init__(self, env):
         gym.ObservationWrapper.__init__(self, env)
-        self.simulation_obj = simulation_obj
+        #self.simulation_obj = simulation_obj
 
     def observation(self, observation):
         self.latest_raw_observation = observation
         return observation
 
 def create_environment(env_name='',
-                       simulation_obj=None,
-                       stacked=False,
-                       representation=None,
-                       rewards='scoring',
-                       number_of_left_players_agent_controls=1,
-                       number_of_right_players_agent_controls=0,
-                       channel_dimensions=(
-                               observation_preprocessing.SMM_WIDTH,
-                               observation_preprocessing.SMM_HEIGHT),
                        settings={},
                        render = False):
     """Creates a Google Research Football environment.
@@ -115,14 +106,31 @@ def create_environment(env_name='',
     Returns:
       Google Research Football environment.
     """
+
+
+    #simulation_obj=None
+    #stacked=False
+    #representation=None
+    #rewards='scoring'
+    """For now keep it fixed, would need to change once multi agent training is started"""
+    number_of_left_players_agent_controls=1
+    number_of_right_players_agent_controls=0
+    """"""
+
+    channel_dimensions=(
+           observation_preprocessing.SMM_WIDTH,
+           observation_preprocessing.SMM_HEIGHT)
+
+
     assert env_name
 
     #render = settings["render"]
     if "representation" in settings:
         representation = settings["representation"]
+    else: representation=None
+
+    rewards = settings["rewards"]
     stacked = settings["stacked"]
-
-
     dump_frequency = settings["dump_frequency"]
     scenario_config = config.Config({'level': env_name}).ScenarioConfig()
     """
@@ -161,7 +169,7 @@ def create_environment(env_name='',
 
     env = football_env.FootballEnv(c)
 
-    env = ScenicWrapper(env, simulation_obj)
+    env = ScenicWrapper(env)
     scenic_wrapper = env
     """
     if multiagent_to_singleagent:
@@ -179,7 +187,6 @@ def create_environment(env_name='',
             env, rewards, representation, channel_dimensions,
             (number_of_left_players_agent_controls +
              number_of_right_players_agent_controls == 1), stacked)
-
 
 
     if render:

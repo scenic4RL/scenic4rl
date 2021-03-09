@@ -14,6 +14,9 @@ def generateScene(scenario, verbosity=0, show_params=False):
         if show_params:
             for param, value in scene.params.items():
                 print(f'    Parameter "{param}": {value}')
+
+    scene.name = scenario.name
+    scene.scenic_file = scenario.scenic_file
     return scene, iterations
 
 
@@ -27,4 +30,10 @@ def buildScenario(scenic_file, param=[], model=None, scenario=None):
                                             model=model,
                                             scenario=scenario)
     )
+
+    si = scenic_file.rfind("/") + 1
+    ei = scenic_file.rfind(".")
+    scenario.name = scenic_file[si:ei]
+    scenario.scenic_file = scenic_file
+
     return scenario

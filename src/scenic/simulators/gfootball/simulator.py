@@ -14,7 +14,7 @@ from scenic.simulators.gfootball.interface import update_objects_from_obs, gener
 	update_control_index
 from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
-from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario, get_default_settings
+from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario#, get_default_settings
 from scenic.syntax.veneer import verbosePrint
 from scenic.core.simulators import Simulator, Simulation
 
@@ -50,10 +50,11 @@ class GFootBallSimulator(Simulator):
 
 		self.settings = scene.params.copy()
 
+		"""
 		verbosePrint(f"Parameters: ")
 		for setting, option in self.settings.items():
 			verbosePrint(f'{setting}: {self.settings[setting]}')
-
+		"""
 		return GFootBallSimulation(scene=scene, settings = self.settings,
 								   timestep=self.timestep,
 							   render=self.render, record=self.record,
@@ -89,6 +90,7 @@ class GFootBallSimulation(Simulation):
 		#self.render = self.gf_env_settings["render"]
 
 		self.env = self.create_gfootball_environment()
+		#self.first_time = True
 
 		if not for_gym_env:
 			self.reset()
@@ -100,23 +102,38 @@ class GFootBallSimulation(Simulation):
 	def create_gfootball_environment(self):
 		from scenic.simulators.gfootball.utilities import env_creator
 
-
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
-		initialize_gfootball_scenario(self.scene, self.game_ds)
-
-		env, self.scenic_wrapper = env_creator.create_environment(env_name=self.gf_env_settings["level"], simulation_obj=self, settings=self.gf_env_settings, render=self.render)
+		level_name = initialize_gfootball_scenario(self.scene, self.game_ds)
+		#print("creating gfootball with level: ", level_name)
+		#self.render=False
+		#print("Game Level", self.gf_env_settings["level"])
+		env, self.scenic_wrapper = env_creator.create_environment(env_name=level_name, settings=self.gf_env_settings, render=self.render)
 		return env
 
 	"""Initializes simulation from self.scene, in case of RL training a new scene is generated from self.scenario"""
 	def reset(self):
+		#if not self.first_time:
+		#	self.env.close()
+		#	self.env = self.create_gfootball_environment()
+		#print("in simulator reset")
+		#print("id self.env", id(self.env))
+		#print("id scenic_wrapper", id(self.scenic_wrapper))
+
 
 		obs = self.env.reset()
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
+		#print("id last_obs", id(self.scenic_wrapper.latest_raw_observation))
+		#print(f"game_ds", id(self.game_ds))
+		#print("in simulator: ball: ", self.last_raw_obs[0]["ball"])
+		#print("In Reset Simulation")
+		#self.game_ds.print_mini()
+
 
 		update_control_index(self.last_raw_obs, gameds=self.game_ds)
 		update_objects_from_obs(self.last_raw_obs, self.game_ds)
 		self.done = False
 
+		#self.first_time = False
 		return obs
 
 	"""
@@ -171,7 +188,6 @@ class GFootBallSimulation(Simulation):
 			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
 
-
 	def get_base_gfootball_env(self):
 		return self.env
 
@@ -215,7 +231,6 @@ class GFootBallSimulation(Simulation):
 			action_to_take = action
 		else:
 			action_to_take = self.action
-
 
 
 		obs, rew, self.done, info = self.env.step(action_to_take)

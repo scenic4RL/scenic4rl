@@ -39,6 +39,15 @@ class GameDS:
 			  f"   Own: {player.owns_ball}{prev_pos}")
 
 	@staticmethod
+	def player_str_mini(player):
+		return f"{player.role}  ({player.position.x:0.2f}, {player.position.y:0.2f})"
+
+	@staticmethod
+	def ball_str_mini(ball):
+
+		return f"({ball.position.x:0.2f}, {ball.position.y:0.2f})"
+
+	@staticmethod
 	def ball_str(ball):
 
 		return (f"P: ({ball.position.x:0.2f}, {ball.position.y:0.2f})   D: {math.degrees(ball.direction):0.2f}"
@@ -56,6 +65,25 @@ class GameDS:
 
 		print("ball")
 		print(self.ball_str(self.ball))
+
+		print()
+		print()
+
+	def print_mini(self):
+
+		print("Ball: ", self.ball_str_mini(self.ball))
+		print()
+
+		print(f"My Team ({len(self.my_players)})")
+		for mp in self.my_players:
+			print(self.player_str_mini(mp))
+
+		print()
+		print(f"Op Team({len(self.op_players)})")
+		for op in self.op_players:
+			print(self.player_str_mini(op))
+
+
 
 		print()
 		print()

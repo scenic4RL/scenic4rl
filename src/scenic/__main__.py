@@ -107,6 +107,11 @@ scenario = errors.callBeginningScenicTrace(
                                         model=args.model,
                                         scenario=args.scenario)
 )
+si = args.scenicFile.rfind("/") + 1
+ei = args.scenicFile.rfind(".")
+scenario.name = args.scenicFile[si:ei]
+scenario.scenic_file = args.scenicFile
+
 totalTime = time.time() - startTime
 if args.verbosity >= 1:
     print(f'Scenario constructed in {totalTime:.2f} seconds.')
@@ -125,6 +130,10 @@ def generateScene():
         if args.show_params:
             for param, value in scene.params.items():
                 print(f'    Parameter "{param}": {value}')
+
+    scene.name = scenario.name
+    scene.scenic_file = scenario.scenic_file
+
     return scene, iterations
 
 def runSimulation(scene):
@@ -155,8 +164,8 @@ def runRLTraining():
     try:
         #from scenic.simulators.gfootball.rl_trainer import basic_training
         #rl_env = simulator.createSimulation(scene, verbosity=args.verbosity, rl_env=True, scenarios=[scenario])
-        from scenic.simulators.gfootball.rl.PPO_cnn_basic import PPO_cnn_basic
-        PPO_cnn_basic(scenario).train()
+        from scenic.simulators.gfootball.rl.PPO_cnn_basic import PPOScenicBasic
+        PPOScenicBasic(scenario).train()
         #print(rl_env)
         #basic_training(scenario)
 
