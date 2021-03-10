@@ -52,3 +52,9 @@ n_procs = 2
 # We will create one environment to evaluate the agent on
 eval_env = gym.make(env_id)
 #make_vec_env(env_id, n_envs=n_procs, vec_env_cls=SubprocVecEnv, vec_env_kwargs=dict(start_method='spawn'))
+
+train_env = SubprocVecEnv([make_env(env_id, i) for i in range(n_procs)], start_method='spawn')
+print("Env Created")
+train_env.close()
+print("Env Closed")
+

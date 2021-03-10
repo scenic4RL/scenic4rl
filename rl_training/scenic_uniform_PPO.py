@@ -51,9 +51,9 @@ if __name__ == "__main__":
     ]
 
     scenario_file = f"{cwd}/exp_0_0/academy_rps_only_keeper.scenic"
-    n_eval_episodes = 5
-    total_training_timesteps = 10000
-    eval_freq = 2000
+    n_eval_episodes = 10
+    total_training_timesteps = 1000000
+    eval_freq = 5000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
