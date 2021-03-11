@@ -25,7 +25,10 @@ def env_creator(env_config):
             }
 
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
-    scenario_file = f"academy_empty_goal_close.scenic"
+    import os
+    cwd = os.getcwd()
+    print("CWD: ", cwd)
+    scenario_file = f"{cwd}/academy_empty_goal_close.scenic"
     scenario = buildScenario(scenario_file)
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
     print("env instance created")
