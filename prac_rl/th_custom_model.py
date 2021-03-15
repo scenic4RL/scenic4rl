@@ -1,35 +1,27 @@
-from ray import tune
-from ray.rllib.agents.ppo import PPOTrainer
-from ray.tune.registry import register_env
-from ray import tune
-import sonnet as snt
-
 import gym, ray
-from ray.rllib.agents import ppo
-from scenic.simulators.gfootball.rl_interface import GFScenicEnv
-
-import argparse
-import os
-
+from ray.tune.registry import register_env
+import numpy as np
 import ray
 from ray import tune
-from ray.rllib.agents.dqn.distributional_q_tf_model import \
-    DistributionalQTFModel
 from ray.rllib.models import ModelCatalog
-from ray.rllib.models.tf.misc import normc_initializer
 from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
-#from ray.rllib.models.tf.tf_modelv2 import TFModelV2
-#from ray.rllib.models.tf.visionnet import VisionNetwork as MyVisionNetwork
-from ray.rllib.policy.policy import LEARNER_STATS_KEY
-from ray.rllib.policy.sample_batch import DEFAULT_POLICY_ID
-#from ray.rllib.utils.framework import try_import_tf
 
-#tf1, tf, tfv = try_import_tf()
 from ray.rllib.utils.framework import try_import_tf, try_import_torch
 torch, nn = try_import_torch() 
 
-def env_creator(env_config):
+class DummyGFEnv(gym.Env):
+    def __init__(self):
+        self.observation_space = gym.spaces.Box(low=0, high=255, shape=(72, 96, 16), dtype=np.uint8)
+        self.action_space = gym.spaces.discrete.Discrete(19)
 
+    def reset(self):
+        return np.zeros((72,96,16), dtype=np.uint8)
+
+    def step(self, action):
+        return np.zeros((72,96,16), dtype=np.uint8), 0, False, {}
+
+def env_creator(env_config):
+    from scenic.simulators.gfootball.rl_interface import GFScenicEnv
     gf_env_settings = {
                 "stacked": True,
                 "rewards": 'scoring,checkpoints',
@@ -44,7 +36,10 @@ def env_creator(env_config):
     scenario = buildScenario(scenario_file)
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
     print("env instance created")
-    return env 
+    return env
+
+def dummy_env_creator(something):
+    return DummyGFEnv()
 
 ray.init()
 
@@ -62,12 +57,6 @@ class GFImpalaTorch(TorchModelV2, nn.Module):
 
     def __init__(self, obs_space, action_space, num_outputs, model_config,
                  name):
-        # Pass num_outputs=None into super constructor (so that no action/
-        # logits output layer is built).
-        # Alternatively, you can pass in num_outputs=[last layer size of
-        # config[model][fcnet_hiddens]] AND set no_last_linear=True, but
-        # this seems more tedious as you will have to explain users of this
-        # class that num_outputs is NOT the size of your Q-output layer.
         nn.Module.__init__(self)
         super(GFImpalaTorch, self).__init__(obs_space, action_space, None,
                                                  model_config, name)
@@ -102,17 +91,6 @@ class GFImpalaTorch(TorchModelV2, nn.Module):
 
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
-
-
-        # Compute shape by doing one forward pass
-        """
-        with th.no_grad():
-            n_flatten = self.feat_extract(
-                th.as_tensor(observation_space.sample()[None]).float()
-            )
-            n_flatten = n_flatten.shape[1]
-        """
-
         self.linear = nn.Sequential(nn.Linear(960, 256), nn.ReLU()) #n_flatten=960, features_dim = 256
 
 
@@ -162,11 +140,9 @@ class GFImpalaTorch(TorchModelV2, nn.Module):
         value_out = torch.reshape(self._output, [-1])
         print("ZZZZ value function out shape", value_out.shape)
         return value_out
-    
 
 
-
-register_env("my_env", env_creator)
+register_env("my_env", dummy_env_creator)
 ModelCatalog.register_custom_model("gf_impala_cnn_ppo_torch", GFImpalaTorch)
 
 

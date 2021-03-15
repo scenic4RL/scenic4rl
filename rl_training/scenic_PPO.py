@@ -30,8 +30,6 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
           save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards})
 
 
-
-
 if __name__ == "__main__":
 
     import os

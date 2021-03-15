@@ -74,7 +74,7 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
         )
 
     def feat_extract(self, observations: th.Tensor) -> th.Tensor:
-        observations = th.FloatTensor(observations)
+        observations = observations.float()
         observations /= 255
 
         conv_out = observations
