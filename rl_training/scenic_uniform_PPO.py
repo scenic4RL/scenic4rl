@@ -15,7 +15,7 @@ import train_template
 def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
     gf_env_settings = {
         "stacked": True,
-        "rewards": 'scoring,checkpoints',
+        "rewards": rewards,
         "representation": 'extracted',
         "players": [f"agent:left_players=1"],
         "real_time": False,
@@ -31,7 +31,7 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
     train_template.train(env=env, ALGO=PPO, features_extractor_class = features_extractor_class,
           scenario_name=target_scenario, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards})
+          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "uniform curriculum": "True"})
 
 
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
-    rewards = 'scoring,checkpoints'
+    rewards = 'scoring' #'scoring,checkpoints'
     print(save_dir, logdir)
 
     train(target_task, subtasks, n_eval_episodes = n_eval_episodes,
