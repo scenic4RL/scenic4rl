@@ -4,6 +4,7 @@ from stable_baselines3.common.preprocessing import is_image_space
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from torch import nn
 import torch as th
+import torch
 
 
 class GfootballImpalaCNN(BaseFeaturesExtractor):
@@ -24,6 +25,10 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
         assert features_dim==256, "To replicate the same network"
         n_input_channels = observation_space.shape[0]
 
+
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        print("device: ", self.device)
+
         self.conv_layers_config = [(16, 2), (32, 2), (32, 2), (32, 2)]
         self.pool = nn.MaxPool2d(kernel_size=3, stride=2)
 
@@ -34,6 +39,9 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
         ]
+
+        #if "cuda" in self.device.type:
+        #    self.conv_blocks = [c.cuda() for c in self.conv_blocks]
 
         #https://www.tensorflow.org/api_docs/python/tf/nn/pool  -> If padding = "SAME": output_spatial_shape[i] = ceil(input_spatial_shape[i] / strides[i])
         self.pools = [nn.MaxPool2d(kernel_size=3, stride=2, padding=1) for _ in range(4)]
@@ -51,18 +59,32 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
             self.create_basic_res_block(32, 32)
         ]
 
+        if "cuda" in self.device.type:
+            self.conv_blocks = [c.cuda() for c in self.conv_blocks]
+            self.resblocks_1 = [c.cuda() for c in self.resblocks_1]
+            self.resblocks_2 = [c.cuda() for c in self.resblocks_2]
+
         self.relu = nn.ReLU()
         self.flatten = nn.Flatten()
 
+        #print("flatten", self.conv_blocks[0].is_cuda) 
 
         # Compute shape by doing one forward pass
+        """
         with th.no_grad():
             n_flatten = self.feat_extract(
                 th.as_tensor(observation_space.sample()[None]).float()
             )
             n_flatten = n_flatten.shape[1]
-
+        """
+        n_flatten = 960
         self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU()) #n_flatten=960
+
+        
+
+    
+
+        
 
 
     def create_basic_res_block(self, in_channel, out_channel):
@@ -74,12 +96,17 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
         )
 
     def feat_extract(self, observations: th.Tensor) -> th.Tensor:
+        #observations = observations.to(self.device)
         observations = observations.float()
         observations /= 255
 
         conv_out = observations
         for i in range(4):
+            #print("", i)
+            #print(" 1. conv_out.is_cuda() ", conv_out.is_cuda)
+            #print("     conv block weight", self.conv_blocks[i].weight.is_cuda)
             conv_out = self.conv_blocks[i](conv_out)
+            #print(" 2. conv_out.is_cuda() ", conv_out.is_cuda)
             conv_out = self.pools[i](conv_out)
 
             block_input = conv_out
@@ -89,9 +116,13 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
             block_input = conv_out
             conv_out = self.resblocks_2[i](conv_out)
             conv_out += block_input
+            #print(" 3. conv_out.is_cuda() ", conv_out.is_cuda)
 
+        #print(" before relu . conv_out.is_cuda() ", conv_out.is_cuda)
         conv_out = self.relu(conv_out)
+        #print(" after relu . conv_out.is_cuda() ", conv_out.is_cuda)
         conv_out = self.flatten(conv_out)
+        #print(" after flatten . conv_out.is_cuda() ", conv_out.is_cuda)
         return conv_out
 
     def forward(self, observations: th.Tensor) -> th.Tensor:
