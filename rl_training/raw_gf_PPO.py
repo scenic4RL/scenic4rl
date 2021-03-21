@@ -2,8 +2,8 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
 import gfootball
 
-from rl_training import train_template
-from rl_training.gfootball_impala_cnn import GfootballImpalaCNN
+import train_template
+from gfootball_impala_cnn import GfootballImpalaCNN
 
 def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
 
@@ -25,15 +25,15 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
     n_eval_episodes = 10
-    total_training_timesteps = 2000
-    eval_freq = 10000
+    total_training_timesteps = 1000000
+    eval_freq = 20000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
     rewards = 'scoring,checkpoints'
     print(save_dir, logdir)
 
-    train(scenario_name="academy_empty_goal_close", n_eval_episodes = n_eval_episodes,
+    train(scenario_name="academy_run_pass_and_shoot_with_keeper", n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
           save_dir=save_dir, logdir=logdir, rewards=rewards)
 
