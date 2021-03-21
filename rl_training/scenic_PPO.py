@@ -5,15 +5,23 @@ import train_template
 from gfootball_impala_cnn import GfootballImpalaCNN
 
 
-def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
+def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards):
     gf_env_settings = {
         "stacked": True,
         "rewards": 'scoring,checkpoints',
         "representation": 'extracted',
         "players": [f"agent:left_players=1"],
         "real_time": False,
-        "action_set": "default"
+        "action_set": "default",
+        "dump_full_episodes": True, 
+        "dump_scores":True, 
+        "write_video": True, 
+        "tracesdir": tracedir, 
+        "write_full_episode_dumps": True, 
+        "write_goal_dumps": True,
+        "render": True
     }
+    #write_full_episode_dumps maybe redundant
 
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
     scenario = buildScenario(scenario_file)
@@ -38,17 +46,19 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_0/academy_rps_only_keeper.scenic"
     n_eval_episodes = 5
-    total_training_timesteps = 20000
+    total_training_timesteps = 10000
     eval_freq = 5000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
+    tracedir = f"{cwd}/game_trace"
     rewards = 'scoring,checkpoints'
-    print(save_dir, logdir)
+    
+    print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, rewards=rewards)
+          save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards)
 
 """
 HT 0:  academy_empty_goal_close
