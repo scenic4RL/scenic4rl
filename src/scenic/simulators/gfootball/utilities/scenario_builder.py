@@ -49,7 +49,14 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
     level_name = get_level_name(module_path, scene)
 
     out_file_name = f"{module_path}/{level_name}.py"
-    data_file_path = scenic.__path__[0] + f"/simulators/gfootball/scene_data/{level_name}"
+
+
+    data_file_dir = scenic.__path__[0] + f"/simulators/gfootball/scene_data"
+    import os 
+    os.makedirs(data_file_dir, exist_ok=True)
+    data_file_path = f"{data_file_dir}/{level_name}"
+    
+
 
     #1. Write file in gf/scenarios folder
 
