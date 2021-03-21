@@ -44,10 +44,10 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    scenario_file = f"{cwd}/exp_0_0/academy_rps_only_keeper.scenic"
-    n_eval_episodes = 5
-    total_training_timesteps = 10000
-    eval_freq = 5000
+    scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
+    n_eval_episodes = 10
+    total_training_timesteps = 500000
+    eval_freq = 20000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
