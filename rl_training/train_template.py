@@ -137,8 +137,7 @@ class MyEvalCallback(EventCallback):
             self.callback.update_locals(locals_)
 
 
-
-def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, dump_info):
+def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, dump_info, override_params={}):
     os.makedirs(save_dir, exist_ok=True)
     os.makedirs(logdir, exist_ok=True)
 
@@ -153,6 +152,8 @@ def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, t
                       batch_size=512, n_epochs=10, ent_coef=0.003, max_grad_norm=0.64,
                       vf_coef=0.5, gae_lambda=0.95, n_steps = 2048,
                       scenario=scenario_name)
+
+    parameters.update(override_params)
 
     model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
                  clip_range=parameters["clip_range"], gamma=parameters["gamma"],

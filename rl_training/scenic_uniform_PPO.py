@@ -12,7 +12,7 @@ from gfootball_impala_cnn import GfootballImpalaCNN
 import train_template
 
 
-def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards):
+def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards, params):
     gf_env_settings = {
         "stacked": True,
         "rewards": rewards,
@@ -38,7 +38,8 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
     train_template.train(env=env, ALGO=PPO, features_extractor_class = features_extractor_class,
           scenario_name=target_scenario, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "uniform curriculum": "True"})
+          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "uniform curriculum": "True"}, 
+          override_params=params)
 
 
 
@@ -63,13 +64,14 @@ if __name__ == "__main__":
     n_eval_episodes = 10
     total_training_timesteps = 500000
     eval_freq = 10000
+    override_params = {"n_steps": 4096}
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
     tracedir = f"{cwd}/game_trace"
-    rewards = 'scoring,checkpoints' #'scoring,checkpoints'
+    rewards = 'scoring' #'scoring,checkpoints'
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     train(target_task, subtasks, n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards)
+          save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, params=override_params)
