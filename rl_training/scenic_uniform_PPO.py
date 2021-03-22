@@ -12,14 +12,21 @@ from gfootball_impala_cnn import GfootballImpalaCNN
 import train_template
 
 
-def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, rewards):
+def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards):
     gf_env_settings = {
         "stacked": True,
         "rewards": rewards,
         "representation": 'extracted',
         "players": [f"agent:left_players=1"],
         "real_time": False,
-        "action_set": "default"
+        "action_set": "default",
+        "dump_full_episodes": True, 
+        "dump_scores":True, 
+        "write_video": False, 
+        "tracesdir": tracedir, 
+        "write_full_episode_dumps": True, 
+        "write_goal_dumps": True,
+        "render": False
     }
 
     env = UnifromTeacherEnvironment(target_task=target_scenario, sub_tasks=subtask_scenarios, gf_env_settings=gf_env_settings)
@@ -42,24 +49,27 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    target_task = f"{cwd}/exp_0_2/academy_rps_only_keeper.scenic"
+    target_task = f"{cwd}/exp_0_3/academy_run_pass_and_shoot_with_keeper.scenic"
     subtasks = [
-        f"{cwd}/exp_0_2/no_keeper.scenic",
-        f"{cwd}/exp_0_2/no_keeper_close.scenic",
-        f"{cwd}/exp_0_2/no_keeper_no_pass.scenic",
-        f"{cwd}/exp_0_2/rps_with_keeper_close.scenic"
+        f"{cwd}/exp_0_3/sub_0.scenic",
+        f"{cwd}/exp_0_3/sub_1.scenic",
+        f"{cwd}/exp_0_3/sub_2.scenic",
+        f"{cwd}/exp_0_3/sub_3.scenic",
+        f"{cwd}/exp_0_3/sub_4.scenic",
+        f"{cwd}/exp_0_3/sub_5.scenic",
     ]
 
-    scenario_file = f"{cwd}/exp_0_0/academy_rps_only_keeper.scenic"
+    scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 1000000
-    eval_freq = 5000
+    total_training_timesteps = 500000
+    eval_freq = 10000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard"
-    rewards = 'scoring' #'scoring,checkpoints'
-    print(save_dir, logdir)
+    tracedir = f"{cwd}/game_trace"
+    rewards = 'scoring,checkpoints' #'scoring,checkpoints'
+    print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     train(target_task, subtasks, n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, rewards=rewards)
+          save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards)
