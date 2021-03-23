@@ -27,7 +27,7 @@ gf_env_settings = {
     "render": True
 }
 
-scenario_file = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
+scenario_file = f"{cwd}/exp_0_4/sub3.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 

@@ -20,12 +20,12 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
         "players": [f"agent:left_players=1"],
         "real_time": False,
         "action_set": "default",
-        "dump_full_episodes": True, 
-        "dump_scores":True, 
+        "dump_full_episodes": False,
+        "dump_scores": False,
         "write_video": False, 
         "tracesdir": tracedir, 
-        "write_full_episode_dumps": True, 
-        "write_goal_dumps": True,
+        "write_full_episode_dumps": False,
+        "write_goal_dumps": False,
         "render": False
     }
 
@@ -50,20 +50,18 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    target_task = f"{cwd}/exp_0_3/academy_run_pass_and_shoot_with_keeper.scenic"
+    target_task = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
     subtasks = [
-        f"{cwd}/exp_0_3/sub_0.scenic",
-        f"{cwd}/exp_0_3/sub_1.scenic",
-        f"{cwd}/exp_0_3/sub_2.scenic",
-        f"{cwd}/exp_0_3/sub_3.scenic",
-        f"{cwd}/exp_0_3/sub_4.scenic",
-        f"{cwd}/exp_0_3/sub_5.scenic",
+        f"{cwd}/exp_0_4/sub0.scenic",
+        f"{cwd}/exp_0_4/sub1.scenic",
+        f"{cwd}/exp_0_4/sub2.scenic",
+        f"{cwd}/exp_0_4/sub3.scenic"
     ]
 
     scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 5000000
-    eval_freq = 10000
+    total_training_timesteps = 10000
+    eval_freq = 5000
     override_params = {"n_steps": 4096, "batch_size": 1024}
 
     save_dir = f"{cwd}/saved_models"
