@@ -13,13 +13,13 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
         "players": [f"agent:left_players=1"],
         "real_time": False,
         "action_set": "default",
-        "dump_full_episodes": False, 
-        "dump_scores":False, 
-        "write_video": False, 
+        "dump_full_episodes": True,
+        "dump_scores": False,
+        "write_video": True,
         "tracesdir": tracedir, 
-        "write_full_episode_dumps": False, 
-        "write_goal_dumps": False,
-        "render": False
+        "write_full_episode_dumps": True,
+        "write_goal_dumps": True,
+        "render": True
     }
     #write_full_episode_dumps maybe redundant
 
@@ -44,9 +44,9 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
+    scenario_file = f"{cwd}/exp_0_3/sub_0.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 500000
+    total_training_timesteps = 2000
     eval_freq = 10000
 
     save_dir = f"{cwd}/saved_models"
