@@ -44,22 +44,23 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    scenario_file = f"{cwd}/exp_0_3/sub_0.scenic"
+
+    scenario_file = f"{cwd}/exp_0_3/academy_run_pass_and_shoot_with_keeper.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 2000
+    total_training_timesteps = 5000000
     eval_freq = 10000
 
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard/hp"
+    logdir = f"{cwd}/tboard/saved"
     tracedir = f"{cwd}/game_trace"
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
-    params = {}
+    override_params = {"n_steps": 4096}
     train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
                     total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-                    save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, override_params=params)
+                    save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, override_params=override_params)
 
     """
     #for HT
