@@ -35,7 +35,8 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
     train_template.train(env=env, ALGO=PPO, features_extractor_class = features_extractor_class,
           scenario_name=scenario_name, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards}, override_params=override_params)
+          save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards}, override_params=override_params,
+                         rewards=rewards)
 
 
 if __name__ == "__main__":
@@ -47,7 +48,7 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_3/academy_run_pass_and_shoot_with_keeper.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 5000000
+    total_training_timesteps = 5000
     eval_freq = 10000
 
     save_dir = f"{cwd}/saved_models"

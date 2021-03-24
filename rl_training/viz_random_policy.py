@@ -27,14 +27,19 @@ gf_env_settings = {
     "render": True
 }
 
-scenario_file = f"{cwd}/exp_0_4/sub3.scenic"
+scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
 env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
 
-for _ in range(2):
+import gfootball
+
+#env = gfootball.env.create_environment("academy_pass_and_shoot_with_keeper", number_of_left_players_agent_controls=1, render=False, representation="extracted",
+#                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
+
+for _ in range(1):
     env.reset()
 
     done = False
