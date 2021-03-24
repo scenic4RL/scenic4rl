@@ -5,7 +5,7 @@ import train_template
 from gfootball_impala_cnn import GfootballImpalaCNN
 
 
-def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards, override_params={}):
+def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards, override_params={}, dump_traj=False, write_video=False):
     gf_env_settings = {
         "stacked": True,
         "rewards": rewards,
@@ -13,13 +13,13 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
         "players": [f"agent:left_players=1"],
         "real_time": False,
         "action_set": "default",
-        "dump_full_episodes": True,
-        "dump_scores": False,
-        "write_video": True,
+        "dump_full_episodes": dump_traj,
+        "dump_scores": dump_traj,
+        "write_video": write_video,
         "tracesdir": tracedir, 
-        "write_full_episode_dumps": True,
-        "write_goal_dumps": True,
-        "render": True
+        "write_full_episode_dumps": dump_traj,
+        "write_goal_dumps": dump_traj,
+        "render": write_video
     }
     #write_full_episode_dumps maybe redundant
 
@@ -46,14 +46,14 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
 
-    scenario_file = f"{cwd}/exp_0_3/academy_run_pass_and_shoot_with_keeper.scenic"
+    scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 5000
+    total_training_timesteps = 2500000
     eval_freq = 10000
 
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard/saved"
-    tracedir = f"{cwd}/game_trace"
+    logdir = f"{cwd}/tboard/exp_0_5"
+    tracedir = f"{cwd}/game_trace_exp_0_5_no_cur"
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
@@ -61,7 +61,8 @@ if __name__ == "__main__":
     override_params = {"n_steps": 4096}
     train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
                     total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-                    save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, override_params=override_params)
+                    save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, override_params=override_params,
+                    dump_traj=True, write_video=False)
 
     """
     #for HT
