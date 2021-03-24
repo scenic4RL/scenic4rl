@@ -42,8 +42,6 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
           override_params=params)
 
 
-
-
 if __name__ == "__main__":
 
     import os
