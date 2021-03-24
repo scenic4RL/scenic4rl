@@ -39,7 +39,7 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
           scenario_name=target_scenario, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
           save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "uniform curriculum": "True"}, 
-          override_params=params)
+          override_params=params, rewards=rewards)
 
 
 if __name__ == "__main__":

@@ -3,3 +3,5 @@
 0.24, <>, 50, 12.0, scoring, /Users/azadsalam/codebase/scenic/rl_training/exp_0_4/sub3.scenic
 -0.08, <>, 50, -4.0, scoring, /Users/azadsalam/codebase/scenic/rl_training/exp_0_5/academy_pass_and_shoot_with_keeper.scenic
 -0.02, 1, 50, -1.0, scoring, /Users/azadsalam/codebase/scenic/rl_training/exp_0_5/academy_pass_and_shoot_with_keeper.scenic
+-0.08, 0, 100, -8.0, scoring, /Users/azadsalam/codebase/scenic/rl_training/exp_0_3/academy_run_pass_and_shoot_with_keeper.scenic
+-0.02, 3, 100, -2.0, scoring, /Users/azadsalam/codebase/scenic/rl_training/exp_0_5/academy_pass_and_shoot_with_keeper.scenic

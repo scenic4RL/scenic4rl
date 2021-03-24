@@ -33,7 +33,7 @@ scenario = buildScenario(scenario_file)
 
 env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
-trials = 50
+trials = 100
 all_rews = []
 for _ in range(trials):
     env.reset()
