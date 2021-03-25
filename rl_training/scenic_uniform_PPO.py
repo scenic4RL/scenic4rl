@@ -12,7 +12,7 @@ from gfootball_impala_cnn import GfootballImpalaCNN
 import train_template
 
 
-def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards, params):
+def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards, override_params={}, dump_traj=False, write_video=False):
     gf_env_settings = {
         "stacked": True,
         "rewards": rewards,
@@ -20,13 +20,13 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
         "players": [f"agent:left_players=1"],
         "real_time": False,
         "action_set": "default",
-        "dump_full_episodes": False,
-        "dump_scores": False,
-        "write_video": False, 
+        "dump_full_episodes": dump_traj,
+        "dump_scores": dump_traj,
+        "write_video": write_video, 
         "tracesdir": tracedir, 
-        "write_full_episode_dumps": False,
-        "write_goal_dumps": False,
-        "render": False
+        "write_full_episode_dumps": dump_traj,
+        "write_goal_dumps": dump_traj,
+        "render": write_video
     }
 
     env = UnifromTeacherEnvironment(target_task=target_scenario, sub_tasks=subtask_scenarios, gf_env_settings=gf_env_settings)
@@ -39,7 +39,7 @@ def train(target_scenario, subtask_scenarios, n_eval_episodes, total_training_ti
           scenario_name=target_scenario, n_eval_episodes=n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
           save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "uniform curriculum": "True"}, 
-          override_params=params, rewards=rewards)
+          override_params=override_params, rewards=rewards)
 
 
 if __name__ == "__main__":
@@ -48,26 +48,26 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     print("Current working Directory: ", cwd)
 
-    target_task = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
+    target_task = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
     subtasks = [
-        f"{cwd}/exp_0_4/sub0.scenic",
-        f"{cwd}/exp_0_4/sub1.scenic",
-        f"{cwd}/exp_0_4/sub2.scenic",
-        f"{cwd}/exp_0_4/sub3.scenic"
+        f"{cwd}/exp_0_5/sub0.scenic",
+        f"{cwd}/exp_0_5/sub1.scenic",
+        f"{cwd}/exp_0_5/sub2.scenic",
+        f"{cwd}/exp_0_5/sub3.scenic",
+        f"{cwd}/exp_0_5/sub4.scenic"
     ]
 
-    scenario_file = f"{cwd}/exp_0_0/academy_run_pass_and_shoot_with_keeper.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 10000
-    eval_freq = 5000
-    override_params = {"n_steps": 4096, "batch_size": 1024}
-
+    total_training_timesteps = 2500000
+    eval_freq = 10000
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard"
+    logdir = f"{cwd}/tboard/exp_0_5"
     tracedir = f"{cwd}/game_trace"
     rewards = 'scoring' #'scoring,checkpoints'
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
+    override_params = {"n_steps": 4096}
     train(target_task, subtasks, n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-          save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, params=override_params)
+          save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, 
+          override_params=override_params, dump_traj=True, write_video=False)
