@@ -27,7 +27,8 @@ gf_env_settings = {
     "render": True
 }
 
-scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
+#scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
+scenario_file = f"{cwd}/exp_0_5/sub4.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
