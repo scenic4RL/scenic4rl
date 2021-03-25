@@ -46,23 +46,42 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
 
-    scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
+    scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper_short.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 2500000
-    eval_freq = 10000
+    total_training_timesteps = 1000000
+    eval_freq = 25000
 
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard/exp_0_5"
-    tracedir = f"{cwd}/game_trace_exp_0_5_no_cur"
+    logdir = f"{cwd}/tboard/hp_exp_0_5_short_no_cur"
+    tracedir = f"{cwd}/game_trace_exp_0_5_short_no_cur_hp"
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
-    override_params = {"n_steps": 4096}
-    train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
-                    total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
-                    save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, override_params=override_params,
-                    dump_traj=True, write_video=False)
+
+    param_list = [
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 4},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.08,  'learning_rate': 0.000343, 'gamma': 0.993, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0001, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0003, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0001, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0003, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0001, 'gamma': 0.997, 'n_epochs': 4},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 4},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0003, 'gamma': 0.997, 'n_epochs': 4},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0001, 'gamma': 0.997, 'n_epochs': 4},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 4},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0003, 'gamma': 0.997, 'n_epochs': 4},
+    ]
+
+    for override_params in param_list:
+        train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
+                        total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
+                        save_dir=save_dir, logdir=logdir, tracedir=tracedir, rewards=rewards, override_params=override_params,
+                        dump_traj=False, write_video=False)
 
     """
     #for HT

@@ -66,6 +66,7 @@ if __name__ == "__main__":
     rewards = 'scoring' #'scoring,checkpoints'
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
+
     override_params = {"n_steps": 4096}
     train(target_task, subtasks, n_eval_episodes = n_eval_episodes,
           total_training_timesteps=total_training_timesteps, eval_freq=eval_freq,
