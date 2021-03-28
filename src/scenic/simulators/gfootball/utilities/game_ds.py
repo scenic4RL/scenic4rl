@@ -15,6 +15,12 @@ class GameDS:
 	def get_num_op_players(self):
 		return len(self.op_players)
 
+	def initialize_player_idx_map(self, left_idx_to_player, left_player_to_idx, right_idx_to_player, right_player_to_idx):
+		self.left_idx_to_player = left_idx_to_player
+		self.left_player_to_idx = left_player_to_idx
+		self.right_idx_to_player = right_idx_to_player
+		self.right_player_to_idx = right_player_to_idx
+
 	def initialize_ctrl_idx_map(self, ctrl_idx_to_player, player_to_ctrl_idx):
 		self.ctrl_idx_to_player = ctrl_idx_to_player
 		self.player_to_ctrl_idx = player_to_ctrl_idx
@@ -40,7 +46,8 @@ class GameDS:
 
 	@staticmethod
 	def player_str_mini(player):
-		return f"{player.role}  ({player.position.x:0.2f}, {player.position.y:0.2f})"
+		#return f"{player.role}  ({player.position.x:0.2f}, {player.position.y:0.2f})"
+		return f"{player.role}  ({player.position.x:0.2f}, {player.position.y:0.2f}) Controlled: {player.is_controlled} Owns: {player.owns_ball}"
 
 	@staticmethod
 	def ball_str_mini(ball):

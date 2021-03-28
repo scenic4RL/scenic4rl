@@ -10,15 +10,15 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 
+ego = Ball at 2 @ 0
 
-ego = Ball at 75 @ 18
-
-MyGK at -99 @ 0, with behavior BuiltinAIBot()
-MyCB at 85 @ 0,  with behavior BuiltinAIBot()
-MyCM at 75 @ 20, with behavior BuiltinAIBot()
-
-OpGK at 99.5 @ -3
-OpCB at 80 @ 20
+MyGK at -98 @ 0, with behavior BuiltinAIBot()
+MyCB at 0 @ 0  , with behavior BuiltinAIBot()
 
 
-require always ego.x > 50
+OpGK at -98 @ -41
+OpLB at -12 @ -20
+OpCB at -12 @ -10
+OpCM at -12 @ 0
+OpCB at -12 @ 10
+OpRB at -12 @ 20

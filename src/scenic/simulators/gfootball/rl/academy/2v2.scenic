@@ -18,3 +18,6 @@ MyAM at 65 @ 8
 
 OpGK at 99.5 @ 4
 OpRB at 65 @ -5
+
+#builtin ai 100 out of 100,
+#random performance  7/100  [mean  0.07 out of 100 trials]

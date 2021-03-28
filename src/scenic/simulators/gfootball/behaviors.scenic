@@ -24,6 +24,14 @@ behavior IdleBehavior():
     while True:
         take NoAction()
 
+behavior JustShoot():
+    while True:
+        take Shoot()
+
+behavior JustPass():
+    while True:
+        take Pass()
+
 
 behavior RunInCircle():
     while True:

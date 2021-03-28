@@ -1,4 +1,5 @@
 import math
+from pprint import pprint
 
 from scenic.core.vectors import Vector
 from scenic.simulators.gfootball.utilities import translator
@@ -59,6 +60,124 @@ def get_closest_player(position, players):
             min_distance = dist
     return closest_player
 
+def update_index_ds(last_obs, gameds:GameDS):
+
+    obs = last_obs[0]
+    team_prefixes = ["left_team", "right_team"]
+
+    left_idx_to_player={}
+    left_player_to_idx={}
+    right_idx_to_player={}
+    right_player_to_idx={}
+
+    for tp in team_prefixes:
+
+        if tp == "left_team":
+            idx_to_player = left_idx_to_player
+            player_to_idx = left_player_to_idx
+        else:
+            idx_to_player = right_idx_to_player
+            player_to_idx = right_player_to_idx
+
+        for idx in range(obs[f'{tp}_roles'].shape[0]):
+            role = obs[f'{tp}_roles'][idx]
+            pos_sim = obs[tp][idx]
+            # mirrorx = True if tp=="right_team" else False
+            player_arr = gameds.my_players if tp == "left_team" else gameds.op_players
+            pos_scenic = translator.pos_sim_to_scenic(pos_sim)
+            closest_player = get_closest_player(pos_scenic, player_arr)
+            #print(tp, idx, pos_scenic, closest_player.position, closest_player, pos_sim)
+
+            idx_to_player[idx] = closest_player
+            player_to_idx[closest_player] = idx
+
+    gameds.initialize_player_idx_map(left_idx_to_player, left_player_to_idx, right_idx_to_player, right_player_to_idx)
+
+    #print(".")
+    """
+    print()
+    pprint(gameds.left_idx_to_player)
+    pprint(gameds.left_player_to_idx)
+    pprint(gameds.right_idx_to_player)
+    pprint(gameds.right_player_to_idx)
+    """
+
+def update_objects_from_obs_single_rl_agent(last_obs, gameds):
+    obs = last_obs[0]
+    team_prefixes = ["left_team", "right_team"]
+
+    for tp in team_prefixes:
+
+        if tp == "left_team":
+            idx_to_player = gameds.left_idx_to_player
+            player_to_idx = gameds.left_player_to_idx
+        else:
+            idx_to_player = gameds.right_idx_to_player
+            player_to_idx = gameds.right_player_to_idx
+
+        for idx in range(obs[f'{tp}_roles'].shape[0]):
+            player = idx_to_player[idx]
+
+            #read from  observation
+            pos_sim = obs[tp][idx]
+            direction_sim = obs[f"{tp}_direction"][idx]
+            tired = obs[f"{tp}_tired_factor"][idx]
+            yellows = obs[f"{tp}_yellow_card"][idx]
+            active = bool(obs[f"{tp}_active"][idx])
+
+
+            #calculate required properties
+            pos_scenic = translator.pos_sim_to_scenic(pos_sim)
+            direction = get_angle_from_direction(direction_sim)
+            red_card = not active
+            yellows = int(yellows)
+
+
+
+            #update player
+            player.position_prev = player.position
+            player.position = pos_scenic
+            player.position_sim = pos_sim
+            player.direction = direction
+            player.direction_sim = direction_sim
+            player.heading = direction
+            player.tired_factor = tired
+            player.red_card = red_card
+            player.yellow_cards = yellows
+            player.owns_ball = False           #it is updated later in this method
+            player.is_controlled = False       #it is updated later in this method
+            player.velocity, player.speed = get_velocity_and_speed(player.position, player.position_prev)
+            player.sticky_actions = None       #it is updated later in this method
+
+
+    #Set ball_owenership  info
+    ball_owned_team = obs["ball_owned_team"]                #0 if left team owns the ball, 1 if right team
+    ball_owned_player = obs["ball_owned_player"]
+
+    idx_to_player = None
+    if ball_owned_team == 0:
+        idx_to_player = gameds.left_idx_to_player
+    elif ball_owned_team == 1:
+        idx_to_player = gameds.right_idx_to_player
+    if idx_to_player is not None: idx_to_player[ball_owned_player].owns_ball = True
+    ###############
+
+    #set controlled player field
+    controlled_player_idx =  obs["active"]
+    controlled_player = gameds.left_idx_to_player[controlled_player_idx]
+    controlled_player.is_controlled = True
+    gameds.controlled_player = controlled_player
+
+
+    #update ball and game state
+    update_ball(gameds.ball, obs)
+    update_game_state(gameds.game_state, obs)
+
+    """
+    print()
+    gameds.print_mini()
+    print()
+    """
 
 def update_control_index(last_obs, gameds:GameDS):
 
