@@ -17,4 +17,4 @@ MyCF at 92 @ -2
 MyAM at 65 @ 8
 
 OpGK at 99.5 @ 4
-OpRB at -75 @ 10
+OpRB at 65 @ -5
