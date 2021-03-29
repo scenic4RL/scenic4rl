@@ -36,13 +36,17 @@ from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 import os
 cwd = os.getcwd()
 
-num_trials = 200
-num_trials_built_in_ai = 25
+num_trials = 50
+num_trials_built_in_ai = 10
 scenario_files= [f"{cwd}/exp_0_6/2v2.scenic",
                  f"{cwd}/exp_0_6/2v2_0.scenic",
                  f"{cwd}/exp_0_6/2v2_1.scenic",
                  f"{cwd}/exp_0_6/2v2_2.scenic"]
 
+
+scenario_files = [
+    f"{cwd}/exp_0_6/temp.scenic",
+]
 print("Trials: ", num_trials)
 
 random_score={}

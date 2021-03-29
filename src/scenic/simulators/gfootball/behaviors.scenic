@@ -26,7 +26,17 @@ behavior IdleBehavior():
 
 behavior JustShoot():
     while True:
-        take Shoot()
+        if not self.is_controlled:
+            act = NoAction()
+            take act
+        else:
+            if self.owns_ball:
+                take Shoot()
+            else:
+                take Pass()
+
+
+
 
 behavior JustPass():
     while True:
