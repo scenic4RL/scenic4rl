@@ -16,9 +16,9 @@ MyGK at -99 @ 0
 MyCF at 92 @ -2
 MyAM at 65 @ 8
 
-OpGK at 99.5 @ 4
+OpGK at -99.5 @ 4
 OpRB at -95 @ -5
 
 
-#builtin ai 5 out of 5, random 0/5
-#random performance 7/100  [mean 0.07 out of 100 trials]
+#builtin ai 5 out of 5,
+#random performance 20/100  [mean 0.2 out of 100 trials]
