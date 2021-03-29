@@ -224,7 +224,7 @@ def test_rl_rith_scenic_behavior():
     scenario_file = f"{cwd}/rl/rl_demo.scenic"
     scenario = buildScenario(scenario_file)
 
-    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, use_scenic_behavior_in_step=True)
+    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, use_scenic_behavior_in_step=True)
     print("Trials: ", num_trials)
 
     print("behavior based agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))

@@ -66,6 +66,8 @@ class GFootBallSimulator(Simulator):
 class GFootBallSimulation(Simulation):
 
 	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}, use_scenic_behavior_in_step=False):
+		if for_gym_env:
+			import scenic.syntax.translator as translator
 
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
@@ -96,8 +98,15 @@ class GFootBallSimulation(Simulation):
 		self.env = self.create_gfootball_environment()
 		#self.first_time = True
 
+
+		if for_gym_env:
+			self.init_run()
+
 		if not for_gym_env:
 			self.reset()
+
+
+
 
 		#if self.gf_env_settings["render"] and not for_gym_env: self.env.render()
 	"""
@@ -229,67 +238,13 @@ class GFootBallSimulation(Simulation):
 				self.action[idx] = act[0].code
 
 
-	def pre_step(self):
 
-		dynamicScenario = self.scene.dynamicScenario
-		terminationReason = None
-		# Run compose blocks of compositional scenarios
-		# terminationReason = dynamicScenario._step()
-
-		# Check if any requirements fail
-		dynamicScenario._checkAlwaysRequirements()
-
-		# Run monitors
-		newReason = dynamicScenario._runMonitors()
-		if newReason is not None:
-			terminationReason = newReason
-
-		# "Always" and scenario-level requirements have been checked;
-		# now safe to terminate if the top-level scenario has finished
-		# or a monitor requested termination
-		if terminationReason is not None:
-			return True
-		terminationReason = dynamicScenario._checkSimulationTerminationConditions()
-		if terminationReason is not None:
-			return True
-
-		# Compute the actions of the agents in this time step
-		allActions = OrderedDict()
-		schedule = self.scheduleForAgents()
-		for agent in schedule:
-			behavior = agent.behavior
-			if not behavior._runningIterator:  # TODO remove hack
-				behavior.start(agent)
-			actions = behavior.step()
-			if isinstance(actions, scenic.core.simulators.EndSimulationAction):
-				terminationReason = str(actions)
-				break
-			assert isinstance(actions, tuple)
-			if len(actions) == 1 and isinstance(actions[0], (list, tuple)):
-				actions = tuple(actions[0])
-			if not self.actionsAreCompatible(agent, actions):
-				from scenic.core.errors import RuntimeParseError, InvalidScenarioError
-				raise InvalidScenarioError(f'agent {agent} tried incompatible '
-										   f' action(s) {actions}')
-			allActions[agent] = actions
-		if terminationReason is not None:
-			return True
-
-		# Execute the actions
-		if self.verbosity >= 3:
-			for agent, actions in allActions.items():
-				print(f'      Agent {agent} takes action(s) {actions}')
-		self.executeActions(allActions)
-
-
-
-	def post_step(self):
-		self.updateObjects()
 
 	def step(self, action=None):
 
 		if self.for_gym_env:
 			new_done = self.pre_step()
+			#TODO if simulation ended for constraints handle it
 
 		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before and after calling this function
 		#input()
@@ -323,7 +278,13 @@ class GFootBallSimulation(Simulation):
 
 		self.rewards.append(rew)
 
+
 		if self.for_gym_env:
+			#clean up after simulation ended
+			if self.done:
+				self.post_run()
+
+
 			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
 		else:
