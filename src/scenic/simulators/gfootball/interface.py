@@ -249,6 +249,7 @@ def update_objects_from_obs(last_obs, gameds):
         player.owns_ball = ball_owned
         player.velocity, player.speed = get_velocity_and_speed(player.position, player.position_prev)
         player.sticky_actions = sticky_actions
+        player.is_controlled = True
 
 
     #update Ball
