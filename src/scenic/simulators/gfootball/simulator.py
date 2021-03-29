@@ -336,8 +336,10 @@ class GFootBallSimulation(Simulation):
 		print("*" * 80)
 		print()
 		"""
-		#if self.for_gym_env:
-		#	self.post_step()
+		if self.for_gym_env:
+			self.post_step()
+
+		#self.game_ds.print_mini()
 
 		if self.for_gym_env:
 			return obs, rew, self.done, info
@@ -345,7 +347,7 @@ class GFootBallSimulation(Simulation):
 		else:
 			return None
 
-		#self.game_ds.print_ds()
+
 		#input()
 
 
@@ -380,6 +382,10 @@ class GFootBallSimulation(Simulation):
 			values['red_card'] = obj.red_card				#todo: need to test it
 			values['role'] = obj.role
 			#values['controlled'] = obj.controlled
+			if hasattr(obj, "is_controlled"):
+				values['is_controlled'] = obj.is_controlled
+			else:
+				values['is_controlled'] = False
 			values['owns_ball'] = obj.owns_ball
 			values['sticky_actions'] = obj.sticky_actions
 
