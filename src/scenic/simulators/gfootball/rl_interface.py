@@ -196,7 +196,7 @@ def test_rl_rith_scenic_behavior():
         for i in tqdm(range(0, num_trials)):
 
             done = False
-            input("Enter")
+            #input("Enter")
             while not done:
                 action = env.action_space.sample()
                 obs, reward, done, info = env.step(action)
@@ -220,18 +220,19 @@ def test_rl_rith_scenic_behavior():
 
     from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 
-    num_trials = 5
-    scenario_file = f"{cwd}/rl/academy/2v2_2.scenic"
+    num_trials = 3
+    scenario_file = f"{cwd}/rl/rl_demo.scenic"
     scenario = buildScenario(scenario_file)
 
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, use_scenic_behavior_in_step=True)
     print("Trials: ", num_trials)
+
     print("behavior based agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
 
 
     gf_env_settings["action_set"] = "default"
-    env = GFScenicEnv(initial_scenario=scenario, allow_render=True, gf_env_settings=gf_env_settings)
-    print("random agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
+    env = GFScenicEnv(initial_scenario=scenario, allow_render=False, gf_env_settings=gf_env_settings)
+    #print("random agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
 
 
 if __name__=="__main__":

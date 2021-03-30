@@ -62,6 +62,107 @@ class Simulation:
         self.timestep = timestep
         self.verbosity = verbosity
 
+
+    def init_run(self):
+        global runningSimulation
+
+        trajectory = self.trajectory
+        if self.currentTime > 0:
+            raise RuntimeError('tried to run a Simulation which has already run')
+        assert len(trajectory) == 1
+        actionSequence = []
+
+        import scenic.syntax.veneer as veneer
+        veneer.beginSimulation(self)
+        dynamicScenario = self.scene.dynamicScenario
+
+        try:
+            # Initialize dynamic scenario
+            dynamicScenario._start()
+
+            # Update all objects in case the simulator has adjusted any dynamic
+            # properties during setup
+            self.updateObjects()
+            assert self.currentTime == 0
+            terminationReason = None
+        except:
+            pass
+
+    def pre_step(self):
+        dynamicScenario = self.scene.dynamicScenario
+
+        if self.verbosity >= 3:
+            print(f'    Time step {self.currentTime}:')
+
+        # Run compose blocks of compositional scenarios
+        terminationReason = dynamicScenario._step()
+
+        # Check if any requirements fail
+        dynamicScenario._checkAlwaysRequirements()
+
+        # Run monitors
+        newReason = dynamicScenario._runMonitors()
+        if newReason is not None:
+            terminationReason = newReason
+
+        # "Always" and scenario-level requirements have been checked;
+        # now safe to terminate if the top-level scenario has finished
+        # or a monitor requested termination
+        if terminationReason is not None:
+            return terminationReason
+
+        terminationReason = dynamicScenario._checkSimulationTerminationConditions()
+        if terminationReason is not None:
+            return terminationReason
+
+        # Compute the actions of the agents in this time step
+        allActions = OrderedDict()
+        schedule = self.scheduleForAgents()
+        for agent in schedule:
+            behavior = agent.behavior
+            if not behavior._runningIterator:  # TODO remove hack
+                behavior.start(agent)
+            actions = behavior.step()
+            if isinstance(actions, EndSimulationAction):
+                terminationReason = str(actions)
+                return terminationReason
+
+            assert isinstance(actions, tuple)
+            if len(actions) == 1 and isinstance(actions[0], (list, tuple)):
+                actions = tuple(actions[0])
+            if not self.actionsAreCompatible(agent, actions):
+                return InvalidScenarioError(f'agent {agent} tried incompatible '
+                                           f' action(s) {actions}')
+            allActions[agent] = actions
+
+        if terminationReason is not None:
+            return terminationReason
+
+        # Execute the actions
+        if self.verbosity >= 3:
+            for agent, actions in allActions.items():
+                print(f'      Agent {agent} takes action(s) {actions}')
+        self.executeActions(allActions)
+        self.allActions = allActions
+
+    def post_step(self):
+        self.updateObjects()
+        self.currentTime += 1
+
+        # Save the new state
+        #self.trajectory.append(self.currentState())
+        #self.actionSequence.append(self.allActions)
+
+    def post_run(self):
+        import scenic.syntax.veneer as veneer
+        for obj in self.scene.objects:
+            disableDynamicProxyFor(obj)
+        for agent in self.agents:
+            agent.behavior.stop()
+        for monitor in self.scene.monitors:
+            monitor.stop()
+        veneer.endSimulation(self)
+
     def run(self, maxSteps):
         """Run the simulation.
 
