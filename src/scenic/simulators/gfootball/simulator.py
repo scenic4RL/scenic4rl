@@ -231,6 +231,7 @@ class GFootBallSimulation(Simulation):
 			self.action = ActionCode.builtin_ai
 			if controlled_player in allActions:
 				self.action = allActions[controlled_player][0].code
+				#print(self.game_ds.player_str_mini(controlled_player), self.action)
 
 			#print(self.game_ds.player_str_mini(controlled_player), self.action)
 		else:

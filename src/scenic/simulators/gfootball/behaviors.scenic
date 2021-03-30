@@ -316,7 +316,7 @@ objects = simulation().objects
 behavior ShootInDBoxBehavior():
     while True:
         #if in dbox
-        # take Shoot()
+        # take Shoot()no w
         #else
         # do nothing
         pass
@@ -324,7 +324,7 @@ behavior ShootInDBoxBehavior():
 
 behavior SlideInRange():
     while True:
-        #if ball in close proximity and in control of opposition player
+        #if ball in close proximity and in control of opposition player g
         #   take Slide()
 
 behavior Dribble():

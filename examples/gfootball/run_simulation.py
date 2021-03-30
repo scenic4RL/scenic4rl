@@ -42,7 +42,3 @@ print("behavior based agent performance: ", mean_reward_random_agent(env, num_tr
 gf_env_settings["action_set"] = "default"
 env = GFScenicEnv(initial_scenario=scenario, allow_render=False, gf_env_settings=gf_env_settings)
 print("random agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
-
-
-
-
