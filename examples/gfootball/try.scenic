@@ -10,21 +10,21 @@ param end_episode_on_possession_change = True
 # Behaviors
 behavior JustShoot():
     while True:
-        print("In Behavior")
-        print(self.position, self.is_controlled, self.owns_ball, "ball", ball.x, ball.y)
+        #print("In Behavior")
+        #print(self.position, self.is_controlled, self.owns_ball, "ball", ball.x, ball.y)
         if not self.is_controlled:
             take NoAction()
-            print("Not controlled -> No Action")
-            print()
+            #print("Not controlled -> No Action")
+            #print()
         else:
             if self.owns_ball:
                 take Shoot()
-                print("Shoot ")
+                #print("Shoot ")
             else:
                 take MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
-                print("Move ")
+                #print("Move ")
 
-        print("-------------------------------")
+        #print("-------------------------------")
 # ball at top
 ball = Ball at 70 @ 28
 ego = MyGK at -99 @ 0

@@ -15,7 +15,7 @@ param end_episode_on_possession_change = True
 # Behaviors
 behavior JustShoot2():
     while True:
-        print("In Behavior")
+        #print("In Behavior")
         #print("Ball", ball.position)
         #print("P1", p1.position, p1.is_controlled, p1.owns_ball)
         #print("P2", p2.position)
@@ -26,20 +26,20 @@ behavior JustShoot2():
         #opo_players = simulation().game_ds.op_players
         #game_state = simulation().game_ds.game_state
 
-        print(self.position, self.is_controlled, self.owns_ball)
+        #print(self.position, self.is_controlled, self.owns_ball)
         if not self.is_controlled:
             take NoAction()
-            print("Not controlled -> No Action")
-            print()
+            #print("Not controlled -> No Action")
+            #print()
         else:
             if self.owns_ball:
                 take Shoot()
-                print("Shoot ")
+                #print("Shoot ")
             else:
                 take MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
-                print("Move ")
+                #print("Move ")
 
-        print("-------------------------------")
+        #print("-------------------------------")
 
 # ball at top
 ball = Ball at 70 @ 28
