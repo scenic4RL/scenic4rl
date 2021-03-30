@@ -88,6 +88,7 @@ class GFScenicEnv(gym.Env):
 
 
     def reset(self):
+
         # Reset the state of the environment to an initial state
 
         #self.initialize_new_simulation(render=self.allow_render)
@@ -220,19 +221,18 @@ def test_rl_rith_scenic_behavior():
 
     from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 
-    num_trials = 3
+    num_trials = 2
     scenario_file = f"{cwd}/rl/rl_demo.scenic"
     scenario = buildScenario(scenario_file)
 
-    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, use_scenic_behavior_in_step=True)
+    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, use_scenic_behavior_in_step=True)
     print("Trials: ", num_trials)
-
     print("behavior based agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
 
 
     gf_env_settings["action_set"] = "default"
     env = GFScenicEnv(initial_scenario=scenario, allow_render=False, gf_env_settings=gf_env_settings)
-    #print("random agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
+    print("random agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
 
 
 if __name__=="__main__":

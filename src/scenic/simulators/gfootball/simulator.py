@@ -100,6 +100,8 @@ class GFootBallSimulation(Simulation):
 
 
 		if for_gym_env:
+			import scenic.syntax.veneer as veneer
+			veneer.reset()
 			self.init_run()
 
 		if not for_gym_env:
@@ -136,7 +138,6 @@ class GFootBallSimulation(Simulation):
 		#print("in simulator reset")
 		#print("id self.env", id(self.env))
 		#print("id scenic_wrapper", id(self.scenic_wrapper))
-
 
 		obs = self.env.reset()
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
