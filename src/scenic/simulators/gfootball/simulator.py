@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from collections import OrderedDict
 from gfootball.env import football_action_set
 from typing import Dict, List
 
@@ -11,8 +12,9 @@ import gfootball
 from gfootball.env import config
 from gfootball.env import football_env
 from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map, \
-	update_control_index
+	update_control_index, update_objects_from_obs_single_rl_agent, update_index_ds
 from scenic.simulators.gfootball.utilities import scenic_helper
+from scenic.simulators.gfootball.utilities.constants import ActionCode
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
 from scenic.simulators.gfootball.utilities.scenario_builder import initialize_gfootball_scenario#, get_default_settings
 from scenic.syntax.veneer import verbosePrint
@@ -63,7 +65,9 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}, use_scenic_behavior_in_step=False):
+		if for_gym_env:
+			import scenic.syntax.translator as translator
 
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
@@ -76,6 +80,8 @@ class GFootBallSimulation(Simulation):
 		self.last_raw_obs = None
 		self.done = None
 		self.for_gym_env = for_gym_env
+		self.multi_player_rl = False
+		self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
 
 		self.settings = self.scene.params.copy()
 		self.settings.update(settings)
@@ -92,12 +98,26 @@ class GFootBallSimulation(Simulation):
 		self.env = self.create_gfootball_environment()
 		#self.first_time = True
 
+
+		if for_gym_env:
+			import scenic.syntax.veneer as veneer
+			veneer.reset()
+			self.init_run()
+
 		if not for_gym_env:
 			self.reset()
 
+
+
+
 		#if self.gf_env_settings["render"] and not for_gym_env: self.env.render()
+	"""
+	def disable_rl_action(self):
+		self.ignore_rl_action =  True
 
-
+	def enable_rl_action(self):
+		self.ignore_rl_action = False
+	"""
 
 	def create_gfootball_environment(self):
 		from scenic.simulators.gfootball.utilities import env_creator
@@ -119,18 +139,22 @@ class GFootBallSimulation(Simulation):
 		#print("id self.env", id(self.env))
 		#print("id scenic_wrapper", id(self.scenic_wrapper))
 
-
 		obs = self.env.reset()
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
+		#print(self.last_raw_obs[0]['active'])
 		#print("id last_obs", id(self.scenic_wrapper.latest_raw_observation))
 		#print(f"game_ds", id(self.game_ds))
 		#print("in simulator: ball: ", self.last_raw_obs[0]["ball"])
 		#print("In Reset Simulation")
 		#self.game_ds.print_mini()
 
-
-		update_control_index(self.last_raw_obs, gameds=self.game_ds)
-		update_objects_from_obs(self.last_raw_obs, self.game_ds)
+		if self.for_gym_env:
+			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
+			update_index_ds(self.last_raw_obs, gameds=self.game_ds)
+			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
+		else:
+			update_control_index(self.last_raw_obs, gameds=self.game_ds)
+			update_objects_from_obs(self.last_raw_obs, self.game_ds)
 		self.done = False
 
 		#self.first_time = False
@@ -168,6 +192,7 @@ class GFootBallSimulation(Simulation):
 		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
 		manual_control = scene.params["manual_control"]
 
+		# If used for gym environment, this player settings will be overriden by gf_env_settting in __init__
 		# if manual control is enabled, the op player wont be allowed to have any scenic behaviors for now
 		if manual_control:
 			op_players = [obj for obj in scene.objects if is_op_player(obj)]
@@ -200,14 +225,28 @@ class GFootBallSimulation(Simulation):
 		#when no behavior is specified, built in AI takes charge
 		self.action = [football_action_set.action_builtin_ai] * gameds.get_num_controlled()
 
+		if self.for_gym_env:
+			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
+			controlled_player = self.game_ds.controlled_player
+			self.action = ActionCode.builtin_ai
+			if controlled_player in allActions:
+				self.action = allActions[controlled_player][0].code
+				#print(self.game_ds.player_str_mini(controlled_player), self.action)
 
-		for agent, act in allActions.items():
-			idx = gameds.player_to_ctrl_idx[agent]
-			self.action[idx] = act[0].code
+			#print(self.game_ds.player_str_mini(controlled_player), self.action)
+		else:
+			for agent, act in allActions.items():
+				idx = gameds.player_to_ctrl_idx[agent]
+				self.action[idx] = act[0].code
+
 
 
 
 	def step(self, action=None):
+
+		if self.for_gym_env:
+			new_done = self.pre_step()
+			#TODO if simulation ended for constraints handle it
 
 		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before and after calling this function
 		#input()
@@ -226,19 +265,44 @@ class GFootBallSimulation(Simulation):
 			#signal scenic backend to stop simulation
 			#askEddie: Signal end of simulation
 
-		if self.for_gym_env:
+		if self.for_gym_env and not self.use_scenic_behavior_in_step:
 			#TODO: For now pass whatever the RL training is passing, however when training with scenarios having agents using scenic behavior it may needed to be changed
 			action_to_take = action
 		else:
 			action_to_take = self.action
 
-
+		#print(action_to_take)
 		obs, rew, self.done, info = self.env.step(action_to_take)
+		info["action_taken"] = action_to_take
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
+
+		#print(self.last_raw_obs[0]['active'])
 
 		self.rewards.append(rew)
 
-		update_objects_from_obs(self.last_raw_obs, self.game_ds)
+
+		if self.for_gym_env:
+			#clean up after simulation ended
+			if self.done:
+				self.post_run()
+
+
+			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
+			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
+		else:
+			update_objects_from_obs(self.last_raw_obs, self.game_ds)
+
+		"""
+		print("Printing objects")
+		for obj in self.objects:
+			print(obj, obj.position)
+		print("*" * 80)
+		print()
+		"""
+		if self.for_gym_env:
+			self.post_step()
+
+		#self.game_ds.print_mini()
 
 		if self.for_gym_env:
 			return obs, rew, self.done, info
@@ -246,7 +310,7 @@ class GFootBallSimulation(Simulation):
 		else:
 			return None
 
-		#self.game_ds.print_ds()
+
 		#input()
 
 
@@ -281,6 +345,10 @@ class GFootBallSimulation(Simulation):
 			values['red_card'] = obj.red_card				#todo: need to test it
 			values['role'] = obj.role
 			#values['controlled'] = obj.controlled
+			if hasattr(obj, "is_controlled"):
+				values['is_controlled'] = obj.is_controlled
+			else:
+				values['is_controlled'] = False
 			values['owns_ball'] = obj.owns_ball
 			values['sticky_actions'] = obj.sticky_actions
 

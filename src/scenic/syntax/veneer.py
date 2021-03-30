@@ -113,6 +113,13 @@ currentBehavior = None
 simulatorFactory = None
 evaluatingGuard = False
 
+
+def reset():
+	global currentSimulation
+	currentSimulation = None
+	global currentScenario
+	currentScenario = None
+
 ## APIs used internally by the rest of Scenic
 
 # Scenic compilation

@@ -24,6 +24,24 @@ behavior IdleBehavior():
     while True:
         take NoAction()
 
+behavior JustShoot():
+    while True:
+        if not self.is_controlled:
+            act = NoAction()
+            take act
+        else:
+            if self.owns_ball:
+                take Shoot()
+            else:
+                take Pass()
+
+
+
+
+behavior JustPass():
+    while True:
+        take Pass()
+
 
 behavior RunInCircle():
     while True:
@@ -298,7 +316,7 @@ objects = simulation().objects
 behavior ShootInDBoxBehavior():
     while True:
         #if in dbox
-        # take Shoot()
+        # take Shoot()no w
         #else
         # do nothing
         pass
@@ -306,7 +324,7 @@ behavior ShootInDBoxBehavior():
 
 behavior SlideInRange():
     while True:
-        #if ball in close proximity and in control of opposition player
+        #if ball in close proximity and in control of opposition player g
         #   take Slide()
 
 behavior Dribble():

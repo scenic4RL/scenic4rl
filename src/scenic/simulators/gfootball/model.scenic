@@ -173,6 +173,7 @@ class Player:
     yellow_cards[dynamic]: int
     red_card[dynamic]: False
     role[dynamic]: Uniform("GK", "CB", "LB", "RB", "DM", "CM", "LM", "RM", "AM", "CF")
+    is_controlled[dynamic]: False
 
     #controlled[dynamic]: False #IS this the player controlled by RL/ User Logic
     #designated: False #dont need for single-agent, hence
