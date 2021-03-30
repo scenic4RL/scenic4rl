@@ -1,5 +1,4 @@
 from scenic.simulators.gfootball.actions import *
-from scenic.simulators.gfootball.actions import ReleaseDirection
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball import model
 from scenic.core.regions import regionFromShapelyObject
