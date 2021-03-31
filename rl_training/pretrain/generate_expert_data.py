@@ -85,12 +85,12 @@ cwd = os.getcwd()
 datagen_scenario_file = f"{cwd}/run_to_score_with_behave.scenic"
 datagen_scenario = buildScenario(datagen_scenario_file)
 
-num_interactions = 20000
+num_interactions = 50000
 file_name = f"expert_data_{num_interactions}"
 from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 
 datagen_env = GFScenicEnv(initial_scenario=datagen_scenario, gf_env_settings=gf_env_settings, use_scenic_behavior_in_step=True)
-print("Mean Reward of Scenic Behavior Agent", mean_reward(datagen_env, num_trials=10))
+print("Mean Reward of Scenic Behavior Agent", mean_reward(datagen_env, num_trials=20))
 
 
 

@@ -58,7 +58,7 @@ if __name__ == "__main__":
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
-    param_list = [
+    round_1 = [
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 4},
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 10},
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.08,  'learning_rate': 0.000343, 'gamma': 0.993, 'n_epochs': 10},
@@ -74,6 +74,24 @@ if __name__ == "__main__":
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0001, 'gamma': 0.997, 'n_epochs': 4},
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 4},
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.09, 'learning_rate': 0.0003, 'gamma': 0.997, 'n_epochs': 4},
+    ]
+    #round 1 top 2
+    round_1_top_2 = [
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 4},
+    ]
+
+    #1. round1 2nd with epoch = 10
+    #2. round1 1st with epoch = 15
+    #3. roung1 2nd -rerun
+    round_1_selective_repeat = [
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 10},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 15},
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 4},
+    ]
+
+    param_list = [
+        {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 10}
     ]
 
     for override_params in param_list:
