@@ -245,7 +245,7 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 50000
+    total_training_timesteps = 2000
     eval_freq = 5000
 
     save_dir = f"{cwd}/saved_models"

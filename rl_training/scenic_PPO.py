@@ -48,8 +48,8 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper_short.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 1000000
-    eval_freq = 25000
+    total_training_timesteps = 10000
+    eval_freq = 5000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard/hp_exp_0_5_short_no_cur"
@@ -57,7 +57,6 @@ if __name__ == "__main__":
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
-
 
     param_list = [
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 4},
