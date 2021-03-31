@@ -52,9 +52,10 @@ def pretrain_agent(
     print("train_expert_dataset: ", len(train_expert_dataset))
 
 
-    use_cuda = not no_cuda and th.cuda.is_available()
+    use_cuda = th.cuda.is_available()
     th.manual_seed(seed)
     device = th.device("cuda" if use_cuda else "cpu")
+    print("In Pretraining, device: ", device)
     kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
 
     if isinstance(env.action_space, gym.spaces.Box):
@@ -204,9 +205,9 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
         env=env, ALGO=PPO, features_extractor_class = features_extractor_class, scenario_name=scenario_name,
         logdir=logdir, override_params=override_params, rewards=rewards)
 
-
+    pretrain_epochs = override_params["pretrain_epochs"]
     print("env (from model) observation space: ", model.get_env().observation_space)
-
+    print(f"Pretraining for {pretrain_epochs}")
 
 
     #Load Expert data for now as proxy to expert data
@@ -224,16 +225,15 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
         student=model,
         env=env,
         expert_dataset=expert_dataset,
-        epochs=2
+        epochs=pretrain_epochs
     )
-
-    print("")
-    print("Behavior Cloning Performance: ",  test_model_performance(env, model, num_trials=5))
+    num_bc_eval_trials = 20
+    print(f"Behavior Cloning Performance (trials: {num_bc_eval_trials}): ",  test_model_performance(env, model, num_trials=num_bc_eval_trials))
 
     pretrain_template.train(model=model, parameters=parameter_dict,
                             n_eval_episodes=n_eval_episodes, total_training_timesteps=total_training_timesteps,
                             eval_freq=eval_freq,
-                            save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards})
+                            save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "pretrain_epochs": pretrain_epochs})
 
 
 
@@ -245,19 +245,20 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 50000
-    eval_freq = 5000
+    total_training_timesteps = 100000
+    eval_freq = 10000
 
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard/dev"
+    logdir = f"{cwd}/tboard/pretrain/"
     tracedir = f"{cwd}/game_trace"
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     param_list = [
-        {"n_steps": 4096},
+        {"pretrain_epochs":10, "n_steps": 4096},
     ]
+
 
     for override_params in param_list:
         train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
