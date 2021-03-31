@@ -1,6 +1,7 @@
 import time
 import scenic.core.errors as errors
 import scenic.syntax.translator as translator
+from scenic.syntax import veneer
 
 """Copied from __main__.py"""
 def generateScene(scenario, verbosity=0, show_params=False):
@@ -23,6 +24,7 @@ def generateScene(scenario, verbosity=0, show_params=False):
 
 
 def buildScenario(scenic_file, param=[], model=None, scenario=None):
+    veneer.reset()
     errors.showInternalBacktrace = True
     scenario = errors.callBeginningScenicTrace(
         lambda: translator.scenarioFromFile(scenic_file,
