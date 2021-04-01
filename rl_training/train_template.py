@@ -192,7 +192,7 @@ def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, t
     model.learn(total_timesteps=total_training_timesteps, tb_log_name=log_file_name,
                 callback=eval_callback)  # callback=eval_callback
 
-    model.save(f"{save_dir}/PPO_impala_cnn_{total_training_timesteps}")
+    model.save(f"{save_dir}/PPO_{fstr}_{total_training_timesteps}")
 
     mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=n_eval_episodes)
 
