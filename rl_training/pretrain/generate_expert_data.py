@@ -68,36 +68,75 @@ def generate_expert_data(env, num_interactions=1000, file_name="expert_data"):
     )
     return expert_observations, expert_actions
 
+def generate_expert_data_with_rewards(env, num_interactions=1000, file_name="expert_data"):
+    expert_observations = []
+    expert_actions = []
+    expert_rewards = []
+
+        
+    obs = env.reset()
+    tr = 0
+    for i in tqdm(range(num_interactions)):
+        expert_observations.append(obs)
+
+        obs, reward, done, info = env.step(env.action_space.sample())
+        tr+=reward
+        # print(info)
+        action = info["action_taken"]
+        expert_actions.append(action)
+
+        if done:
+            obs = env.reset()
+            expert_rewards.append(tr)
+            tr = 0
+
+    expert_observations = np.array(expert_observations)
+    expert_observations = np.moveaxis(expert_observations, [3], [1])
+    expert_actions = np.array(expert_actions)
+    expert_rewards = np.array(expert_rewards)
+    print("Expert observation shape: ", expert_observations.shape)
+    print("Expert actions shape: ", expert_actions.shape)
+
+    np.savez_compressed(
+        file_name,
+        expert_actions=expert_actions,
+        expert_observations=expert_observations,
+        expert_rewards=expert_rewards
+    )
+    return expert_observations, expert_actions, expert_rewards
 
 
-#generate expert data
 
-gf_env_settings = {
-    "stacked": True,
-    "rewards": 'scoring',
-    "representation": 'extracted',
-    "players": [f"agent:left_players=1"],
-    "real_time": False,
-    "action_set": "default",#"default" "v2"
-}
+if __name__=="__main__":
 
-cwd = os.getcwd()
-datagen_scenario_file = f"{cwd}/run_to_score_with_behave.scenic"
-datagen_scenario = buildScenario(datagen_scenario_file)
+    #generate expert data
 
-num_interactions = 50000
-file_name = f"expert_data_{num_interactions}"
-from scenic.simulators.gfootball.rl_interface import GFScenicEnv
+    gf_env_settings = {
+        "stacked": True,
+        "rewards": 'scoring',
+        "representation": 'extracted',
+        "players": [f"agent:left_players=1"],
+        "real_time": False,
+        "action_set": "default",#"default" "v2"
+    }
 
-datagen_env = GFScenicEnv(initial_scenario=datagen_scenario, gf_env_settings=gf_env_settings, use_scenic_behavior_in_step=True)
-print("Mean Reward of Scenic Behavior Agent", mean_reward(datagen_env, num_trials=20))
+    cwd = os.getcwd()
+    datagen_scenario_file = f"{cwd}/run_to_score_with_behave.scenic"
+    datagen_scenario = buildScenario(datagen_scenario_file)
+
+    num_interactions = 50000
+    file_name = f"expert_data_{num_interactions}"
+    from scenic.simulators.gfootball.rl_interface import GFScenicEnv
+
+    datagen_env = GFScenicEnv(initial_scenario=datagen_scenario, gf_env_settings=gf_env_settings, use_scenic_behavior_in_step=True)
+    print("Mean Reward of Scenic Behavior Agent", mean_reward(datagen_env, num_trials=20))
 
 
 
-expert_observations, expert_actions = generate_expert_data(datagen_env, num_interactions=num_interactions, file_name=file_name)
+    expert_observations, expert_actions = generate_expert_data(datagen_env, num_interactions=num_interactions, file_name=file_name)
 
-loaded_data = np.load(f"{file_name}.npz")
-expert_observations = loaded_data["expert_observations"]
-expert_actions = loaded_data["expert_actions"]
-print(f"Loaded data obs: {expert_observations.shape}, actions: {expert_actions.shape}")
+    loaded_data = np.load(f"{file_name}.npz")
+    expert_observations = loaded_data["expert_observations"]
+    expert_actions = loaded_data["expert_actions"]
+    print(f"Loaded data obs: {expert_observations.shape}, actions: {expert_actions.shape}")
 
