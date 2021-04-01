@@ -1,3 +1,19 @@
+from scenic.simulators.gfootball import rl_interface
+from stable_baselines3 import PPO
+from scenic.simulators.gfootball.rl_interface import GFScenicEnv
+import pretrain_template
+from gfootball_impala_cnn import GfootballImpalaCNN
+import gym
+from tqdm import tqdm
+import numpy as np
+import torch as th
+import torch.nn as nn
+import torch.optim as optim
+from torch.optim.lr_scheduler import StepLR
+from stable_baselines3 import PPO, A2C, SAC, TD3
+from stable_baselines3.common.evaluation import evaluate_policy
+
+from torch.utils.data.dataset import Dataset, random_split
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -19,10 +35,6 @@ from stable_baselines3.common.vec_env import VecEnv, sync_envs_normalization, Du
 import numpy as np
 import warnings
 from typing import Union
-from stable_baselines3.common import results_plotter
-from stable_baselines3.common.results_plotter import load_results, ts2xy, plot_results
-
-from stable_baselines3.common.callbacks import BaseCallback
 
 class MyEvalCallback(EventCallback):
     def __init__(
@@ -140,122 +152,72 @@ class MyEvalCallback(EventCallback):
         if self.callback:
             self.callback.update_locals(locals_)
 
-class SaveOnBestTrainingRewardCallback(BaseCallback):
-    """
-    Callback for saving a model (the check is done every ``check_freq`` steps)
-    based on the training reward (in practice, we recommend using ``EvalCallback``).
+if __name__ == "__main__":
 
-    :param check_freq: (int)
-    :param log_dir: (str) Path to the folder where the model will be saved.
-      It must contains the file created by the ``Monitor`` wrapper.
-    :param verbose: (int)
-    """
-    def __init__(self, check_freq: int, log_dir: str, verbose=1):
-        super(SaveOnBestTrainingRewardCallback, self).__init__(verbose)
-        self.check_freq = check_freq
-        self.log_dir = log_dir
-        self.save_path = os.path.join(log_dir, 'best_model')
-        self.best_mean_reward = -np.inf
+    import os
+    cwd = os.getcwd()
+    print("Current working Directory: ", cwd)
 
-    def _init_callback(self) -> None:
-        # Create folder if needed
-        if self.save_path is not None:
-            os.makedirs(self.save_path, exist_ok=True)
+    scenario_file = f"{cwd}/pretrain/pass_n_shoot.scenic"
+    n_eval_episodes = 10
+    total_training_timesteps = 500000
+    eval_freq = 10000
 
-    def _on_step(self) -> bool:
-        if self.n_calls % self.check_freq == 0:
-
-          # Retrieve training reward
-          x, y = ts2xy(load_results(self.log_dir), 'timesteps')
-          if len(x) > 0:
-              # Mean training reward over the last 100 episodes
-              mean_reward = np.mean(y[-100:])
-              if self.verbose > 0:
-                print("Num timesteps: {}".format(self.num_timesteps))
-                print("Best mean reward: {:.2f} - Last mean reward per episode: {:.2f}".format(self.best_mean_reward, mean_reward))
-
-              # New best model, you could save the agent here
-              if mean_reward > self.best_mean_reward:
-                  self.best_mean_reward = mean_reward
-                  # Example for saving best model
-                  if self.verbose > 0:
-                    print("Saving new best model to {}".format(self.save_path))
-                  self.model.save(self.save_path)
-
-        return True
-def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, dump_info, override_params={}, rewards=""):
-    os.makedirs(save_dir, exist_ok=True)
-    os.makedirs(logdir, exist_ok=True)
-
+    save_dir = f"{cwd}/saved_models"
+    logdir = f"{cwd}/tboard/pretrain_pass_n_shoot/"
+    tracedir = f"{cwd}/game_trace"
+    rewards = "scoring"#'scoring,checkpoints'
     
+    print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
+
+    param_list = [
+        {"pretrain_epochs":10, "n_steps": 4096},
+    ]
     
-    currentDT = datetime.datetime.now()
-    fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
-    log_file_name = f"{fstr}"
-    parameter_out_file_name = logdir + '/' + log_file_name + ".param"
+    for sn, pretraining in enumerate([True, False, True, False]):
+        
+        
+        gf_env_settings = {
+            "stacked": True,
+            "rewards": "scoring",
+            "representation": 'extracted',
+            "players": [f"agent:left_players=1"],
+            "real_time": True,
+            "action_set": "default"
+        }
+        target_scenario_name = f"{cwd}/pretrain/pass_n_shoot.scenic"
 
-    monitor_dir = logdir + '/monitor_' +  log_file_name
-    os.makedirs(monitor_dir, exist_ok=True)
-    env = Monitor(env, filename=monitor_dir)
+        from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
+        scenario = buildScenario(target_scenario_name)
 
-    policy_kwargs = dict(
-        features_extractor_class=features_extractor_class,
-        features_extractor_kwargs=dict(features_dim=256),
-    )
+        env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False)
+        env = Monitor(env)
+        
+        loaded = PPO.load(f"cnn_adam_pass_n_shoot_2500_50")
+        
+        model = PPO("CnnPolicy", env, tensorboard_log=logdir)
 
-    if rewards=='scoring,checkpoints':
-        print("Using scoring,checkpoints Parameters")
-        parameters = dict(clip_range=0.08, gamma=0.993, learning_rate=0.0003,
-                          batch_size=512, n_epochs=10, ent_coef=0.003, max_grad_norm=0.64,
-                          vf_coef=0.5, gae_lambda=0.95, n_steps = 2048,
-                          scenario=scenario_name)
-    else:
-        print("Using scoring Parameters")
-        parameters = dict(clip_range=0.115, gamma=0.997, learning_rate=0.00011879,
-                          batch_size=512, n_epochs=10, ent_coef=0.00155, max_grad_norm=0.76,
-                          vf_coef=0.5, gae_lambda=0.95, n_steps = 2048,
-                          scenario=scenario_name)
+        if pretraining:
+            model.policy = loaded.policy 
+            print("loaded weights from pretrained agent")
+        else:
+            print("No Pretraining. Starting with Random weight")
 
-    parameters.update(override_params)
+        os.makedirs(save_dir, exist_ok=True)
+        os.makedirs(logdir, exist_ok=True)
 
+        eval_callback = MyEvalCallback(model.get_env(), eval_freq=eval_freq, deterministic=True, render=False)
 
-    model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
-                 clip_range=parameters["clip_range"], gamma=parameters["gamma"],
-                 learning_rate=parameters["learning_rate"],
-                 batch_size=parameters["batch_size"], n_epochs=parameters["n_epochs"], ent_coef=parameters["ent_coef"],
-                 max_grad_norm=parameters["max_grad_norm"], vf_coef=parameters["vf_coef"],
-                 gae_lambda=parameters["gae_lambda"])
+        currentDT = datetime.datetime.now()
+        fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
+        log_file_name = f"{fstr}"
 
-    # eval_callback = EvalCallback(self.eval_env, best_model_save_path=save_dir,
-    #                             log_path=logdir, eval_freq=eval_freq,
-    #                             deterministic=True, render=False)
+        print("tboard name", log_file_name)
 
-    eval_callback = MyEvalCallback(model.get_env(), eval_freq=eval_freq, deterministic=True, render=False)
+        model.learn(total_timesteps=total_training_timesteps, tb_log_name=log_file_name,
+            callback=eval_callback) 
 
-    save_best_trainied_model = SaveOnBestTrainingRewardCallback(check_freq=eval_freq, log_dir = monitor_dir)
-
-    
-
-    with open(parameter_out_file_name, "w+") as parout:
-        other_info = dict(save_dir=save_dir, total_training_timesteps=total_training_timesteps,
-                          eval_freq=eval_freq, parameter_out_file_name=parameter_out_file_name)
-        other_info.update(parameters)
-        other_info.update(dump_info)
-        import pprint
-        parout.write(pprint.pformat(other_info))
-
-    model.learn(total_timesteps=total_training_timesteps, tb_log_name=log_file_name,
-                callback=[eval_callback, save_best_trainied_model])  # callback=eval_callback
-
-    model.save(f"{save_dir}/PPO_{fstr}_{total_training_timesteps}")
-
-    mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=n_eval_episodes)
-
-    eval_str = f"\nEval Mean Rewards: {mean_reward:0.4f} Episodes: {n_eval_episodes}\n"
-    print(eval_str)
-
-    with open(parameter_out_file_name, "a+") as parout:
-        parout.write(eval_str)
-
-
-
+        model_name = "PPO_nature_cnn_pass_n_shoot"
+        if pretraining: model_name += "_warm_start"
+        model_name+=f"{sn}"
+        model.save(f"{save_dir}/{model_name}_{total_training_timesteps}")
