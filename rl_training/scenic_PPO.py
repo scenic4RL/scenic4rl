@@ -48,11 +48,11 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper_short.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 1000000
-    eval_freq = 25000
+    total_training_timesteps = 6000
+    eval_freq = 2000
 
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard/hp_exp_0_5_short_no_cur"
+    logdir = f"{cwd}/tboard/dev"
     tracedir = f"{cwd}/game_trace_exp_0_5_short_no_cur_hp"
     rewards = "scoring"#'scoring,checkpoints'
     
@@ -89,6 +89,10 @@ if __name__ == "__main__":
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 10},
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.115, 'learning_rate': 0.00011879, 'gamma': 0.997, 'n_epochs': 15},
         {"n_steps": 4096, 'batch_size': 512, 'clip_range': 0.1, 'learning_rate': 0.0002, 'gamma': 0.997, 'n_epochs': 4},
+    ]
+
+    param_list = [
+        {"n_steps": 4096},
     ]
 
 
