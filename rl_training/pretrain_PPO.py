@@ -244,7 +244,7 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
     scenario_file = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
-    n_eval_episodes = 10
+    n_eval_episodes = 2
     total_training_timesteps = 2000
     eval_freq = 5000
 
@@ -257,7 +257,7 @@ if __name__ == "__main__":
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     param_list = [
-        {"pretrain_epochs":0, "n_steps": 4096},
+        {"pretrain_epochs": 0, "n_steps": 4096},
         {"pretrain_epochs": 0, "n_steps": 4096},
     ]
 
