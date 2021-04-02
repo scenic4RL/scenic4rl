@@ -80,11 +80,7 @@ class GfootballImpalaCNN(BaseFeaturesExtractor):
         n_flatten = 960
         self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU()) #n_flatten=960
 
-        
 
-    
-
-        
 
 
     def create_basic_res_block(self, in_channel, out_channel):
