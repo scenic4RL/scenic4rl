@@ -277,9 +277,6 @@ def test_with_optional_pre_and_post_step():
 
     from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 
-
-
-
     num_trials = 10
     scenario_file = f"{cwd}/rl/rl_demo.scenic"
     scenario = buildScenario(scenario_file)

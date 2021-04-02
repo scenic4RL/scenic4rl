@@ -160,8 +160,8 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/pretrain/pass_n_shoot.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 500000
-    eval_freq = 10000
+    total_training_timesteps = 5000
+    eval_freq = 4000
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard/pretrain_pass_n_shoot/"
@@ -171,11 +171,10 @@ if __name__ == "__main__":
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     param_list = [
-        {"pretrain_epochs":10, "n_steps": 4096},
+        {"n_steps": 4096},
     ]
     
     for sn, pretraining in enumerate([True, False, True, False]):
-        
         
         gf_env_settings = {
             "stacked": True,
