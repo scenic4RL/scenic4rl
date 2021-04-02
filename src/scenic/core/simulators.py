@@ -89,10 +89,11 @@ class Simulation:
             pass
 
     def pre_step(self):
+
         dynamicScenario = self.scene.dynamicScenario
 
-        if self.verbosity >= 3:
-            print(f'    Time step {self.currentTime}:')
+        #if self.verbosity >= 3:
+        #    print(f'    Time step {self.currentTime}:')
 
         # Run compose blocks of compositional scenarios
         terminationReason = dynamicScenario._step()
@@ -114,6 +115,7 @@ class Simulation:
         terminationReason = dynamicScenario._checkSimulationTerminationConditions()
         if terminationReason is not None:
             return terminationReason
+
 
         # Compute the actions of the agents in this time step
         allActions = OrderedDict()

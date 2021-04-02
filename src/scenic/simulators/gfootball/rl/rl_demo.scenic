@@ -1,53 +1,67 @@
 from scenic.simulators.gfootball.model import *
-from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
+from scenic.simulators.gfootball.behaviors import *
 
-
-param game_duration = 50
+param game_duration = 200
 param deterministic = False
 param offsides = False
 param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
+behavior RunThenShoot():
+    #game_ds = simulation().game_ds
 
-
-# Behaviors
-behavior JustShoot2():
     while True:
         #print("In Behavior")
-        #print("Ball", ball.position)
-        #print("P1", p1.position, p1.is_controlled, p1.owns_ball)
-        #print("P2", p2.position)
-        #print()
-        #print()
-        #ball = simulation().game_ds.ball
-        #my_players = simulation().game_ds.my_players
-        #opo_players = simulation().game_ds.op_players
-        #game_state = simulation().game_ds.game_state
-
-        #print(self.position, self.is_controlled, self.owns_ball)
+        #print(self.position, self.is_controlled, self.owns_ball, "ball", ball.x, ball.y)
         if not self.is_controlled:
             take NoAction()
             #print("Not controlled -> No Action")
             #print()
         else:
             if self.owns_ball:
-                take Shoot()
-                #print("Shoot ")
+                if self.x <10:
+                    #print("Sprint On ")
+                    take Sprint()
+
+                    act = MoveTowardsPoint(80, 0, self.x, self.y)
+                    # act = self.MoveToPosition(80, 0, True)
+                    #print("Move with ball: ", act.code)
+                    take act
+
+                if self.x < 75:
+                    act = MoveTowardsPoint(80, 0, self.x, self.y)
+                    #act = self.MoveToPosition(80, 0, True)
+                    #print("Move with ball: ", act.code)
+                    take act
+
+                elif 75 < self.x < 80:
+                    #print("release Sprint")
+                    take ReleaseSprint()
+
+                else:
+                    #print("Shoot ")
+                    take Shoot()
+
             else:
-                take MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
+                act = MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
+                #print("Move to ball", act)
+                take act
                 #print("Move ")
 
-        #print("-------------------------------")
+            take NoAction()
 
-# ball at top
-ball = Ball at 70 @ 28
-ego = MyGK at -99 @ 0
-gk = ego
-# middle
-p2 = MyCB at 70 @ 0
-# top with ball
-p1 = MyCB at 70 @ 30, with behavior JustShoot2()
-OpGK at 99 @ 0
-OpCB at 75 @ 30
+ball = Ball at 2 @ 0
+ego = ball
+
+MyGK at -98 @ 0, with behavior RunThenShoot()
+MyCB at 0 @ 0, with behavior RunThenShoot()
+
+
+OpGK at -98 @ -41
+OpLB at -22 @ -20
+OpCB at -22 @ -10
+OpCM at -22 @ 0
+OpCB at -22 @ 10
+OpRB at -22 @ 20
