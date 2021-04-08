@@ -160,24 +160,21 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/pretrain/pass_n_shoot.scenic"
     n_eval_episodes = 10
-    total_training_timesteps = 100000
+    total_training_timesteps = 500000
     eval_freq = 10000
 
-    save_dir = f"{cwd}/saved_models"
+    save_dir = f"{cwd}/saved_models_pass_n_shoot_round_2/"
     logdir = f"{cwd}/tboard/pretrain_pass_n_shoot/"
     tracedir = f"{cwd}/game_trace"
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
-
     parameter_list = [ 
-                       dict(learning_rate=0.0001,batch_size=1024, n_epochs=10, n_steps = 8096, pretraining=True),
-                       dict(learning_rate=0.00001,batch_size=1024, n_epochs=10, n_steps = 8096, pretraining=True),
-                       dict(learning_rate=0.0001,batch_size=1024, n_epochs=10, n_steps = 4096, pretraining=True),
-                       dict(learning_rate=0.0001,batch_size=1024, n_epochs=10, n_steps = 2048, pretraining=True),
-                       dict(learning_rate=0.00001,batch_size=1024, n_epochs=10, n_steps = 4096, pretraining=True),
-                       dict(learning_rate=0.00001,batch_size=1024, n_epochs=10, n_steps = 2048, pretraining=True),
+                        dict(learning_rate=0.0003,batch_size=1024, n_epochs=10, n_steps = 4096, pretraining=False),
+                        dict(learning_rate=0.0003,batch_size=1024, n_epochs=10, n_steps = 4096, pretraining=True),
+                        dict(learning_rate=0.0003,batch_size=1024, n_epochs=10, n_steps = 8192, pretraining=False),
+                        dict(learning_rate=0.0003,batch_size=1024, n_epochs=10, n_steps = 8192, pretraining=True),
                     ]
 
 
@@ -204,7 +201,7 @@ if __name__ == "__main__":
         
         loaded = PPO.load(f"cnn_adam_pass_n_shoot_20000_50")
         
-        model = PPO("CnnPolicy", env, tensorboard_log=logdir, learning_rate=parameters["learning_rate"], 
+        model = PPO("CnnPolicy", env, verbose=1, tensorboard_log=logdir, learning_rate=parameters["learning_rate"], 
                                 batch_size=parameters["batch_size"], n_epochs=parameters["n_epochs"],
                                 n_steps=parameters["n_steps"])
 
