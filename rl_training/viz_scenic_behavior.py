@@ -25,14 +25,14 @@ gf_env_settings = {
 target_scenario_name = f"{cwd}/pretrain/pass_n_shoot_wb.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(target_scenario_name)
-env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, use_scenic_behavior_in_step=True)
+env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, use_scenic_behavior_in_step=True, constraints_checking=True)
 
 
 done = False
 total_r = 0
 
 
-for _ in range(5):
+for _ in range(25):
     done=False
     obs = env.reset()
     while not done:

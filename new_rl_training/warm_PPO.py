@@ -64,7 +64,7 @@ if __name__ == "__main__":
     n_eval_episodes = 10
     total_training_timesteps = 10000
     eval_freq = 5000
-    num_cpu=6
+    num_cpu=2
 
     save_dir = f"{cwd}/pretrain/saved_models"
     logdir = f"{cwd}/pretrain/tboard/pass_n_shoot/"
