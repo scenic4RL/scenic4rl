@@ -48,13 +48,9 @@ if __name__ == "__main__":
 
     scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper_short.scenic"
     n_eval_episodes = 10
-<<<<<<< HEAD
-    total_training_timesteps = 10000
-    eval_freq = 5000
-=======
+
     total_training_timesteps = 6000
     eval_freq = 2000
->>>>>>> 5d0e89d7cefcc63b2c1e8573b29d339ed38be868
 
     save_dir = f"{cwd}/saved_models"
     logdir = f"{cwd}/tboard/dev"
