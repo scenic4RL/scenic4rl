@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     gf_env_settings = {
         "stacked": True,
-        "rewards": "scoring",
+        "rewards": "scoring,checkpoints",
         "representation": 'extracted',
         "players": [f"agent:left_players=1"],
         "real_time": False,
@@ -60,13 +60,18 @@ if __name__ == '__main__':
 
     eval_callback = my_eval_callback.EvalCallback(eval_env, best_model_save_path=eval_logdir,
                                  log_path=eval_logdir, eval_freq=500,
-                                 deterministic=True, render=False)
+                                 deterministic=True, render=False, model_save_freq=1000)
 
 
     #eval_callback = my_eval_callback.EvalCallback(eval_env, eval_freq=500,deterministic=True, render=False)
 
     from gfrl.common.my_sb.ppo import PPO
 
+    #n_updates = total_timesteps // (n_steps*num_cpus)
     model = PPO('MlpPolicy', env, verbose=1, n_epochs=4, n_steps=1024, tensorboard_log=tfdir)
-    model.learn(total_timesteps=4096, callback=[eval_callback])
+    model.learn(total_timesteps=6000, callback=[eval_callback])
+
+    model.save(os.path.join(eval_logdir, f"final_model"))
+
+
 

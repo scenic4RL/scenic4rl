@@ -53,3 +53,20 @@ def get_incremental_dirname(path, dirname):
         i += 1
 
     return name(path, dirname, i)
+
+
+
+def read_eval_npz(filename):
+    import numpy as np
+    evals = np.load(filename)
+    timesteps = evals["timesteps"]
+    results = evals["results"]
+    ep_lengths = evals["ep_lengths"]
+
+    return timesteps, results, ep_lengths
+
+if __name__ == "__main__":
+
+    #read_eval_npz("/Users/azadsalam/codebase/scenic/training/gfrl/_exp/dev_6/eval/evaluations.npz")
+
+    pass

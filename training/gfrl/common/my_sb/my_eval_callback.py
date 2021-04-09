@@ -45,6 +45,7 @@ class EvalCallback(EventCallback):
         render: bool = False,
         verbose: int = 1,
         warn: bool = True,
+        model_save_freq: int = 10000
     ):
         super(EvalCallback, self).__init__(callback_on_new_best, verbose=verbose)
         self.n_eval_episodes = n_eval_episodes
@@ -54,6 +55,7 @@ class EvalCallback(EventCallback):
         self.deterministic = deterministic
         self.render = render
         self.warn = warn
+        self.model_save_freq = model_save_freq
 
         # Convert to VecEnv for consistency
         if not isinstance(eval_env, VecEnv):
@@ -172,6 +174,12 @@ class EvalCallback(EventCallback):
                 # Trigger callback if needed
                 if self.callback is not None:
                     return self._on_event()
+
+            if self.model_save_freq > 0 and self.num_timesteps % self.model_save_freq == 0:
+                self.model.save(os.path.join(self.best_model_save_path, f"model_{self.num_timesteps}"))
+
+
+
 
         return True
 

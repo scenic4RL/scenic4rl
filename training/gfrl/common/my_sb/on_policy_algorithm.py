@@ -239,9 +239,9 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 logger.record("time/iterations", iteration, exclude="tensorboard")
                 if len(self.ep_info_buffer) > 0 and len(self.ep_info_buffer[0]) > 0:
                     logger.record("rollout/ep_rew_mean", safe_mean([ep_info["r"] for ep_info in self.ep_info_buffer]))
-                    logger.record("rollout/ep_rew_std", np.std([ep_info["r"] for ep_info in self.ep_info_buffer]))
-                    logger.record("rollout/ep_len_mean", safe_mean([ep_info["l"] for ep_info in self.ep_info_buffer]))
                     logger.record("rollout/ep_score_mean", safe_mean([ep_info["score_reward"] for ep_info in self.ep_info_buffer]))
+                    logger.record("rollout/ep_len_mean", safe_mean([ep_info["l"] for ep_info in self.ep_info_buffer]))
+                    logger.record("rollout/ep_rew_std", np.std([ep_info["r"] for ep_info in self.ep_info_buffer]))
                     logger.record("rollout/ep_score_std", np.std([ep_info["score_reward"] for ep_info in self.ep_info_buffer]))
 
                 logger.record("time/fps", fps)
