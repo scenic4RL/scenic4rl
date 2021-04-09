@@ -140,7 +140,7 @@ class GFootBallSimulation(Simulation):
 		#print("creating gfootball with level: ", level_name)
 		#self.render=False
 		#print("Game Level", self.gf_env_settings["level"])
-		print("gf level name", level_name)
+		#print("gf level name", level_name)
 
 		env, self.scenic_wrapper = env_creator.create_environment(env_name=level_name, settings=self.gf_env_settings, render=self.render)
 		return env

@@ -324,7 +324,7 @@ def test_tag():
         env.reset()
 
         while not done:
-            _,_,done, _ = env.step([0])
+            obs,_,done, info = env.step([0])
 
 
 if __name__=="__main__":
