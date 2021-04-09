@@ -59,7 +59,7 @@ if __name__ == '__main__':
     from gfrl.common.my_sb import my_eval_callback
 
     eval_callback = my_eval_callback.EvalCallback(eval_env, best_model_save_path=eval_logdir,
-                                 log_path=eval_logdir, eval_freq=1000,
+                                 log_path=eval_logdir, eval_freq=1024,
                                  deterministic=True, render=False, model_save_freq=2500)
 
 
@@ -68,8 +68,8 @@ if __name__ == '__main__':
     from gfrl.common.my_sb.ppo import PPO
 
     #n_updates = total_timesteps // (n_steps*num_cpus)
-    model = PPO('MlpPolicy', env, verbose=1, n_epochs=4, n_steps=1024, tensorboard_log=tfdir)
-    model.learn(total_timesteps=6000, callback=[eval_callback])
+    model = PPO('CnnPolicy', env, verbose=1, n_epochs=4, n_steps=1024, tensorboard_log=tfdir)
+    model.learn(total_timesteps=1024*2*2, callback=[eval_callback])
 
     model.save(os.path.join(eval_logdir, f"final_model"))
 
