@@ -34,12 +34,14 @@ if __name__ == '__main__':
     exp_dir = sb_utils.get_incremental_dirname(exp_root, exp_name)
     tfdir = exp_dir
     monitor_dir = os.path.join(exp_dir, "monitor/")
+    eval_logdir = os.path.join(exp_dir, "eval/")
 
 
     scenario_file = f"{cwd}/../_scenarios/exp/pass_n_shoot.scenic"
 
     os.makedirs(tfdir, exist_ok=True)
     os.makedirs(monitor_dir, exist_ok=True)
+    os.makedirs(eval_logdir, exist_ok=True)
 
     num_cpu = 2  # Number of processes to use
 
@@ -54,13 +56,14 @@ if __name__ == '__main__':
     #env = sb_utils.get_dummy_vec_env(num_cpu, monitordir=monitor_dir)
     #eval_env = sb_utils.get_dummy_vec_env(1, monitordir=monitor_dir)
 
-    from stable_baselines3.common.callbacks import EvalCallback
-    #eval_callback = EvalCallback(eval_env, best_model_save_path='./logs/',
-    #                             log_path='./logs/', eval_freq=500,
-    #                             deterministic=True, render=False)
-
     from gfrl.common import my_eval_callback
-    eval_callback = my_eval_callback.EvalCallback(eval_env, eval_freq=500,deterministic=True, render=False)
+
+    eval_callback = my_eval_callback.EvalCallback(eval_env, best_model_save_path=eval_logdir,
+                                 log_path=eval_logdir, eval_freq=500,
+                                 deterministic=True, render=False)
+
+
+    #eval_callback = my_eval_callback.EvalCallback(eval_env, eval_freq=500,deterministic=True, render=False)
 
 
     model = PPO('MlpPolicy', env, verbose=1, n_epochs=4, n_steps=1024, tensorboard_log=tfdir)
