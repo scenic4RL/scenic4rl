@@ -9,7 +9,7 @@ import numpy as np
 from stable_baselines3.common import base_class, logger  # pytype: disable=pyi-error
 from stable_baselines3.common.callbacks import EventCallback, BaseCallback
 #from stable_baselines3.common.evaluation import evaluate_policy
-from gfrl.common import my_evaluation
+from gfrl.common.my_sb import my_evaluation
 from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv, sync_envs_normalization
 
 class EvalCallback(EventCallback):

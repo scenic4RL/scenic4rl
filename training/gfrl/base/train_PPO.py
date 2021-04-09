@@ -1,6 +1,6 @@
 import gym
 import numpy as np
-from stable_baselines3 import PPO
+#from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecTransposeImage
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.utils import set_random_seed
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     #env = sb_utils.get_dummy_vec_env(num_cpu, monitordir=monitor_dir)
     #eval_env = sb_utils.get_dummy_vec_env(1, monitordir=monitor_dir)
 
-    from gfrl.common import my_eval_callback
+    from gfrl.common.my_sb import my_eval_callback
 
     eval_callback = my_eval_callback.EvalCallback(eval_env, best_model_save_path=eval_logdir,
                                  log_path=eval_logdir, eval_freq=500,
@@ -65,6 +65,7 @@ if __name__ == '__main__':
 
     #eval_callback = my_eval_callback.EvalCallback(eval_env, eval_freq=500,deterministic=True, render=False)
 
+    from gfrl.common.my_sb.ppo import PPO
 
     model = PPO('MlpPolicy', env, verbose=1, n_epochs=4, n_steps=1024, tensorboard_log=tfdir)
     model.learn(total_timesteps=4096, callback=[eval_callback])

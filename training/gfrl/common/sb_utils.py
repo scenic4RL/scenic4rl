@@ -5,7 +5,8 @@ from stable_baselines3.common.utils import set_random_seed
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 from scenic.simulators.gfootball.rl_interface import GFScenicEnv
 import gym
-from stable_baselines3.common.monitor import Monitor
+#from stable_baselines3.common.monitor import Monitor
+from gfrl.common.my_sb.monitor import Monitor
 
 def get_env(scenario_file, gf_env_settings, monitordir, rank=0):
     scenario = buildScenario(scenario_file)
