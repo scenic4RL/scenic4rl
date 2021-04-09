@@ -38,7 +38,7 @@ param render_resolution_x = 1280
 param real_time =  True
 
 
-param level = "dynamic"
+#param level = "dynamic"
 #GAME PARAMETERS #These parameters will only be written in the gfootball_scenari_file when explicitely specified in the scenic scenario
 #param game_duration =  400
 #param deterministic =  False

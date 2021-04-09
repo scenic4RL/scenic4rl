@@ -124,6 +124,7 @@ def create_environment(env_name='',
 
     assert env_name
 
+    settings["level"]=env_name
     #render = settings["render"]
     if "representation" in settings:
         representation = settings["representation"]

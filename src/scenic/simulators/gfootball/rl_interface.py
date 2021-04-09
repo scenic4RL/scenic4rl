@@ -57,7 +57,7 @@ class GFScenicEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, initial_scenario, gf_env_settings = {}, allow_render = False, use_scenic_behavior_in_step=False
-                 , constraints_checking=False,  compute_scenic_actions=False): #
+                 , constraints_checking=False,  compute_scenic_actions=False, rank=0): #
         super(GFScenicEnv, self).__init__()
 
         self.gf_env_settings = gf_env_settings
@@ -65,6 +65,7 @@ class GFScenicEnv(gym.Env):
         self.scenario = initial_scenario
         self.constraints_checking = constraints_checking
         self.compute_scenic_actions = compute_scenic_actions
+        self.rank = rank
         # self.initial_scenario = initial_scenario
 
         #self.create_new_simulation = True #if set, initialize_new_simulation, will create a new simulation object, otherwise it will just return
@@ -104,7 +105,8 @@ class GFScenicEnv(gym.Env):
         self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
                                               render=self.allow_render, verbosity=1, gf_env_settings=self.gf_env_settings,
                                               use_scenic_behavior_in_step= self.use_scenic_behavior_in_step,
-                                              constraints_checking=self.constraints_checking, compute_scenic_actions=self.compute_scenic_actions)
+                                              constraints_checking=self.constraints_checking, compute_scenic_actions=self.compute_scenic_actions,
+                                              tag = str(self.rank))
 
         self.gf_gym_env = self.simulation.get_underlying_gym_env()
 
@@ -294,10 +296,41 @@ def test_with_optional_pre_and_post_step():
     print("random agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
 
 
+def test_tag():
+    import os
+    cwd = os.getcwd()
+
+    gf_env_settings = {
+        "stacked": True,
+        "rewards": 'scoring',
+        "representation": 'extracted',
+        "players": [f"agent:left_players=1"],
+        "real_time": True,
+        "action_set": "default",  # "default"
+    }
+
+    from scenic.simulators.gfootball.rl_interface import GFScenicEnv
+
+    num_trials = 6
+    scenario_file = f"{cwd}/rl/rl_demo.scenic"
+    scenario = buildScenario(scenario_file)
+
+
+    for i in range(num_trials):
+        env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False,
+                          use_scenic_behavior_in_step=False, constraints_checking=False, rank=i)
+
+        done=False
+        env.reset()
+
+        while not done:
+            _,_,done, _ = env.step([0])
+
 
 if __name__=="__main__":
     #test_gfootball_env_wrapper_code()
     #lock_step_test()
 
     #test_rl_rith_scenic_behavior()
-    test_with_optional_pre_and_post_step()
+    #test_with_optional_pre_and_post_step()
+    test_tag()

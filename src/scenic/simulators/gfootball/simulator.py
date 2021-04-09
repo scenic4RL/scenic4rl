@@ -66,7 +66,7 @@ class GFootBallSimulator(Simulator):
 class GFootBallSimulation(Simulation):
 
 	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
-				 use_scenic_behavior_in_step=False, constraints_checking=True, compute_scenic_actions=True):
+				 use_scenic_behavior_in_step=False, constraints_checking=True, compute_scenic_actions=True, tag=""):
 		if for_gym_env:
 			import scenic.syntax.translator as translator
 
@@ -99,6 +99,7 @@ class GFootBallSimulation(Simulation):
 		self.configure_player_settings(self.scene)
 
 		self.gf_env_settings = self.settings.copy()
+		self.tag = tag
 
 		if gf_env_settings is not None:
 			self.gf_env_settings.update(gf_env_settings)
@@ -135,10 +136,12 @@ class GFootBallSimulation(Simulation):
 		from scenic.simulators.gfootball.utilities import env_creator
 
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
-		level_name = initialize_gfootball_scenario(self.scene, self.game_ds)
+		level_name = initialize_gfootball_scenario(self.scene, self.game_ds, self.tag)
 		#print("creating gfootball with level: ", level_name)
 		#self.render=False
 		#print("Game Level", self.gf_env_settings["level"])
+		print("gf level name", level_name)
+
 		env, self.scenic_wrapper = env_creator.create_environment(env_name=level_name, settings=self.gf_env_settings, render=self.render)
 		return env
 
