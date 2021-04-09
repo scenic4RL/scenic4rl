@@ -59,8 +59,8 @@ if __name__ == '__main__':
     from gfrl.common.my_sb import my_eval_callback
 
     eval_callback = my_eval_callback.EvalCallback(eval_env, best_model_save_path=eval_logdir,
-                                 log_path=eval_logdir, eval_freq=500,
-                                 deterministic=True, render=False, model_save_freq=1000)
+                                 log_path=eval_logdir, eval_freq=1000,
+                                 deterministic=True, render=False, model_save_freq=2500)
 
 
     #eval_callback = my_eval_callback.EvalCallback(eval_env, eval_freq=500,deterministic=True, render=False)

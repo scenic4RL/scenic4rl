@@ -67,6 +67,6 @@ def read_eval_npz(filename):
 
 if __name__ == "__main__":
 
-    #read_eval_npz("/Users/azadsalam/codebase/scenic/training/gfrl/_exp/dev_6/eval/evaluations.npz")
+    read_eval_npz("/Users/azadsalam/codebase/scenic/training/gfrl/_exp/dev_3/eval/evaluations.npz")
 
     pass
