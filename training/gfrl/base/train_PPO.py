@@ -47,7 +47,7 @@ if __name__ == '__main__':
     n_epochs = 8
     n_steps = 1024
 
-    eval_freq = 20000
+    eval_freq = 20000//num_cpu
     n_eval_episodes = 10
     model_save_freq =  100000
     total_timesteps = 1000000
