@@ -27,11 +27,13 @@ def visualize_agent():
     #eval_env = sb_utils.get_vecenv_from_scenario(scenario_file, gf_env_settings, num_cpu=1, monitordir="../_exp/")
     #eval_env = VecTransposeImage(eval_env)
 
-    scenario_file = f"{os.getcwd()}/../_scenarios/exp/pass_n_shoot.scenic"
+    #scenario_file = f"{os.getcwd()}/../_scenarios/academy/pass_n_shoot.scenic"
+    scenario_file = f"{os.getcwd()}/../_scenarios/academy/run_pass_shoot.scenic"
+
     scenario = buildScenario(scenario_file)
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
     #env = VecTransposeImage(DummyVecEnv([env]))
-    model = PPO.load("/Users/azadsalam/codebase/scenic/training/gfrl/_exp/dev_0/eval/best_model.zip")
+    model = PPO.load("/Users/azadsalam/Downloads/eval/model_100000")
 
     n_trials = 2
     for _ in range(n_trials):
