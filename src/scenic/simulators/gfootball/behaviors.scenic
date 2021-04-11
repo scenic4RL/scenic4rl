@@ -20,14 +20,19 @@ def set_dir_if_not(action, sticky_actions):
 
 
 behavior IdleBehavior():
+    '''
+    Always takes NoAction. Note it will not release direction.
+    '''
     while True:
         take NoAction()
 
 behavior JustShoot():
+    '''
+    Always tries to Shoot if owns ball, otherwise will Pass.
+    '''
     while True:
         if not self.is_controlled:
-            act = NoAction()
-            take act
+            take NoAction()
         else:
             if self.owns_ball:
                 take Shoot()
@@ -35,28 +40,36 @@ behavior JustShoot():
                 take Pass()
 
 
-
-
 behavior JustPass():
+    '''
+    Always try to pass. If not owned ball, will move to the ball.
+    '''
     while True:
         take Pass()
 
 
-behavior RunInCircle():
+behavior RunInCircle(s=1):
+    '''
+    The agent will run in circle, changing direction every s second.
+    '''
     while True:
         for i in range(1,9):
             print(i)
-            do MoveInDirection(i) for 1 seconds
+            do MoveInDirection(i) for s seconds
 
 behavior MoveInDirection(direction_code):
+    '''
+    Always heading to given direction.
+    '''
     while True:
         take SetDirection(direction_code)
 
 
-'''
-Move a player to follow the object (e.g. Ball)'s position
-'''
+
 behavior FollowObject(object_to_follow, sprint=False, opponent=False):
+    '''
+    Let a player follow the object (e.g. Ball)'s position
+    '''
     while True:
         #ball = simulation().game_ds.ball
         x = object_to_follow.position.x
@@ -81,10 +94,11 @@ behavior FollowObject(object_to_follow, sprint=False, opponent=False):
             take SetDirection(corresponding_dir)
             if sprint:
                 take Sprint()
-'''
-Move a player to position x,y
-'''
+
 behavior MoveToPosition(x, y, sprint=False, opponent=False):
+    '''
+    Move a player to position x,y. Will Stop if within 0.5 meter but the behavior won't exit.
+    '''
     while True:
         #ball = simulation().game_ds.ball
 
@@ -110,13 +124,17 @@ behavior MoveToPosition(x, y, sprint=False, opponent=False):
 
         # print(self.x, self.y, direction, corresponding_dir)
 
-'''
-Pass the ball to player.
-'''
+
 behavior PassToPlayer(player, pass_type="long"):
+    '''
+    Pass the ball to the given player.
+    '''
     do PassToPoint(player.position.x, player.position.y, pass_type)
 
 behavior PassToPoint(x, y, pass_type="long"):
+    '''
+    Pass the ball to the closest player near the point.
+    '''
     assert pass_type in ("long", "short", "high", "shoot")
     if (not self.owns_ball):
         print("Warning: Player don't have ball for passing!")
@@ -136,17 +154,26 @@ behavior PassToPoint(x, y, pass_type="long"):
 
 
 behavior BuiltinAIBot():
+    '''
+    Always let default AI determine the player's action.
+    '''
     while True:
         take BuiltinAIAction()
 
 
 
 behavior RunRight():
+    '''
+    Always runs to the right.
+    '''
     #is_running = ActionCode.sticky_direction(self.sticky_actions)
     while True:
         take SetDirection(ActionCode.right)
 
 behavior GreedyPlay():
+    '''
+    A simple aggressive policy. Will close in and shoot if owns ball, otherwise follow and intercept. 
+    '''
     while True:
         # if not in dbox, run towards it
 
@@ -239,12 +266,7 @@ behavior GreedyPlay():
                   f" Owned Team: {ball.owned_team}"
                   )
             """
-            #print("")
-
-            #input()
-            #print(act)
-            #input()
-        take act
+            take act
 
 
 behavior BallRunShoot():
