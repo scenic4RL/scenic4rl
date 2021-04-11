@@ -8,11 +8,11 @@ import numpy as np
 
 SCENARIO_SUBFOLDER_NAME = 'scenic_exp'
 
-def get_level_name(path, scene):
+def get_level_name(path, scene, tag):
     import uuid
     #new_index = len(os.listdir(f"{path}/{SCENARIO_SUBFOLDER_NAME}/"))
     #return f"{scene.name}"
-    return "dynamic"
+    return f"scenic_scene_{tag}"
 
     #return f"{uuid.uuid4()}_{scene.name}"
 
@@ -37,16 +37,14 @@ class SceneInfo():
 
 
 
-def initialize_gfootball_scenario(scene, gameds:GameDS):
+def initialize_gfootball_scenario(scene, gameds:GameDS, tag=""):
     import scenic
 
     #data_path = scenic.__path__[0]
     #data paths and other variable
 
-
-
     module_path = gfootball.scenarios.__path__[0]
-    level_name = get_level_name(module_path, scene)
+    level_name = get_level_name(module_path, scene, tag)
 
     out_file_name = f"{module_path}/{level_name}.py"
 
@@ -75,6 +73,8 @@ def initialize_gfootball_scenario(scene, gameds:GameDS):
             pre = f"data_path = '{data_file_path}'\n"
             code_str = pre+code_str
             #verbosePrint(code_str)
+            #print("writing to ", out_file_name)
+            #print("py file")
             #print(code_str)
             gout.write(code_str)
 

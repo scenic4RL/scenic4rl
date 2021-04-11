@@ -1,0 +1,3 @@
+*.egg-info
+gfrl/_exp/*
+gfrl/_res/*

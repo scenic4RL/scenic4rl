@@ -19,6 +19,10 @@ from stable_baselines3.common.vec_env import VecEnv, sync_envs_normalization, Du
 import numpy as np
 import warnings
 from typing import Union
+from stable_baselines3.common import results_plotter
+from stable_baselines3.common.results_plotter import load_results, ts2xy, plot_results
+
+from stable_baselines3.common.callbacks import BaseCallback
 
 class MyEvalCallback(EventCallback):
     def __init__(
@@ -136,12 +140,63 @@ class MyEvalCallback(EventCallback):
         if self.callback:
             self.callback.update_locals(locals_)
 
+class SaveOnBestTrainingRewardCallback(BaseCallback):
+    """
+    Callback for saving a model (the check is done every ``check_freq`` steps)
+    based on the training reward (in practice, we recommend using ``EvalCallback``).
 
+    :param check_freq: (int)
+    :param log_dir: (str) Path to the folder where the model will be saved.
+      It must contains the file created by the ``Monitor`` wrapper.
+    :param verbose: (int)
+    """
+    def __init__(self, check_freq: int, log_dir: str, verbose=1):
+        super(SaveOnBestTrainingRewardCallback, self).__init__(verbose)
+        self.check_freq = check_freq
+        self.log_dir = log_dir
+        self.save_path = os.path.join(log_dir, 'best_model')
+        self.best_mean_reward = -np.inf
+
+    def _init_callback(self) -> None:
+        # Create folder if needed
+        if self.save_path is not None:
+            os.makedirs(self.save_path, exist_ok=True)
+
+    def _on_step(self) -> bool:
+        if self.n_calls % self.check_freq == 0:
+
+          # Retrieve training reward
+          x, y = ts2xy(load_results(self.log_dir), 'timesteps')
+          if len(x) > 0:
+              # Mean training reward over the last 100 episodes
+              mean_reward = np.mean(y[-100:])
+              if self.verbose > 0:
+                print("Num timesteps: {}".format(self.num_timesteps))
+                print("Best mean reward: {:.2f} - Last mean reward per episode: {:.2f}".format(self.best_mean_reward, mean_reward))
+
+              # New best model, you could save the agent here
+              if mean_reward > self.best_mean_reward:
+                  self.best_mean_reward = mean_reward
+                  # Example for saving best model
+                  if self.verbose > 0:
+                    print("Saving new best model to {}".format(self.save_path))
+                  self.model.save(self.save_path)
+
+        return True
 def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, dump_info, override_params={}, rewards=""):
     os.makedirs(save_dir, exist_ok=True)
     os.makedirs(logdir, exist_ok=True)
 
-    env = Monitor(env)
+    
+    
+    currentDT = datetime.datetime.now()
+    fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
+    log_file_name = f"{fstr}"
+    parameter_out_file_name = logdir + '/' + log_file_name + ".param"
+
+    monitor_dir = logdir + '/monitor_' +  log_file_name
+    os.makedirs(monitor_dir, exist_ok=True)
+    env = Monitor(env, filename=monitor_dir)
 
     policy_kwargs = dict(
         features_extractor_class=features_extractor_class,
@@ -163,6 +218,7 @@ def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, t
 
     parameters.update(override_params)
 
+
     model = ALGO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir,
                  clip_range=parameters["clip_range"], gamma=parameters["gamma"],
                  learning_rate=parameters["learning_rate"],
@@ -176,10 +232,9 @@ def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, t
 
     eval_callback = MyEvalCallback(model.get_env(), eval_freq=eval_freq, deterministic=True, render=False)
 
-    currentDT = datetime.datetime.now()
-    fstr = f"HM_{currentDT.hour}_{currentDT.minute}__DM_{currentDT.day}_{currentDT.month}"
-    log_file_name = f"{fstr}"
-    parameter_out_file_name = logdir + '/' + log_file_name + ".param"
+    save_best_trainied_model = SaveOnBestTrainingRewardCallback(check_freq=eval_freq, log_dir = monitor_dir)
+
+    
 
     with open(parameter_out_file_name, "w+") as parout:
         other_info = dict(save_dir=save_dir, total_training_timesteps=total_training_timesteps,
@@ -190,9 +245,9 @@ def train(env, ALGO, features_extractor_class, scenario_name, n_eval_episodes, t
         parout.write(pprint.pformat(other_info))
 
     model.learn(total_timesteps=total_training_timesteps, tb_log_name=log_file_name,
-                callback=eval_callback)  # callback=eval_callback
+                callback=[eval_callback, save_best_trainied_model])  # callback=eval_callback
 
-    model.save(f"{save_dir}/PPO_impala_cnn_{total_training_timesteps}")
+    model.save(f"{save_dir}/PPO_{fstr}_{total_training_timesteps}")
 
     mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=n_eval_episodes)
 

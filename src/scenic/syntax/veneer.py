@@ -133,6 +133,7 @@ def isActive():
 
 def activate(paramOverrides={}, modelOverride=None, filename=None):
 	"""Activate the veneer when beginning to compile a Scenic module."""
+	reset()
 	global activity, _globalParameters, lockedParameters, lockedModel, currentScenario
 	if paramOverrides or modelOverride:
 		assert activity == 0

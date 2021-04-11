@@ -1,0 +1,35 @@
+name_exp_mapping: 
+
+Exp with batch_size: 512: on exp_03. academy rps , no curriculum 
+
+HM_6_34__DM_22_3: 'batch_size': 512, 'n_epochs': 10, 'n_steps': 2048,
+HM_8_48__DM_22_3: 'batch_size': 512, 'n_epochs': 10, 'n_steps': 4096,
+HM_11_1__DM_22_3: 'batch_size': 512, 'n_epochs': 25, 'n_steps': 2048,
+HM_14_41__DM_22_3:  'n_epochs': 25, 'n_steps': 4096,
+
+HM_20_20__DM_22_3_1 -> Uniform PPO exp 0_3, batch 4096 and n-step=4096
+
+
+---------
+
+HP on n_steps = [2048, 4096] x n_epochs [10, 25] with 500K episodes on accademy_rps, batch_size=512
+
+
+1) n_epochs 25 is slower (half the speed) with no significant
+2) none of them learned (or, showed sign of learning) 
+
+
+maybe none of the other observation would be statistically significant
+
+
+-> n_steps=4096 with n_epoch=10 seemed to work best (less variation ) + mean -0.04
+
+-> n_epoch = 25 with n_steps 2096 is the only who ever saw one  positive result  -> end mean -0.05 
+
+i) n_epoch = 25 is muuch slower (half the speed)
+
+
+
+ii) n_epoch = 25 with n_steps 2096, 4096 showed a bit more variation then (n_steps=4096 and n_epocch=10)
+
+-------------------

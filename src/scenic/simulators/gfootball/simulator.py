@@ -65,12 +65,20 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={}, use_scenic_behavior_in_step=False):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
+				 use_scenic_behavior_in_step=False, constraints_checking=True, compute_scenic_actions=True, tag=""):
 		if for_gym_env:
 			import scenic.syntax.translator as translator
 
+		#compute_scenic_actions is not used right now
+
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
+
+		assert use_scenic_behavior_in_step == constraints_checking,    "for now constraing checking has to be done when using scenic behavior"
+		#assert compute_scenic_actions ==  use_scenic_behavior_in_step, "for now compute action must be equal to use_scenic_behavior_in_step"
+
+		self.run_pre_post_step = use_scenic_behavior_in_step and constraints_checking
 		self.scene = scene
 		self.verbosity = verbosity
 		self.record = record
@@ -82,6 +90,8 @@ class GFootBallSimulation(Simulation):
 		self.for_gym_env = for_gym_env
 		self.multi_player_rl = False
 		self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
+		self.constraints_checking = constraints_checking
+		self.compute_scenic_actions = compute_scenic_actions
 
 		self.settings = self.scene.params.copy()
 		self.settings.update(settings)
@@ -89,6 +99,7 @@ class GFootBallSimulation(Simulation):
 		self.configure_player_settings(self.scene)
 
 		self.gf_env_settings = self.settings.copy()
+		self.tag = tag
 
 		if gf_env_settings is not None:
 			self.gf_env_settings.update(gf_env_settings)
@@ -110,6 +121,8 @@ class GFootBallSimulation(Simulation):
 
 
 
+
+
 		#if self.gf_env_settings["render"] and not for_gym_env: self.env.render()
 	"""
 	def disable_rl_action(self):
@@ -123,10 +136,12 @@ class GFootBallSimulation(Simulation):
 		from scenic.simulators.gfootball.utilities import env_creator
 
 		self.game_ds: GameDS = self.get_game_ds(self.scene)
-		level_name = initialize_gfootball_scenario(self.scene, self.game_ds)
+		level_name = initialize_gfootball_scenario(self.scene, self.game_ds, self.tag)
 		#print("creating gfootball with level: ", level_name)
 		#self.render=False
 		#print("Game Level", self.gf_env_settings["level"])
+		#print("gf level name", level_name)
+
 		env, self.scenic_wrapper = env_creator.create_environment(env_name=level_name, settings=self.gf_env_settings, render=self.render)
 		return env
 
@@ -231,6 +246,7 @@ class GFootBallSimulation(Simulation):
 			self.action = ActionCode.builtin_ai
 			if controlled_player in allActions:
 				self.action = allActions[controlled_player][0].code
+				#print(self.game_ds.player_str_mini(controlled_player), self.action)
 
 			#print(self.game_ds.player_str_mini(controlled_player), self.action)
 		else:
@@ -243,7 +259,9 @@ class GFootBallSimulation(Simulation):
 
 	def step(self, action=None):
 
-		if self.for_gym_env:
+
+
+		if self.run_pre_post_step:
 			new_done = self.pre_step()
 			#TODO if simulation ended for constraints handle it
 
@@ -282,8 +300,9 @@ class GFootBallSimulation(Simulation):
 
 		if self.for_gym_env:
 			#clean up after simulation ended
-			if self.done:
+			if self.done and self.run_pre_post_step:
 				self.post_run()
+
 
 
 			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."

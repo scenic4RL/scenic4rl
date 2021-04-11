@@ -27,7 +27,6 @@ class ExpertDataSet(Dataset):
     def __len__(self):
         return len(self.observations)
 
-
 def pretrain_agent(
         student,
         env,
@@ -53,9 +52,10 @@ def pretrain_agent(
     print("train_expert_dataset: ", len(train_expert_dataset))
 
 
-    use_cuda = not no_cuda and th.cuda.is_available()
+    use_cuda = th.cuda.is_available()
     th.manual_seed(seed)
     device = th.device("cuda" if use_cuda else "cpu")
+    print("In Pretraining, device: ", device)
     kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
 
     if isinstance(env.action_space, gym.spaces.Box):
@@ -152,6 +152,29 @@ def pretrain_agent(
     # Implant the trained policy network back into the RL student agent
     student.policy = model
 
+def test_model_performance(env, model, num_trials=1):
+
+    obs = env.reset()
+    #env.render()
+    num_epi = 0
+    total_r = 0
+    from tqdm import tqdm
+    for i in tqdm(range(0, num_trials)):
+
+        done = False
+
+        while not done:
+            action = model.predict(obs, deterministic=True)[0]
+            obs, reward, done, info = env.step(action)
+            #env.render()
+            total_r+=reward
+            if done:
+                obs = env.reset()
+                num_epi +=1
+
+    return total_r/num_epi
+
+
 def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, save_dir, logdir, tracedir, rewards, override_params={}, dump_traj=False, write_video=False):
     gf_env_settings = {
         "stacked": True,
@@ -182,53 +205,35 @@ def train(scenario_name, n_eval_episodes, total_training_timesteps, eval_freq, s
         env=env, ALGO=PPO, features_extractor_class = features_extractor_class, scenario_name=scenario_name,
         logdir=logdir, override_params=override_params, rewards=rewards)
 
-
+    pretrain_epochs = override_params["pretrain_epochs"]
     print("env (from model) observation space: ", model.get_env().observation_space)
-    expert_data_filename = ""
-    num_interactions = 500
-    #Generate random data for now as proxy to expert data
-    expert_observations = []
-    expert_actions = []
-
-    obs = env.reset()
-
-    for i in tqdm(range(num_interactions)):
-        action = env.action_space.sample()
-        expert_observations.append(obs)
-        expert_actions.append(action)
-        obs, reward, done, info = env.step(action)
-        if done:
-            obs = env.reset()
-
-    expert_observations = np.array(expert_observations)
-    print("expert obs shape", expert_observations.shape)
-    expert_observations = np.moveaxis(expert_observations, [3], [1])
-    print("expert obs shape updated: ", expert_observations.shape)
-    expert_actions = np.array(expert_actions)
-
-    np.savez_compressed(
-        "expert_data",
-        expert_actions=expert_actions,
-        expert_observations=expert_observations,
-    )
+    print(f"Pretraining for {pretrain_epochs}")
 
 
-    expert_dataset = ExpertDataSet(expert_observations, expert_actions)
+    #Load Expert data for now as proxy to expert data
+    import os
+    cwd = os.getcwd()
+    loaded_data = np.load(f"{cwd}/pretrain/expert_data_20000.npz")
 
+    expert_observations = loaded_data["expert_observations"]
+    expert_actions = loaded_data["expert_actions"]
+    print(f"Loaded data obs: {expert_observations.shape}, actions: {expert_actions.shape}")
 
     #pretrain the model now
-
+    expert_dataset = ExpertDataSet(expert_observations, expert_actions)
     pretrain_agent(
         student=model,
         env=env,
         expert_dataset=expert_dataset,
+        epochs=pretrain_epochs
     )
-
+    num_bc_eval_trials = 2
+    print(f"Behavior Cloning Performance (trials: {num_bc_eval_trials}): ",  test_model_performance(env, model, num_trials=num_bc_eval_trials))
 
     pretrain_template.train(model=model, parameters=parameter_dict,
                             n_eval_episodes=n_eval_episodes, total_training_timesteps=total_training_timesteps,
                             eval_freq=eval_freq,
-                            save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards})
+                            save_dir=save_dir, logdir=logdir, dump_info={"rewards": rewards, "pretrain_epochs": pretrain_epochs})
 
 
 
@@ -239,20 +244,23 @@ if __name__ == "__main__":
     print("Current working Directory: ", cwd)
 
     scenario_file = f"{cwd}/exp_0_4/academy_run_to_score.scenic"
-    n_eval_episodes = 10
-    total_training_timesteps = 6000
+    n_eval_episodes = 2
+    total_training_timesteps = 2000
     eval_freq = 5000
 
+
     save_dir = f"{cwd}/saved_models"
-    logdir = f"{cwd}/tboard/dev"
+    logdir = f"{cwd}/tboard/pretrain/"
     tracedir = f"{cwd}/game_trace"
     rewards = "scoring"#'scoring,checkpoints'
     
     print("model, tf logs, game trace are saved in: ", save_dir, logdir, tracedir)
 
     param_list = [
-        {"n_steps": 4096},
+        {"pretrain_epochs": 0, "n_steps": 4096},
+        {"pretrain_epochs": 0, "n_steps": 4096},
     ]
+
 
     for override_params in param_list:
         train(scenario_name=scenario_file, n_eval_episodes = n_eval_episodes,
