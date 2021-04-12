@@ -1,5 +1,6 @@
 import os
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
+
 cwd = os.getcwd()
 
 def mean_reward_random_agent(env, num_trials=1):

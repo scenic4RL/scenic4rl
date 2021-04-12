@@ -122,11 +122,13 @@ class Slide(Action):
         return "slide"
 
 class MoveTowardsPoint(Action):
+    '''
+    Move Towards given point. Will calculate correct heading for you.
+    '''
     def __init__(self, x, y, self_x, self_y, opponent = False):
         self.x = x
         self.y = y
         self.opponent = opponent
-
 
         if opponent:
             corresponding_dir = lookup_direction(self_x - x, self_y - y)
