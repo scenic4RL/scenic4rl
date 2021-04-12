@@ -75,7 +75,7 @@ class GFootBallSimulation(Simulation):
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
 
-		assert use_scenic_behavior_in_step == constraints_checking,    "for now constraing checking has to be done when using scenic behavior"
+		assert not for_gym_env or use_scenic_behavior_in_step == constraints_checking,    "for now constraing checking has to be done when using scenic behavior"
 		#assert compute_scenic_actions ==  use_scenic_behavior_in_step, "for now compute action must be equal to use_scenic_behavior_in_step"
 
 		self.run_pre_post_step = use_scenic_behavior_in_step and constraints_checking

@@ -1,37 +1,35 @@
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
-param game_duration = 50
+param game_duration = 600
 param deterministic = False
 param offsides = False
-param end_episode_on_score = True
-param end_episode_on_out_of_play = True
-param end_episode_on_possession_change = True
-# Behaviors
-behavior JustShoot():
-    while True:
-        #print("In Behavior")
-        #print(self.position, self.is_controlled, self.owns_ball, "ball", ball.x, ball.y)
-        if not self.is_controlled:
-            take NoAction()
-            #print("Not controlled -> No Action")
-            #print()
-        else:
-            if self.owns_ball:
-                take Shoot()
-                #print("Shoot ")
-            else:
-                take MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
-                #print("Move ")
+# ----- Constants -----
+init_triangle_length = 35
+danger_cone_angle = 70 deg
+danger_cone_radius = 20
+pass_distance = 10
+# ----- Behaviors -----
+# ----- Players -----
 
-        #print("-------------------------------")
-# ball at top
-ball = Ball at 70 @ 28
-ego = MyGK at -99 @ 0
-gk = ego
-# middle
-p2 = MyCB at 70 @ 0
-# top with ball
-p1 = MyCB at 70 @ 30, with behavior JustShoot()
-OpGK at 99 @ 0
-OpCB at 75 @ 30
+p1_pos = Point on LeftReg_CM
+# spawn p2 to top
+p2_pos = Point at p1_pos offset along -30 deg by 0 @ init_triangle_length
+# spawn p3 to right
+p3_pos = Point at p1_pos offset along -90 deg by 0 @ init_triangle_length
+# spawn enemy in between
+o1_pos = Point at p1_pos offset along -60 deg by 0 @ init_triangle_length/1.42
+p1 = MyPlayer with role "CM", at p1_pos
+p2 = MyPlayer with role "CM", at p2_pos
+p3 = MyPlayer with role "CM", at p3_pos
+ego = MyGK #with behavior IdleBehavior()
+#
+#
+#
+
+o1 = OpPlayer with role "CM", at o1_pos
+o2 = OpCF
+o3 = OpCB
+o0 = OpGK #with behavior IdleBehavior()
+#Ball
+ball = Ball #ahead of p1 by 2

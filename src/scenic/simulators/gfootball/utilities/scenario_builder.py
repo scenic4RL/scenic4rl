@@ -122,7 +122,7 @@ def initialize_gfootball_scenario(scene, gameds:GameDS, tag=""):
                 player_tup = (player_pos_sim.x, player_pos_sim.y, role_map[player.role])
                 player_tuple_array.append(player_tup)
 
-            player_tuple_array.sort(key=lambda x: 0 if x[2] == 'e_PlayerRole_GK' else 1)
+            player_tuple_array.sort(key=lambda x: 0 if x[2] == libgame.e_PlayerRole.e_PlayerRole_GK else 1)
 
     scene_info = SceneInfo(params=params_to_write, ball=ball, my_players=own_player_tuples, op_players=op_player_tuples)
     #print(scene_info)
