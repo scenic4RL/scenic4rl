@@ -28,7 +28,8 @@ def visualize_agent():
     #eval_env = VecTransposeImage(eval_env)
 
     #scenario_file = f"{os.getcwd()}/../_scenarios/academy/pass_n_shoot.scenic"
-    scenario_file = f"{os.getcwd()}/../_scenarios/academy/run_pass_shoot.scenic"
+    #scenario_file = f"{os.getcwd()}/../_scenarios/academy/run_pass_shoot.scenic"
+    scenario_file = f"{os.getcwd()}/../_scenarios/academy/rts_with_keeper.scenic"
 
     scenario = buildScenario(scenario_file)
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
