@@ -32,8 +32,8 @@ if __name__ == '__main__':
 
     eval_freq = 50000 // num_cpu
     n_eval_episodes =      10
-    model_save_freq =  500000 // num_cpu
-    total_timesteps = 5000000
+    model_save_freq =  5000
+    total_timesteps = 10000
 
 
     #f"{cwd}/../_scenarios/academy/rts_with_keeper.scenic", 
@@ -48,6 +48,7 @@ if __name__ == '__main__':
         tfdir = exp_dir
         monitor_dir = os.path.join(exp_dir, "monitor/")
         eval_logdir = os.path.join(exp_dir, "eval/")
+
 
         param_dict = dict(num_cpu=num_cpu, n_epochs=n_epochs, n_steps=n_steps, eval_freq=eval_freq,
                         n_eval_episodes=n_eval_episodes,

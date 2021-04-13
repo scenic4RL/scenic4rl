@@ -42,6 +42,24 @@ def train_ppo(env, eval_env, config):
     model.save(os.path.join(params["eval_logdir"], f"final_model"))
 
 
+def run_ppo_with_uniform_curricuum(target_task, sub_tasks, config = {}):
+    gf_env_settings = config["gf_env_settings"]
+    params = config["params"]
+    num_cpu = params["num_cpu"]
+    monitor_dir = params["monitor_dir"]
+
+    os.makedirs(params["monitor_dir"], exist_ok=True)
+
+    from gfrl.common import sb_utils
+    env = sb_utils.get_vecenv_uniform(target_task, sub_tasks, gf_env_settings, num_cpu=num_cpu, monitordir=monitor_dir)
+    #env = sb_utils.get_vecenv_from_scenario(scenario_file, gf_env_settings, num_cpu, monitordir=monitor_dir)
+    env = VecTransposeImage(env)
+
+    eval_env = sb_utils.get_vecenv_from_scenario(target_task, gf_env_settings, num_cpu=1, monitordir=monitor_dir)
+    eval_env = VecTransposeImage(eval_env)
+
+    train_ppo(env, eval_env, config)
+
 def run_ppo_from_scenario(scenario_file, config = {}):
 
     gf_env_settings = config["gf_env_settings"]

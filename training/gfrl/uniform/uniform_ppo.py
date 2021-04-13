@@ -1,7 +1,7 @@
 
 import os
 
-from gfrl.base.train_PPO import run_ppo_from_scenario
+from gfrl.base.train_PPO import run_ppo_from_scenario, run_ppo_with_uniform_curricuum
 
 if __name__ == '__main__':
 
@@ -24,30 +24,38 @@ if __name__ == '__main__':
     from gfrl.common import sb_utils
 
     cwd = os.getcwd()
-    exp_root = f"{cwd}/../_res/"
+    exp_root = f"{cwd}/../_res/unicur/"
 
-    num_cpu = 28  # Number of processes to use
+    num_cpu = 2  # Number of processes to use
     n_epochs = 2
     n_steps = 256
 
-    eval_freq = 50000 // num_cpu
+    eval_freq = 5000 // num_cpu
     n_eval_episodes =      10
-    model_save_freq =  500000 // num_cpu
-    total_timesteps = 5000000
-
+    model_save_freq =  5000 // num_cpu
+    total_timesteps = 10000
+    n_trials = 1
 
     #f"{cwd}/../_scenarios/academy/rts_with_keeper.scenic", 
     #scenario_files = [f"{cwd}/../_scenarios/academy/run_pass_shoot.scenic"]
-    scenario_files = [f"{cwd}/../_scenarios/academy/rts_with_keeper.scenic",
-                      f"{cwd}/../_scenarios/academy/rts_with_keeper.scenic"]
+    #scenario_files = [f"{cwd}/../_scenarios/academy/rts_with_keeper.scenic"]
 
-    for scenario_file in scenario_files:
+    target_task = f"{cwd}/../_scenarios/uniform/rtsk0/rts_with_keeper.scenic"
+    sub_tasks = [
+        f"{cwd}/../_scenarios/uniform/rtsk0/sub0.scenic",
+        f"{cwd}/../_scenarios/uniform/rtsk0/sub1.scenic",
+        f"{cwd}/../_scenarios/uniform/rtsk0/sub2.scenic",
+        f"{cwd}/../_scenarios/uniform/rtsk0/sub3.scenic",
+    ]
 
-        exp_name = scenario_file[scenario_file.rfind("/")+1:scenario_file.rfind(".")]
+    for trial_no in range(n_trials):
+
+        exp_name = target_task[target_task.rfind("/")+1:target_task.rfind(".")]
         exp_dir = sb_utils.get_incremental_dirname(exp_root, exp_name)
         tfdir = exp_dir
         monitor_dir = os.path.join(exp_dir, "monitor/")
         eval_logdir = os.path.join(exp_dir, "eval/")
+
 
         param_dict = dict(num_cpu=num_cpu, n_epochs=n_epochs, n_steps=n_steps, eval_freq=eval_freq,
                         n_eval_episodes=n_eval_episodes,
@@ -57,4 +65,4 @@ if __name__ == '__main__':
 
         config = {"params": param_dict, "gf_env_settings": gf_env_settings}
 
-        run_ppo_from_scenario(scenario_file, config=config)
+        run_ppo_with_uniform_curricuum(target_task=target_task, sub_tasks=sub_tasks, config=config)

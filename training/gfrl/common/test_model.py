@@ -34,9 +34,11 @@ def visualize_agent():
     scenario = buildScenario(scenario_file)
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
     #env = VecTransposeImage(DummyVecEnv([env]))
-    model = PPO.load("/Users/azadsalam/Downloads/eval/model_100000")
+    #model = PPO.load("/Users/azadsalam/codebase/scenic/training/gfrl/_res/rts_with_keeper_2/eval/model_3500000.zip")
+    model = PPO.load("/Users/azadsalam/codebase/scenic/training/gfrl/_res/run_pass_shoot_4/eval/best_model.zip")
 
-    n_trials = 2
+
+    n_trials = 10
     for _ in range(n_trials):
         done = False
         o = env.reset()

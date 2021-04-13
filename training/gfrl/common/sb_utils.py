@@ -1,3 +1,4 @@
+from gfrl.uniform.uniform_environment import UnifromTeacherEnvironment
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecTransposeImage
 from stable_baselines3.common.env_util import make_vec_env
@@ -14,6 +15,12 @@ def get_env(scenario_file, gf_env_settings, monitordir, rank=0):
     env = Monitor(env, filename=f"{monitordir}_{rank}", info_keywords=("score_reward",))
     return env
 
+def get_uniform_env(target_task, subtasks, gf_env_settings, monitordir, rank=0):
+    env = UnifromTeacherEnvironment(target_task, subtasks, gf_env_settings, rank=rank)
+    env = Monitor(env, filename=f"{monitordir}_{rank}", info_keywords=("score_reward", "task_name"))
+    return env
+
+
 def get_vecenv_from_scenario(scenario_file, gf_env_settings, num_cpu, monitordir):
 
     def make_env(scenario_file, gf_env_settings, rank):
@@ -21,11 +28,21 @@ def get_vecenv_from_scenario(scenario_file, gf_env_settings, num_cpu, monitordir
             return get_env(scenario_file, gf_env_settings, monitordir, rank)
         return _init
 
-
     env = SubprocVecEnv([make_env(scenario_file, gf_env_settings, i) for i in range(num_cpu)])
-
     return env
 
+
+def get_vecenv_uniform(target_task, subtasks, gf_env_settings, num_cpu, monitordir):
+
+    def make_env(target_task, subtasks, gf_env_settings, rank):
+        def _init():
+            return get_uniform_env(target_task, subtasks, gf_env_settings, monitordir, rank)
+        return _init
+
+
+    env = SubprocVecEnv([make_env(target_task, subtasks, gf_env_settings, i) for i in range(num_cpu)])
+
+    return env
 
 def get_dummy_vec_env(num_cpu, monitordir):
     #from stable_baselines3.common.monitor import Monitor

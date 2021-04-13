@@ -1,4 +1,5 @@
 import time
+from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 import gym
@@ -243,6 +244,38 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                     logger.record("rollout/ep_len_mean", safe_mean([ep_info["l"] for ep_info in self.ep_info_buffer]))
                     logger.record("rollout/ep_rew_std", np.std([ep_info["r"] for ep_info in self.ep_info_buffer]))
                     logger.record("rollout/ep_score_std", np.std([ep_info["score_reward"] for ep_info in self.ep_info_buffer]))
+
+                    if "task_name" in self.ep_info_buffer[0]:
+                        task_names = set()
+                        task_rew = defaultdict(list)
+                        task_score = defaultdict(list)
+                        task_idx = defaultdict(list)
+                        for i, ep_info in enumerate(self.ep_info_buffer):
+                            task_name = ep_info["task_name"]
+                            task_names.add(task_name)
+                            task_idx[task_name].append(i)
+                            task_rew[task_name].append(ep_info["r"])
+                            task_score[task_name].append(ep_info["score_reward"])
+
+
+                        for task_name in task_names:
+                            logger.record(f"uniform curriculum/{task_name}_mean_rew", safe_mean(task_rew[task_name]))
+                            logger.record(f"uniform curriculum/{task_name}_mean_score", safe_mean(task_score[task_name]))
+
+                        """
+                        print(task_names)
+                        print(task_idx)
+                        print()
+                        print(task_rew)
+                        print()
+                        print(task_score)
+                        print()
+                        print(len(self.ep_info_buffer))
+                        #quit()
+                        """
+
+
+
 
                 logger.record("time/fps", fps)
                 logger.record("time/time_elapsed", int(time.time() - self.start_time), exclude="tensorboard")
