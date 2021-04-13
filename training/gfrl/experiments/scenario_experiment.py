@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     eval_freq = 50000 // num_cpu
     n_eval_episodes =      10
-    model_save_freq =  500000
+    model_save_freq =  500000 // num_cpu
     total_timesteps = 5000000
 
 

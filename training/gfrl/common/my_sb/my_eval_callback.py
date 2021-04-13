@@ -175,7 +175,7 @@ class EvalCallback(EventCallback):
                 if self.callback is not None:
                     return self._on_event()
 
-        if self.model_save_freq > 0 and self.num_timesteps % self.model_save_freq == 0:
+        if self.model_save_freq > 0 and self.n_calls % self.model_save_freq == 0:
             self.model.save(os.path.join(self.best_model_save_path, f"model_{self.num_timesteps}"))
 
 
