@@ -11,7 +11,8 @@ from scenic.core.workspaces import Workspace
 from scenic.core.vectors import Vector
 from scenic.core.utils import areEquivalent
 from scenic.core.errors import InvalidScenarioError
-import scenic.syntax.veneer as veneer
+from scenic.core.dynamics import Behavior
+from scenic.core.requirements import BoundRequirement
 
 class Scene:
 	"""Scene()
@@ -140,15 +141,15 @@ class Scenario:
 			if staticVisibility and oi.requireVisible is True and oi is not self.egoObject:
 				if not self.egoObject.canSee(oi):
 					raise InvalidScenarioError(f'Object at {oi.position} is not visible from ego')
-			# Require object to not intersect another object
-			for j in range(i):
-				oj = objects[j]
-				if not staticBounds[j]:
-					continue
-				if oi.intersects(oj):
-					print(f"{oi} intersects with {oj}")
-					raise InvalidScenarioError(f'Object at {oi.position} intersects'
-											   f' object at {oj.position}')
+			if not oi.allowCollisions:
+				# Require object to not intersect another object
+				for j in range(i):
+					oj = objects[j]
+					if oj.allowCollisions or not staticBounds[j]:
+						continue
+					if oi.intersects(oj):
+						raise InvalidScenarioError(f'Object at {oi.position} intersects'
+												   f' object at {oj.position}')
 
 	def hasStaticBounds(self, obj):
 		if needsSampling(obj.position):
@@ -207,7 +208,7 @@ class Scenario:
 				sampledObj.heading = float(sampledObj.heading)
 				# behavior
 				behavior = sampledObj.behavior
-				if behavior is not None and not isinstance(behavior, veneer.Behavior):
+				if behavior is not None and not isinstance(behavior, Behavior):
 					raise InvalidScenarioError(
 						f'behavior {behavior} of Object {obj} is not a behavior')
 
@@ -224,18 +225,17 @@ class Scenario:
 				#	rejection = 'object visibility'
 				#	break
 				# Require object to not intersect another object
-				for j in range(i):
-					vj = sample[objects[j]]
-					if vi.intersects(vj):
-						rejection = 'object intersection'
-						break
+				if not vi.allowCollisions:
+					for j in range(i):
+						vj = sample[objects[j]]
+						if not vj.allowCollisions and vi.intersects(vj):
+							rejection = 'object intersection'
+							break
 				if rejection is not None:
 					break
 			if rejection is not None:
 				continue
 			# Check user-specified requirements
-			#
-			# default positions here too ??
 			for req in activeReqs:
 				if not req.satisfiedBy(sample):
 					rejection = f'user-specified requirement (line {req.line})'
@@ -252,10 +252,10 @@ class Scenario:
 		for modName, namespace in self.behaviorNamespaces.items():
 			sampledNamespace = { name: sample[value] for name, value in namespace.items() }
 			sampledNamespaces[modName] = (namespace, sampledNamespace, namespace.copy())
-		alwaysReqs = (veneer.BoundRequirement(req, sample) for req in self.alwaysRequirements)
-		terminationConds = (veneer.BoundRequirement(req, sample)
+		alwaysReqs = (BoundRequirement(req, sample) for req in self.alwaysRequirements)
+		terminationConds = (BoundRequirement(req, sample)
 							for req in self.terminationConditions)
-		termSimulationConds = (veneer.BoundRequirement(req, sample)
+		termSimulationConds = (BoundRequirement(req, sample)
 							   for req in self.terminateSimulationConditions)
 		scene = Scene(self.workspace, sampledObjects, ego, sampledParams,
 					  alwaysReqs, terminationConds, termSimulationConds, self.monitors,
@@ -272,9 +272,5 @@ class Scenario:
 	def getSimulator(self):
 		if self.simulator is None:
 			raise RuntimeError('scenario does not specify a simulator')
-		try:
-			assert not veneer._globalParameters		# TODO improve hack!
-			veneer._globalParameters = dict(self.params)
-			return self.simulator()
-		finally:
-			veneer._globalParameters = {}
+		import scenic.syntax.veneer as veneer
+		return veneer.instantiateSimulator(self.simulator, self.params)

@@ -7,6 +7,7 @@ from collections import OrderedDict
 from scenic.core.object_types import (enableDynamicProxyFor, setDynamicProxyFor,
                                       disableDynamicProxyFor)
 from scenic.core.distributions import RejectionException
+import scenic.core.dynamics as dynamics
 from scenic.core.errors import RuntimeParseError, InvalidScenarioError
 from scenic.core.vectors import Vector
 
@@ -24,7 +25,8 @@ class RejectSimulationException(Exception):
 class Simulator:
     """A simulator which can import/execute scenes from Scenic."""
 
-    def simulate(self, scene, maxSteps=None, maxIterations=100, verbosity=0):
+    def simulate(self, scene, maxSteps=None, maxIterations=100, verbosity=0,
+                 raiseGuardViolations=False):
         """Run a simulation for a given scene."""
 
         # Repeatedly run simulations until we find one satisfying the requirements
@@ -35,11 +37,14 @@ class Simulator:
             try:
                 simulation = self.createSimulation(scene, verbosity=verbosity)
                 result = simulation.run(maxSteps)
-            except (RejectSimulationException, RejectionException) as e:
+            except (RejectSimulationException, RejectionException, dynamics.GuardViolation) as e:
                 if verbosity >= 2:
                     print(f'  Rejected simulation {iterations} at time step '
                           f'{simulation.currentTime} because of: {e}')
-                continue
+                if raiseGuardViolations and isinstance(e, dynamics.GuardViolation):
+                    raise
+                else:
+                    continue
             # Completed the simulation without violating a requirement
             if verbosity >= 2:
                 print(f'  Simulation {iterations} ended successfully at time step '
@@ -49,6 +54,9 @@ class Simulator:
 
     def createSimulation(self, scene, verbosity=0):
         return Simulation(scene, verbosity=verbosity)
+
+    def destroy(self):
+        pass
 
 class Simulation:
     """A single simulation run, possibly in progress."""
@@ -64,8 +72,6 @@ class Simulation:
 
 
     def init_run(self):
-        global runningSimulation
-
         trajectory = self.trajectory
         if self.currentTime > 0:
             raise RuntimeError('tried to run a Simulation which has already run')
@@ -83,6 +89,8 @@ class Simulation:
             # Update all objects in case the simulator has adjusted any dynamic
             # properties during setup
             self.updateObjects()
+
+            # Run simulation
             assert self.currentTime == 0
             terminationReason = None
         except:
@@ -170,8 +178,6 @@ class Simulation:
 
         Throws a RejectSimulationException if a requirement is violated.
         """
-        global runningSimulation
-
         trajectory = self.trajectory
         if self.currentTime > 0:
             raise RuntimeError('tried to run a Simulation which has already run')
@@ -245,9 +251,7 @@ class Simulation:
                 self.executeActions(allActions)
 
                 # Run the simulation for a single step and read its state back into Scenic
-                terminationReason = self.step()
-                if terminationReason is not None: break
-
+                self.step()
                 self.updateObjects()
                 self.currentTime += 1
 
@@ -260,6 +264,7 @@ class Simulation:
             result = SimulationResult(trajectory, actionSequence, terminationReason)
             return result
         finally:
+            self.destroy()
             for obj in self.scene.objects:
                 disableDynamicProxyFor(obj)
             for agent in self.agents:
@@ -346,6 +351,10 @@ class Simulation:
         The default implementation returns a tuple of the positions of all objects.
         """
         return tuple(obj.position for obj in self.objects)
+
+    def destroy(self):
+        """Perform any cleanup necessary to reset the simulator after a simulation."""
+        pass
 
 class DummySimulator(Simulator):
     """Simulator which does nothing, for debugging purposes."""
