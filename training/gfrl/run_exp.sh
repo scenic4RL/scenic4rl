@@ -10,7 +10,7 @@ python3 -u -m run_my_ppo2 \
   --num_timesteps 10000 \
   --max_grad_norm 0.76 \
   --lr 0.00011879 \
-  --num_envs 8 \
+  --num_envs 6 \
   --noptepochs 2 \
   --nminibatches 8 \
   --nsteps 512 \

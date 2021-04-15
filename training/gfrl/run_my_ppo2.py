@@ -136,6 +136,10 @@ def configure_logger(log_path, **kwargs):
 def train(_):
     """Trains a PPO2 policy."""
 
+    #import tensorflow as tf
+
+
+
     #print("Log Arguement", FLAGS.log_path)
     os.environ['OPENAI_LOG_FORMAT'] = 'stdout,tensorboard,csv,log'
     configure_logger(log_path=FLAGS.log_path)
@@ -144,7 +148,7 @@ def train(_):
     print("Run Raw GF: ", run_raw_gf)
 
     #quit()
-
+    """
     if run_raw_gf:
         print("Running experiment on Raw GFootball Environment")
         vec_env = SubprocVecEnv([lambda _i=i: \
@@ -155,20 +159,25 @@ def train(_):
         vec_env = SubprocVecEnv([lambda _i=i: \
                         create_single_scenic_environment(_i) for i in
                         range(FLAGS.num_envs)], context=None)
-
+    """
 
     # Import tensorflow after we create environments. TF is not fork sake, and
     # we could be using TF as part of environment if one of the players is
      # controled by an already trained model.
 
     import tensorflow.compat.v1 as tf
+    #import tensorflow as tf
+    
     ncpu = multiprocessing.cpu_count()
     config = tf.ConfigProto(allow_soft_placement=True,
                             intra_op_parallelism_threads=ncpu,
                             inter_op_parallelism_threads=ncpu)
     config.gpu_options.allow_growth = True
     tf.Session(config=config).__enter__()
+    
+    print(tf.__version__)
 
+    quit()
     ppo2.learn(
         network=FLAGS.policy,
         total_timesteps=FLAGS.num_timesteps,
