@@ -232,7 +232,7 @@ def test_rl_rith_scenic_behavior():
     scenario_file = f"{cwd}/rl/rl_demo.scenic"
     scenario = buildScenario(scenario_file)
 
-    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, use_scenic_behavior_in_step=True)
+    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, use_scenic_behavior_in_step=True, constraints_checking=True)
     print("Trials: ", num_trials)
     print("behavior based agent performance: ", mean_reward_random_agent(env, num_trials=num_trials))
 
@@ -331,6 +331,6 @@ if __name__=="__main__":
     #test_gfootball_env_wrapper_code()
     #lock_step_test()
 
-    #test_rl_rith_scenic_behavior()
+    test_rl_rith_scenic_behavior()
     #test_with_optional_pre_and_post_step()
-    test_tag()
+    #test_tag()
