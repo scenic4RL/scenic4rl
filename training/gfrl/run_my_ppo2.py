@@ -70,8 +70,10 @@ flags.DEFINE_bool('dump_scores', False,
                   'If True, sampled traces after scoring are dumped.')
 flags.DEFINE_string('load_path', None,
                     'Path to load initial checkpoint from.')
-flags.DEFINE_string('log_path', "~/logs_ppo_gfootball/",
-                    'Path to save logfiles.')
+flags.DEFINE_string('exp_root', "~/logs_ppo_gfootball/",
+                    'Path to save logfiles, tb, and models.')
+flags.DEFINE_string('exp_name', "dev",
+                    'Name of Experiment')
 flags.DEFINE_bool('run_raw_gf', False,
                   'If True, Raw GFootball Environment will be used.')
 
@@ -136,19 +138,26 @@ def configure_logger(log_path, **kwargs):
 def train(_):
     """Trains a PPO2 policy."""
 
-    #import tensorflow as tf
+    #CREATE DIRECTORIES
+    import os 
+    from gfrl.common.utils import get_incremental_dirname
 
+    cwd = os.getcwd()
+    exp_root = FLAGS.exp_root
+    exp_name = FLAGS.exp_name
+    log_path = get_incremental_dirname(exp_root, exp_name)
+    print("Logging in ", log_path)
 
 
     #print("Log Arguement", FLAGS.log_path)
     os.environ['OPENAI_LOG_FORMAT'] = 'stdout,tensorboard,csv,log'
-    configure_logger(log_path=FLAGS.log_path)
+    configure_logger(log_path=log_path)
 
     run_raw_gf = FLAGS.run_raw_gf
     print("Run Raw GF: ", run_raw_gf)
 
     #quit()
-    """
+    
     if run_raw_gf:
         print("Running experiment on Raw GFootball Environment")
         vec_env = SubprocVecEnv([lambda _i=i: \
@@ -159,7 +168,7 @@ def train(_):
         vec_env = SubprocVecEnv([lambda _i=i: \
                         create_single_scenic_environment(_i) for i in
                         range(FLAGS.num_envs)], context=None)
-    """
+    
 
     # Import tensorflow after we create environments. TF is not fork sake, and
     # we could be using TF as part of environment if one of the players is
@@ -177,7 +186,7 @@ def train(_):
     
     print(tf.__version__)
 
-    quit()
+    #quit()
     ppo2.learn(
         network=FLAGS.policy,
         total_timesteps=FLAGS.num_timesteps,

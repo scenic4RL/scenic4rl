@@ -10,12 +10,13 @@ python3 -u -m run_my_ppo2 \
   --num_timesteps 10000 \
   --max_grad_norm 0.76 \
   --lr 0.00011879 \
-  --num_envs 6 \
+  --num_envs 12 \
   --noptepochs 2 \
   --nminibatches 8 \
   --nsteps 512 \
   --save_interval 2 \
-  --log_path dummy \
+  --exp_root _res \
+  --exp_name dev \
   "$@"
 
 
