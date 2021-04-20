@@ -133,6 +133,9 @@ def eval(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=20
     reward_mean = safemean([epinfo['r'] for epinfo in eval_epinfobuf])
     score_mean  = safemean([epinfo['score_reward'] for epinfo in eval_epinfobuf])
     ep_len_mean = safemean([epinfo['l'] for epinfo in eval_epinfobuf])
+
+    #dones = np.sum([epinfo['dones'] for epinfo in eval_epinfobuf])
+    #print(dones)
             
     return reward_mean, score_mean, ep_len_mean
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 -u -m gfrl.base.load_ppo2 \
+python3 -u -m gfrl.base.evaluate_ppo2 \
   --eval_level ../_scenarios/academy/rts.scenic  \
   --reward_experiment scoring \
   --policy impala_cnn \
