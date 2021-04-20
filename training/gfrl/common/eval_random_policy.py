@@ -30,18 +30,27 @@ scenario_file = f"../_scenarios/generic/pass_n_shoot/gen_0.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
-env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
+env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
 
 import gfootball
 
 #env = gfootball.env.create_environment("academy_pass_and_shoot_with_keeper", number_of_left_players_agent_controls=1, render=False, representation="extracted",
 #                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
+rews =  []
 
-for _ in range(1):
+for _ in range(100):
     env.reset()
-    input("Press Any Key to Continue")
+    rew = 0
+    #input("Press Any Key to Continue")
     done = False
 
     while not done:
-        _,_,done,_ = env.step(env.action_space.sample())
+        _,r,done,_ = env.step(env.action_space.sample())
+        rew+=r
+
+    rews.append(r)
+
+import numpy as np
+rews  = np.array(rews)
+print("Mean, Count: ", np.mean(rews), rews.shape[0])
