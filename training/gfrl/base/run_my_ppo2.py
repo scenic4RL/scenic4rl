@@ -37,6 +37,8 @@ FLAGS = flags.FLAGS
 
 flags.DEFINE_string('level', 'academy_empty_goal_close',
                     'Defines type of problem being solved')
+flags.DEFINE_string('eval_level', '',
+                    'Defines type of problem being solved')
 flags.DEFINE_enum('state', 'extracted_stacked', ['extracted',
                   'extracted_stacked'],
                   'Observation to be used for training.')
@@ -111,11 +113,11 @@ def create_single_scenic_environment(iprocess):
     env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)), info_keywords=("score_reward",))
     return env
 
-def create_single_football_env(iprocess):
+def create_single_football_env(iprocess, level):
     """Creates gfootball environment."""
     
     env = football_env.create_environment(
-        env_name=FLAGS.level,
+        env_name=level,
         stacked='stacked' in FLAGS.state,
         rewards=FLAGS.reward_experiment,
         logdir=logger.get_dir(),
@@ -170,13 +172,15 @@ def train(_):
 
     else:
         vec_env = SubprocVecEnv([lambda _i=i: \
-                        create_single_scenic_environment(_i) for i in
+                        create_single_scenic_environment(_i, FLAGS.level) for i in
                         range(FLAGS.num_envs)], context=None)
 
-        #eval_env = SubprocVecEnv([lambda _i=i: \
-        #                create_single_scenic_environment(_i+FLAGS.num_envs) for i in
-        #                range(FLAGS.num_envs)], context=None)
-        eval_env = None 
+        if FLAGS.eval_level != "":
+            eval_env = SubprocVecEnv([lambda _i=i: \
+                        create_single_scenic_environment(_i+FLAGS.num_envs, FLAGS.eval_level) for i in
+                        range(FLAGS.num_envs)], context=None)
+        else:
+            eval_env = None
         
                          
 
@@ -211,6 +215,7 @@ def train(_):
         ent_coef=FLAGS.ent_coef,
         lr=FLAGS.lr,
         log_interval=1,
+        eval_interval=3,
         save_interval=FLAGS.save_interval,
         cliprange=FLAGS.cliprange,
         load_path=FLAGS.load_path
