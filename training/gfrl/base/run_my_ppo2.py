@@ -25,7 +25,9 @@ import os
 from absl import app
 from absl import flags
 from baselines import logger
-from baselines.bench import monitor
+#from baselines.bench import monitor
+from gfrl.common.mybase import monitor
+
 from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv
 from baselines.ppo2 import ppo2
 import gfootball.env as football_env
@@ -104,7 +106,7 @@ def create_single_scenic_environment(iprocess):
 
     scenario = buildScenario(scenario_file)
     env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
-    env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)))
+    env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)), info_keywords=("score_reward",))
     return env
 
 def create_single_football_env(iprocess):
@@ -121,9 +123,7 @@ def create_single_football_env(iprocess):
         render=FLAGS.render and iprocess == 0,
         dump_frequency=(50 if FLAGS.render and iprocess == 0 else 0),
         )
-    env = monitor.Monitor(env, logger.get_dir()
-                          and os.path.join(logger.get_dir(),
-                          str(iprocess)))
+    env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)), info_keywords=("score_reward",))
 
     return env
 
@@ -140,15 +140,17 @@ def train(_):
 
     #CREATE DIRECTORIES
     import os 
-    from gfrl.common.utils import get_incremental_dirname
+    from gfrl.common import utils
 
     cwd = os.getcwd()
     exp_root = FLAGS.exp_root
     exp_name = FLAGS.exp_name
-    log_path = get_incremental_dirname(exp_root, exp_name)
-    print("Logging in ", log_path)
+    log_path = utils.get_incremental_dirname(exp_root, exp_name)
 
-
+    #SAVE PARAMETERS
+    utils.save_params(log_path, FLAGS)
+    
+    #print("Logging in ", log_path)
     #print("Log Arguement", FLAGS.log_path)
     os.environ['OPENAI_LOG_FORMAT'] = 'stdout,tensorboard,csv,log'
     configure_logger(log_path=log_path)
@@ -156,7 +158,7 @@ def train(_):
     run_raw_gf = FLAGS.run_raw_gf
     print("Run Raw GF: ", run_raw_gf)
 
-    #quit()
+    
     
     if run_raw_gf:
         print("Running experiment on Raw GFootball Environment")
@@ -186,7 +188,7 @@ def train(_):
     
     print(tf.__version__)
 
-    #quit()
+    
     ppo2.learn(
         network=FLAGS.policy,
         total_timesteps=FLAGS.num_timesteps,
