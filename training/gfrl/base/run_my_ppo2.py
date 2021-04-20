@@ -86,7 +86,9 @@ def create_single_scenic_environment(iprocess):
     import os
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
-    scenario_file = f"{os.getcwd()}/_scenarios/exp/pass_n_shoot.scenic"
+    #scenario_file = f"{os.getcwd()}/_scenarios/exp/pass_n_shoot.scenic"
+    scenario_file = FLAGS.level
+    print("Scenic Environment: ", scenario_file)
 
     gf_env_settings = {
         "stacked": True,
