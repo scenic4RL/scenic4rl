@@ -78,18 +78,21 @@ flags.DEFINE_string('exp_root', "~/logs_ppo_gfootball/",
                     'Path to save logfiles, tb, and models.')
 flags.DEFINE_string('exp_name', "dev",
                     'Name of Experiment')
+flags.DEFINE_integer('eval_interval', 1,
+                     'does evaluation after each eval_interval updates'
+                     )
 flags.DEFINE_bool('run_raw_gf', False,
                   'If True, Raw GFootball Environment will be used.')
 
 
-def create_single_scenic_environment(iprocess):
+def create_single_scenic_environment(iprocess, level):
     """Creates scenic gfootball environment."""
     from scenic.simulators.gfootball.rl_interface import GFScenicEnv
     import os
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
     #scenario_file = f"{os.getcwd()}/_scenarios/exp/pass_n_shoot.scenic"
-    scenario_file = FLAGS.level
+    scenario_file = level
     print("Scenic Environment: ", scenario_file)
 
     gf_env_settings = {
@@ -167,12 +170,12 @@ def train(_):
     if run_raw_gf:
         print("Running experiment on Raw GFootball Environment")
         vec_env = SubprocVecEnv([lambda _i=i: \
-                                create_single_football_env(_i) for i in
+                                create_single_football_env(_i, level) for i in
                                 range(FLAGS.num_envs)], context=None)
 
     else:
         vec_env = SubprocVecEnv([lambda _i=i: \
-                        create_single_scenic_environment(_i, FLAGS.level) for i in
+                        create_single_scenic_environment(_i,FLAGS.level) for i in
                         range(FLAGS.num_envs)], context=None)
 
         if FLAGS.eval_level != "":
@@ -182,8 +185,9 @@ def train(_):
         else:
             eval_env = None
         
+        
                          
-
+    
     # Import tensorflow after we create environments. TF is not fork sake, and
     # we could be using TF as part of environment if one of the players is
      # controled by an already trained model.
@@ -215,7 +219,7 @@ def train(_):
         ent_coef=FLAGS.ent_coef,
         lr=FLAGS.lr,
         log_interval=1,
-        eval_interval=3,
+        eval_interval=FLAGS.eval_interval,
         save_interval=FLAGS.save_interval,
         cliprange=FLAGS.cliprange,
         load_path=FLAGS.load_path

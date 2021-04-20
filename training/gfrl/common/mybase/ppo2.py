@@ -141,7 +141,7 @@ def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2
         # Get minibatch
         obs, returns, masks, actions, values, neglogpacs, states, epinfos = runner.run() #pylint: disable=E0632
         if eval_env is not None:
-            if update % eval_interval == 0 or update == 1:
+            if update % eval_interval == 0 or update == 1 or update==nupdates:
                 eval_obs, eval_returns, eval_masks, eval_actions, eval_values, eval_neglogpacs, eval_states, eval_epinfos = eval_runner.run() #pylint: disable=E0632
 
         if update % log_interval == 0 and is_mpi_root: logger.info('Done.')
@@ -204,18 +204,20 @@ def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2
             logger.logkv('_train/ep_len_mean', safemean([epinfo['l'] for epinfo in epinfobuf]))
 
             if eval_env is not None:
-                logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfobuf]) )
-                logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfobuf]) )
-                logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfobuf]) )
+                if update % eval_interval == 0 or update == 1 or update==nupdates:
+                    logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfobuf]) )
+                    logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfobuf]) )
+                    logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfobuf]) )
             logger.logkv('misc/time_elapsed', tnow - tfirststart)
             for (lossval, lossname) in zip(lossvals, model.loss_names):
                 logger.logkv('loss/' + lossname, lossval)
 
             logger.dumpkvs()
-        if save_interval and (update % save_interval == 0 or update == 1) and logger.get_dir() and is_mpi_root:
+        if save_interval and (update % save_interval == 0 or update == 1 or update==nupdates) and logger.get_dir() and is_mpi_root:
             checkdir = osp.join(logger.get_dir(), 'checkpoints')
             os.makedirs(checkdir, exist_ok=True)
-            savepath = osp.join(checkdir, '%.5i'%update)
+            if update == nupdates: savepath = osp.join(checkdir, 'final_%.5i'%update)
+            else: savepath = osp.join(checkdir, '%.5i'%update)
             print('Saving to', savepath)
             model.save(savepath)
 

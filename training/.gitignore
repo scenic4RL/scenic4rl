@@ -1,3 +1,5 @@
 *.egg-info
 gfrl/_exp/*
 gfrl/_res/*
+gfrl/_saved_res/*
+gfrl/_res_dev/*

@@ -16,6 +16,7 @@ python3 -u -m gfrl.base.run_my_ppo2 \
   --nminibatches 4 \
   --nsteps 512 \
   --save_interval 10 \
+  --eval_interval 5 \
   --exp_root ../_res \
   --exp_name generic_rts \
   "$@"
