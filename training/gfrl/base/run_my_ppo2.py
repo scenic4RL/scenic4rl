@@ -29,7 +29,7 @@ from baselines import logger
 from gfrl.common.mybase import monitor
 
 from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv
-from baselines.ppo2 import ppo2
+#from baselines.ppo2 import ppo2
 import gfootball.env as football_env
 from gfootball.examples import models
 
@@ -173,9 +173,11 @@ def train(_):
                         create_single_scenic_environment(_i) for i in
                         range(FLAGS.num_envs)], context=None)
 
-        eval_env = SubprocVecEnv([lambda _i=i: \
-                        create_single_scenic_environment(_i+FLAGS.num_envs) for i in
-                        range(FLAGS.num_envs)], context=None)
+        #eval_env = SubprocVecEnv([lambda _i=i: \
+        #                create_single_scenic_environment(_i+FLAGS.num_envs) for i in
+        #                range(FLAGS.num_envs)], context=None)
+        eval_env = None 
+        
                          
 
     # Import tensorflow after we create environments. TF is not fork sake, and
@@ -194,7 +196,7 @@ def train(_):
     
     print(tf.__version__)
 
-    
+    from gfrl.common.mybase import ppo2
     ppo2.learn(
         network=FLAGS.policy,
         total_timesteps=FLAGS.num_timesteps,
