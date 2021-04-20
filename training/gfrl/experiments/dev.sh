@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python3 -u -m gfrl.base.run_my_ppo2 \
-  --level ../_scenarios/academy/rts.scenic \
+  --level ../_scenarios/academy/pass_n_shoot.scenic \
   --reward_experiment scoring \
   --policy impala_cnn \
   --cliprange 0.115 \
@@ -16,7 +16,7 @@ python3 -u -m gfrl.base.run_my_ppo2 \
   --nsteps 128 \
   --save_interval 1 \
   --exp_root ../_res \
-  --exp_name rts \
+  --exp_name dev \
   "$@"
 
 # Needed to add: max_grad_norm
