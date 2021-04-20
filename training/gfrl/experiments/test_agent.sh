@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python3 -u -m gfrl.base.evaluate_ppo2 \
-  --eval_level ../_scenarios/generic/rts/gen_0.scenic  \
+  --eval_level ../_scenarios/generic/rts/gen_1.scenic  \
   --reward_experiment scoring \
   --policy impala_cnn \
   --num_timesteps 1000 \
