@@ -198,14 +198,14 @@ def learn(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=2
             logger.logkv("misc/total_timesteps", update*nbatch)
             logger.logkv("fps", fps)
             logger.logkv("misc/explained_variance", float(ev))
-            logger.logkv('_train/reward_Mean', safemean([epinfo['r'] for epinfo in epinfobuf]))
-            logger.logkv('_train/score_Mean', safemean([epinfo['score_reward'] for epinfo in epinfobuf]))
-            logger.logkv('_train/ep_len_Mean', safemean([epinfo['l'] for epinfo in epinfobuf]))
+            logger.logkv('_train/reward_mean', safemean([epinfo['r'] for epinfo in epinfobuf]))
+            logger.logkv('_train/score_mean', safemean([epinfo['score_reward'] for epinfo in epinfobuf]))
+            logger.logkv('_train/ep_len_mean', safemean([epinfo['l'] for epinfo in epinfobuf]))
 
             if eval_env is not None:
-                logger.logkv('_eval/reward_Mean', safemean([epinfo['r'] for epinfo in eval_epinfobuf]) )
-                logger.logkv('_eval/score_Mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfobuf]) )
-                logger.logkv('_eval/ep_len_Mean', safemean([epinfo['l'] for epinfo in eval_epinfobuf]) )
+                logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfobuf]) )
+                logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfobuf]) )
+                logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfobuf]) )
             logger.logkv('misc/time_elapsed', tnow - tfirststart)
             for (lossval, lossname) in zip(lossvals, model.loss_names):
                 logger.logkv('loss/' + lossname, lossval)
