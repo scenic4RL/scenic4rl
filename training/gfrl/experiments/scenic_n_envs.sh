@@ -1,8 +1,8 @@
 #!/bin/bash
 
 python3 -u -m gfrl.base.run_my_ppo2 \
-  --level ../_scenarios/academy/easy_counter.scenic  \
-  --eval_level ../_scenarios/academy/easy_counter.scenic  \
+  --level ../_scenarios/academy/pass_n_shoot.scenic  \
+  --eval_level ../_scenarios/academy/pass_n_shoot.scenic  \
   --reward_experiment scoring \
   --policy gfootball_impala_cnn \
   --cliprange 0.115 \
@@ -11,14 +11,14 @@ python3 -u -m gfrl.base.run_my_ppo2 \
   --num_timesteps 5000000 \
   --max_grad_norm 0.76 \
   --lr 0.00011879 \
-  --num_envs 16 \
+  --num_envs 32 \
   --noptepochs 2 \
   --nminibatches 4 \
   --nsteps 512 \
   --save_interval 50 \
   --eval_interval 25 \
   --exp_root ../_res \
-  --exp_name easy_counter \
+  --exp_name 32_env_pass_n_shoot \
   "$@"
 
 # Needed to add: max_grad_norm

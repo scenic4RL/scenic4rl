@@ -9,11 +9,13 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 
-ego = Ball at 70 @ 28
+ego = Ball at 62 @ 0
 
 MyGK at -99 @ 0
-MyCB at 70 @ 0
-MyCB at 70 @ 30
+MyCM at 60 @ 0
+MyCM at 70 @ 20
+MyCM at 70 @ -20
+
 
 OpGK at 99 @ 0
-OpCB at 75 @ 10
+OpCB at 75 @ 0
