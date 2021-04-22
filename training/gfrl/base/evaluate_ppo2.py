@@ -200,6 +200,8 @@ def train(_):
     
     print(tf.__version__)
 
+    assert FLAGS.num_timesteps==0, "For testing"
+    
     from gfrl.common.mybase.ppo2_eval import eval
     reward_mean, score_mean, ep_len_mean = eval(
         network=FLAGS.policy,
