@@ -10,12 +10,8 @@ class MyTrajRunner(AbstractEnvRunner):
     run():
     - Make a mini batch
     """
-    def __init__(self, *, env, model, nsteps, gamma, lam, num_episodes):
+    def __init__(self, *, env, model, nsteps, num_episodes):
         super().__init__(env=env, model=model, nsteps=nsteps)
-        # Lambda used in GAE (General Advantage Estimation)
-        self.lam = lam
-        # Discount rate
-        self.gamma = gamma
         self.num_episodes = num_episodes
 
         from baselines.common.vec_env.dummy_vec_env import DummyVecEnv
@@ -67,7 +63,7 @@ class MyTrajRunner(AbstractEnvRunner):
         mb_dones = np.asarray(mb_dones, dtype=np.bool)
         last_values = self.model.value(self.obs, S=self.states, M=self.dones)
 
-        return (*map(sf01, (mb_obs, mb_dones, mb_actions, mb_values, mb_neglogpacs)),
+        return (*map(sf01, (mb_obs, mb_rewards, mb_dones, mb_actions, mb_values, mb_neglogpacs)),
             mb_states, epinfos, mb_gt)
 
 
@@ -137,11 +133,11 @@ if __name__=="__main__":
 
 
     print("ENV CREATED AGAIN")
-    runner = MyTrajRunner(env=dummy_vec_env, model=model, nsteps=128, gamma=0.95, lam=0.95, num_episodes=2)
+    runner = MyTrajRunner(env=dummy_vec_env, model=model, nsteps=128, num_episodes=2)
     print("runner init")
 
 
 
-    mb_obs, mb_dones, mb_actions, mb_values, mb_neglogpacs, mb_states, epinfos, mb_gt = runner.run()
+    mb_obs, mb_rewards, mb_dones, mb_actions, mb_values, mb_neglogpacs, mb_states, epinfos, mb_gt = runner.run()
 
     print(mb_obs.shape, mb_dones.shape)
