@@ -9,10 +9,10 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 
-ego = Ball on RectangularRegion(10 @ 0, 0, 10, 10)
+ego = Ball on RectangularRegion(20 @ 0, 0, 20, 20)
 
 MyGK at -98 @ 0
-MyCB on RectangularRegion(5 @ 0, 0, 5, 5)
+MyCB on RectangularRegion(5 @ 0, 0, 10, 10)
 
 
 OpGK at -98 @ -41
