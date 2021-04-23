@@ -1,7 +1,7 @@
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
-param game_duration = 200
+param game_duration = 400
 param deterministic = False
 param offsides = False
 param end_episode_on_score = True
