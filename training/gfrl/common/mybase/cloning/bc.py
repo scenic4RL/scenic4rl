@@ -85,13 +85,14 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
 
     mean_dataset_rew = np.nan
     if hasattr(dataset, "mean_reward"): mean_dataset_rew = dataset.mean_reward
+    ds_size = dataset.obs.shape[0]
 
     for update in range(1, nupdates+1):
         obs, acts = dataset.get_next_batch(batch_size=batch_size)
         loss = model.train_bc(obs=obs, actions=acts, lr=3e-4)[0]
 
         print(f"step: {update}/{nupdates} bc loss: {loss}")
-        logger.logkv("train/loss", loss)
+        logger.logkv("_train/loss", loss)
 
         if eval_env is not None:
                 if update % eval_interval == 0 or update == 1 or update==nupdates:
@@ -100,13 +101,14 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
                     logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfos]) )
                     logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfos]) )
                     logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfos]) )
-                    logger.logkv('_eval/dataset_mean_reward', mean_dataset_rew)
+                    logger.logkv('dataset/mean_reward', mean_dataset_rew)
+                    logger.logkv('dataset/timesteps', ds_size)
                     
 
         logger.dumpkvs()
 
         #if update==nupdates and logger.get_dir() and is_mpi_root:
-        if update==nupdates and logger.get_dir():
+        if save_interval and (update % save_interval == 0 or update == 1 or update==nupdates) and logger.get_dir():
             checkdir = osp.join(logger.get_dir(), 'checkpoints')
             os.makedirs(checkdir, exist_ok=True)
 
