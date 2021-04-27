@@ -18,18 +18,25 @@ def constfn(val):
         return val
     return f
 
+"""
+def learn(*, network, env, dataset=None, eval_env = None, seed=None, nsteps=2048, lr=3e-4,
+            log_interval=10, nminibatches=4, n_epochs = 2,
+            save_interval=0, load_path=None, model_fn=None, update_fn=None, init_fn=None, mpi_rank_weight=1, comm=None, eval_interval=1, **network_kwargs):
+
 def learn(*, network, env, total_timesteps, dataset=None, eval_env = None, seed=None, nsteps=2048, ent_coef=0.0, lr=3e-4,
             vf_coef=0.5,  max_grad_norm=0.5, gamma=0.99, lam=0.95,
             log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,
             save_interval=0, load_path=None, model_fn=None, update_fn=None, init_fn=None, mpi_rank_weight=1, comm=None, eval_interval=1, **network_kwargs):
+"""
+def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_env = None, seed=None, batch_size = 512, 
+            nsteps=2048, ent_coef=0.0, lr=3e-4,
+            vf_coef=0.5,  max_grad_norm=0.5, gamma=0.99, lam=0.95,
+            log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,
+            save_interval=0, load_path=None, model_fn=None, update_fn=None, init_fn=None, mpi_rank_weight=1, comm=None, 
+            eval_interval=1, eval_timesteps=100, **network_kwargs):
 
     set_global_seeds(seed)
-    if isinstance(lr, float): lr = constfn(lr)
-    else: assert callable(lr)
-    if isinstance(cliprange, float): cliprange = constfn(cliprange)
-    else: assert callable(cliprange)
-    total_timesteps = int(total_timesteps)
-
+    
     policy = build_policy(env, network, **network_kwargs)
 
     # Get the nb of env
@@ -39,32 +46,30 @@ def learn(*, network, env, total_timesteps, dataset=None, eval_env = None, seed=
     ob_space = env.observation_space
     ac_space = env.action_space
 
-    # Calculate the batch_size
-    nbatch = nenvs * nsteps
-    nbatch_train = nbatch // nminibatches
+
     is_mpi_root = (MPI is None or MPI.COMM_WORLD.Get_rank() == 0)
 
     
     # Instantiate the model object (that creates act_model and train_model)
 
-    from baselines.ppo2.model import Model
+    #from baselines.ppo2.model import Model
     from gfrl.common.mybase.cloning.bc_model import BCModel
-    model_fn = BCModel
 
-    model = model_fn(policy=policy, ob_space=ob_space, ac_space=ac_space, nbatch_act=nenvs, nbatch_train=nbatch_train,
+    model = BCModel(policy=policy, ob_space=ob_space, ac_space=ac_space, nbatch_act=nenvs, nbatch_train=batch_size,
                     nsteps=nsteps, ent_coef=ent_coef, vf_coef=vf_coef,
                     max_grad_norm=max_grad_norm, comm=comm, mpi_rank_weight=mpi_rank_weight)
 
     if load_path is not None:
         model.load(load_path)
-    # Instantiate the runner object
-    runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam)
-    if eval_env is not None:
-        eval_runner = Runner(env = eval_env, model = model, nsteps = nsteps, gamma = gamma, lam= lam)
 
-    epinfobuf = deque(maxlen=100)
+    # Instantiate the runner object
+    # runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam)
     if eval_env is not None:
-        eval_epinfobuf = deque(maxlen=100)
+        eval_runner = Runner(env = eval_env, model = model, nsteps = eval_timesteps, gamma = gamma, lam= lam)
+
+    #epinfobuf = deque(maxlen=100)
+    #if eval_env is not None:
+    #    eval_epinfobuf = deque(maxlen=100)
 
     if init_fn is not None:
         init_fn()
@@ -74,19 +79,29 @@ def learn(*, network, env, total_timesteps, dataset=None, eval_env = None, seed=
 
     print("Training BC")
 
-    n_epochs = 30
-    nupdates = dataset.num_pairs * n_epochs // nbatch_train
+    nupdates = dataset.num_pairs * n_epochs // batch_size
     print(f"Dataset Size: {dataset.num_pairs}")
-    print(f"NEpochs: {n_epochs} NUpdates: {nupdates}")
+    print(f"NEpochs: {n_epochs} NUpdates: {nupdates} Batch Size: {batch_size}")
 
-    for update in range(nupdates):
-        obs, acts = dataset.get_next_batch(batch_size=nbatch_train)
-        loss = model.train_bc(obs=obs, actions=acts, lr=3e-4)
-        print(f"step: {update} bc loss: {loss}")
+    for update in range(1, nupdates+1):
+        obs, acts = dataset.get_next_batch(batch_size=batch_size)
+        loss = model.train_bc(obs=obs, actions=acts, lr=3e-4)[0]
 
+        print(f"step: {update}/{nupdates} bc loss: {loss}")
+        logger.logkv("train/loss", loss)
+
+        if eval_env is not None:
+                if update % eval_interval == 0 or update == 1 or update==nupdates:
+                    print("Running Evaluation")
+                    eval_obs, eval_returns, eval_masks, eval_actions, eval_values, eval_neglogpacs, eval_states, eval_epinfos = eval_runner.run()
+                    logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfos]) )
+                    logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfos]) )
+                    logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfos]) )
+
+        logger.dumpkvs()
 
         #if update==nupdates and logger.get_dir() and is_mpi_root:
-        if update==nupdates-1 and logger.get_dir():
+        if update==nupdates and logger.get_dir():
             checkdir = osp.join(logger.get_dir(), 'checkpoints')
             os.makedirs(checkdir, exist_ok=True)
 

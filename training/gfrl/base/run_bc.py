@@ -48,10 +48,13 @@ flags.DEFINE_enum('reward_experiment', 'scoring', ['scoring',
                   'Reward to be used for training.')
 flags.DEFINE_enum('policy', 'gfootball_impala_cnn', ['cnn', 'lstm', 'mlp', 'impala_cnn',
                   'gfootball_impala_cnn'], 'Policy architecture')
-flags.DEFINE_integer('num_timesteps', int(2e6),
-                     'Number of timesteps to run for.')
+
 flags.DEFINE_integer('num_envs', 1,
                      'Number of environments to run in parallel.')
+
+
+flags.DEFINE_integer('num_timesteps', int(2e6),
+                     'Number of timesteps to run for.')
 flags.DEFINE_integer('nsteps', 128,
                      'Number of environment steps per epoch; batch size is nsteps * nenv'
                      )
@@ -81,6 +84,19 @@ flags.DEFINE_string('exp_name', "dev",
 flags.DEFINE_integer('eval_interval', 1,
                      'does evaluation after each eval_interval updates'
                      )
+flags.DEFINE_integer('eval_timesteps', 400,
+                     'How many timesteps for evaluation'
+                     )
+flags.DEFINE_string('dataset', "/home/ubuntu/ScenicGFootBall/training/gfrl/_data/pns_50.npz",
+                     'Path to Dataset'
+                     )                    
+flags.DEFINE_integer('n_epochs', 2,
+                     'Number of epochs'
+                     )
+flags.DEFINE_integer('batch_size', 32,
+                     'Batch Size'
+                     )
+                     
 flags.DEFINE_bool('run_raw_gf', False,
                   'If True, Raw GFootball Environment will be used.')
 
@@ -219,8 +235,10 @@ def create_single_scenic_environment(iprocess, level):
 
 def train(_):
 
-    dataset_path = "/home/ubuntu/ScenicGFootBall/training/gfrl/_data/pns_200.npz"
+    
+    dataset_path = FLAGS.dataset
     dataset = GFDset(dataset_path)
+    print(f"Loaded Dataset from {dataset_path} of size {dataset.num_pairs}")
     #CREATE DIRECTORIES
     import os 
     from gfrl.common import utils
@@ -244,8 +262,8 @@ def train(_):
     print("Run Raw GF: ", run_raw_gf)
 
     
-    
     if run_raw_gf:
+        raise NotImplementedError
         print("Running experiment on Raw GFootball Environment")
         vec_env = SubprocVecEnv([lambda _i=i: \
                                 create_single_football_env(_i, level) for i in
@@ -260,9 +278,9 @@ def train(_):
                         range(FLAGS.num_envs)])
 
         if FLAGS.eval_level != "":
-            eval_env = SubprocVecEnv([lambda _i=i: \
+            eval_env = DummyVecEnv([lambda _i=i: \
                         create_single_scenic_environment(_i+FLAGS.num_envs, FLAGS.eval_level) for i in
-                        range(FLAGS.num_envs)], context=None)
+                        range(FLAGS.num_envs)])
         else:
             eval_env = None
             
@@ -286,22 +304,18 @@ def train(_):
     from gfrl.common.mybase.cloning import bc
     bc.learn(
         network=FLAGS.policy,
-        total_timesteps=FLAGS.num_timesteps,
         env=vec_env,
         eval_env = eval_env,
+        n_epochs=FLAGS.n_epochs,
+        batch_size=FLAGS.batch_size,
         seed=FLAGS.seed,
         nsteps=FLAGS.nsteps,
         nminibatches=FLAGS.nminibatches,
-        noptepochs=FLAGS.noptepochs,
-        max_grad_norm=FLAGS.max_grad_norm,
-        gamma=FLAGS.gamma,
-        ent_coef=FLAGS.ent_coef,
         lr=FLAGS.lr,
         log_interval=1,
         eval_interval=FLAGS.eval_interval,
+        eval_timesteps=FLAGS.eval_timesteps,
         save_interval=FLAGS.save_interval,
-        cliprange=FLAGS.cliprange,
-        load_path=FLAGS.load_path,
         dataset = dataset
         )
 
