@@ -5,11 +5,11 @@ python3 -u -m gfrl.base.run_bc \
   --reward_experiment scoring \
   --policy gfootball_impala_cnn \
   --lr 3e-4 \
-  --n_epochs 25 \
+  --n_epochs 5 \
   --batch_size 512 \
   --save_interval  50 \
-  --eval_timesteps 800 \
-  --eval_interval  40 \
+  --eval_timesteps 500 \
+  --eval_interval  5 \
   --exp_root ../_res_bc \
   --exp_name bc_pass_n_shoot_10000 \
   "$@"
