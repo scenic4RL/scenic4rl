@@ -67,6 +67,7 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
     if eval_env is not None:
         eval_runner = Runner(env = eval_env, model = model, nsteps = eval_timesteps, gamma = gamma, lam= lam)
 
+
     #epinfobuf = deque(maxlen=100)
     #if eval_env is not None:
     #    eval_epinfobuf = deque(maxlen=100)
@@ -87,6 +88,10 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
     if hasattr(dataset, "mean_reward"): mean_dataset_rew = dataset.mean_reward
     ds_size = dataset.obs.shape[0]
 
+    logger.logkv('param/batch_size', batch_size)
+
+    best_eval_rew = 0
+
     for update in range(1, nupdates+1):
         obs, acts = dataset.get_next_batch(batch_size=batch_size)
         loss = model.train_bc(obs=obs, actions=acts, lr=3e-4)[0]
@@ -98,11 +103,20 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
                 if update % eval_interval == 0 or update == 1 or update==nupdates:
                     print("Running Evaluation")
                     eval_obs, eval_returns, eval_masks, eval_actions, eval_values, eval_neglogpacs, eval_states, eval_epinfos = eval_runner.run()
-                    logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfos]) )
+
+                    eval_rew = safemean([epinfo['r'] for epinfo in eval_epinfos])
+                    logger.logkv('_eval/reward_mean',  eval_rew)
                     logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfos]) )
                     logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfos]) )
                     logger.logkv('dataset/mean_reward', mean_dataset_rew)
                     logger.logkv('dataset/timesteps', ds_size)
+
+                    if eval_rew>best_eval_rew and logger.get_dir():
+                        best_eval_rew = eval_rew 
+                        checkdir = osp.join(logger.get_dir(), 'checkpoints')
+                        os.makedirs(checkdir, exist_ok=True)
+                        savepath = osp.join(checkdir, 'test_best')
+                        model.save(savepath)
                     
 
         logger.dumpkvs()
