@@ -27,3 +27,10 @@ def save_params(dirpath, FLAGS):
     param_filename = os.path.join(dirpath + "/params.p")
     with open(param_filename, "wb") as ff:
         pickle.dump(params, ff)
+
+
+def configure_logger(log_path, **kwargs):
+    if log_path is not None:
+        logger.configure(log_path)
+    else:
+        logger.configure(**kwargs)    

@@ -83,6 +83,9 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
     print(f"Dataset Size: {dataset.num_pairs}")
     print(f"NEpochs: {n_epochs} NUpdates: {nupdates} Batch Size: {batch_size}")
 
+    mean_dataset_rew = np.nan
+    if hasattr(dataset, "mean_reward"): mean_dataset_rew = dataset.mean_reward
+
     for update in range(1, nupdates+1):
         obs, acts = dataset.get_next_batch(batch_size=batch_size)
         loss = model.train_bc(obs=obs, actions=acts, lr=3e-4)[0]
@@ -97,6 +100,8 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
                     logger.logkv('_eval/reward_mean', safemean([epinfo['r'] for epinfo in eval_epinfos]) )
                     logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfos]) )
                     logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfos]) )
+                    logger.logkv('_eval/dataset_mean_reward', mean_dataset_rew)
+                    
 
         logger.dumpkvs()
 

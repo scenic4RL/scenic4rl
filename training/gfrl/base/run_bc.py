@@ -77,7 +77,7 @@ flags.DEFINE_bool('dump_scores', False,
                   'If True, sampled traces after scoring are dumped.')
 flags.DEFINE_string('load_path', None,
                     'Path to load initial checkpoint from.')
-flags.DEFINE_string('exp_root', "~/logs_ppo_gfootball/",
+flags.DEFINE_string('exp_root', "/logs_ppo_gfootball/",
                     'Path to save logfiles, tb, and models.')
 flags.DEFINE_string('exp_name', "dev",
                     'Name of Experiment')
@@ -160,46 +160,7 @@ def get_task_name(args):
     return task_name
 
 import numpy as np
-class GFDset(object):
     
-    def __init__(self, expert_path, randomize=True):
-        
-        traj_data = np.load(expert_path)
-        
-        self.inputs = traj_data["obs"]
-        self.obs  = self.inputs
-        self.labels = traj_data["acs"]
-        self.acts = self.labels
-        assert len(self.inputs) == len(self.labels)
-        self.randomize = randomize
-        self.num_pairs = self.inputs.shape[0]
-        self.init_pointer()
-
-    def init_pointer(self):
-        self.pointer = 0
-        if self.randomize:
-            idx = np.arange(self.num_pairs)
-            np.random.shuffle(idx)
-            self.inputs = self.inputs[idx, :]
-            self.labels = self.labels[idx, :]
-
-    def get_next_batch(self, batch_size):
-        # if batch_size is negative -> return all
-        if batch_size < 0:
-            return self.inputs, self.labels
-        if self.pointer + batch_size >= self.num_pairs:
-            self.init_pointer()
-        end = self.pointer + batch_size
-        inputs = self.inputs[self.pointer:end, :]
-        labels = self.labels[self.pointer:end, :]
-        self.pointer = end
-        return inputs, labels
-
-def configure_logger(log_path, **kwargs):
-    if log_path is not None:
-        logger.configure(log_path)
-    else:
-        logger.configure(**kwargs)    
 
 def create_single_scenic_environment(iprocess, level):
     """Creates scenic gfootball environment."""
@@ -233,9 +194,15 @@ def create_single_scenic_environment(iprocess, level):
     return env
 
 
+def configure_logger(log_path, **kwargs):
+    if log_path is not None:
+        logger.configure(log_path)
+    else:
+        logger.configure(**kwargs)    
+
 def train(_):
 
-    
+    from gfrl.common.mybase.cloning.dataset import GFDset        
     dataset_path = FLAGS.dataset
     dataset = GFDset(dataset_path)
     print(f"Loaded Dataset from {dataset_path} of size {dataset.num_pairs}")
@@ -254,7 +221,6 @@ def train(_):
     #print("Logging in ", log_path)
     #print("Log Arguement", FLAGS.log_path)
     os.environ['OPENAI_LOG_FORMAT'] = 'stdout,tensorboard,csv,log'
-
 
     configure_logger(log_path=log_path)
 
