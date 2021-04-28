@@ -27,3 +27,5 @@ def save_params(dirpath, FLAGS):
     param_filename = os.path.join(dirpath + "/params.p")
     with open(param_filename, "wb") as ff:
         pickle.dump(params, ff)
+
+
