@@ -44,9 +44,9 @@ class BCModel(object):
 
         self.gt_A = tf.placeholder(tf.int16, [None, ac_space.n])
         #action_dist_logits = train_model.pd.logits
-        self.bc_loss = tf.losses.softmax_cross_entropy(self.gt_A, train_model.pd.logits) 
-        
-        
+        #self.bc_loss = tf.losses.softmax_cross_entropy(self.gt_A, train_model.pd.logits)
+        self.bc_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels = self.gt_A, logits=train_model.pd.logits))
+        #tf.losses.softmax_cross_entropy(, train_model.pd.logits) 
         
         # CREATE THE PLACEHOLDERS
         self.A = A = train_model.pdtype.sample_placeholder([None])

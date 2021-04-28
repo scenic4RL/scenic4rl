@@ -3,6 +3,7 @@ gfrl/_exp/*
 gfrl/_res/*
 gfrl/_saved_res/*
 gfrl/_res_dev/*
+gfrl/_res_pretrain/*
 gfrl/_res_latest/*
 gfrl/_res_bc/*
 gfrl/_test_res/*
