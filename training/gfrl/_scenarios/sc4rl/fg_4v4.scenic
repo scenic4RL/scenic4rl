@@ -17,7 +17,6 @@ MyLM at -25 @  15
 MyRM at -25 @ -15
 
 
-
 OpGK at  98 @ 0
 OpCF at   10 @ 0
 OpLM at  25 @ -15
