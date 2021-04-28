@@ -1,0 +1,6 @@
+.ipynb_checkpoints
+*.pkl
+*.ckpt
+model_data/*
+models/*
+lightning_logs/*
