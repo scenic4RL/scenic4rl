@@ -1,8 +1,5 @@
 from scenic.simulators.gfootball import rl_interface
-from stable_baselines3 import PPO
 from scenic.simulators.gfootball.rl_interface import GFScenicEnv
-import train_template
-from gfootball_impala_cnn import GfootballImpalaCNN
 
 import os
 cwd = os.getcwd()
@@ -16,7 +13,7 @@ gf_env_settings = {
     "rewards": rewards,
     "representation": 'extracted',
     "players": [f"agent:left_players=1"],
-    "real_time": False,
+    "real_time": True,
     "action_set": "default",
     "dump_full_episodes": True,
     "dump_scores": True,
@@ -28,11 +25,13 @@ gf_env_settings = {
 }
 
 #scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
-scenario_file = f"{cwd}/exp_0_5/sub4.scenic"
+#scenario_file = f"{cwd}/exp_0_5/sub4.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/easy_counter.scenic"
+
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
-env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
 
 
 import gfootball
@@ -44,6 +43,6 @@ for _ in range(1):
     env.reset()
 
     done = False
-
+    input("Press a key")
     while not done:
         _,_,done,_ = env.step(env.action_space.sample())

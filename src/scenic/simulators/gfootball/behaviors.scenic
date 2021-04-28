@@ -95,6 +95,7 @@ behavior FollowObject(object_to_follow, sprint=False, opponent=False):
             if sprint:
                 take Sprint()
 
+
 behavior MoveToPosition(x, y, sprint=False, opponent=False):
     '''
     Move a player to position x,y. Will Stop if within 0.5 meter but the behavior won't exit.
