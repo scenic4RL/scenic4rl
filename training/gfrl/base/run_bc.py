@@ -63,7 +63,7 @@ flags.DEFINE_integer('nminibatches', 8,
                      'Number of minibatches to split one epoch to.')
 flags.DEFINE_integer('save_interval', 100,
                      'How frequently checkpoints are saved.')
-flags.DEFINE_integer('seed', 0, 'Random seed.')
+flags.DEFINE_integer('seed', -1, 'Random seed.')
 flags.DEFINE_float('lr', 0.00008, 'Learning rate')
 flags.DEFINE_float('ent_coef', 0.01, 'Entropy coeficient')
 flags.DEFINE_float('gamma', 0.993, 'Discount factor')
@@ -95,6 +95,10 @@ flags.DEFINE_integer('n_epochs', 2,
                      )
 flags.DEFINE_integer('batch_size', 32,
                      'Batch Size'
+                     )
+
+flags.DEFINE_float('validation_ratio', 0.2,
+                     'Portion Kept for Validation'
                      )
                      
 flags.DEFINE_bool('run_raw_gf', False,
@@ -202,10 +206,32 @@ def configure_logger(log_path, **kwargs):
 
 def train(_):
 
+    #seed = FLAGS.seed
+    if FLAGS.seed == -1:
+        import random
+        import time
+        FLAGS.seed = int(time.time())%1000
+
+    
+    print("Using Seed: ", FLAGS.seed)
+    #quit()
+    
+
     from gfrl.common.mybase.cloning.dataset import GFDset        
     dataset_path = FLAGS.dataset
-    dataset = GFDset(dataset_path)
-    print(f"Loaded Dataset from {dataset_path} of size {dataset.num_pairs}")
+    
+    #dataset = GFDset(dataset_path)
+    #print(f"Loaded Dataset from {dataset_path} of size {dataset.num_pairs}")
+    
+    from gfrl.common.mybase.cloning.dataset import get_datasets
+    train_dataset, validation_dataset = get_datasets(dataset_path)
+    print(f"Loaded Dataset from {dataset_path}")
+    print(f"Train Size: {train_dataset.size}")
+    print(f"Validation Size: {validation_dataset.size}")
+    print()
+
+
+    
     #CREATE DIRECTORIES
     import os 
     from gfrl.common import utils
@@ -267,6 +293,10 @@ def train(_):
     
     print(tf.__version__)
 
+
+
+
+    
     from gfrl.common.mybase.cloning import bc
     bc.learn(
         network=FLAGS.policy,
@@ -282,7 +312,8 @@ def train(_):
         eval_interval=FLAGS.eval_interval,
         eval_timesteps=FLAGS.eval_timesteps,
         save_interval=FLAGS.save_interval,
-        dataset = dataset
+        dataset = train_dataset,
+        validation_dataset = validation_dataset
         )
 
 

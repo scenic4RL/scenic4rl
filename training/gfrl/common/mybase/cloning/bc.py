@@ -33,7 +33,7 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
             vf_coef=0.5,  max_grad_norm=0.5, gamma=0.99, lam=0.95,
             log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,
             save_interval=0, load_path=None, model_fn=None, update_fn=None, init_fn=None, mpi_rank_weight=1, comm=None, 
-            eval_interval=1, eval_timesteps=100, **network_kwargs):
+            eval_interval=1, eval_timesteps=100, validation_dataset=None, **network_kwargs):
 
     set_global_seeds(seed)
     
@@ -88,35 +88,68 @@ def learn(*, network, env, total_timesteps=0, n_epochs = 2, dataset=None, eval_e
     if hasattr(dataset, "mean_reward"): mean_dataset_rew = dataset.mean_reward
     ds_size = dataset.obs.shape[0]
 
+    logger.logkv('dataset/mean_reward', mean_dataset_rew)
+    logger.logkv('dataset/timesteps', ds_size)
+
+    if hasattr(dataset, "policy_mean_reward"):
+        logger.logkv('dataset/policy_mean_reward', dataset.policy_mean_reward)
+
+    if hasattr(dataset, "policy_total_trajectories:"):
+        logger.logkv('dataset/policy_total_trajectories:', dataset.policy_total_trajectories)
+    
+    if validation_dataset is not None: 
+        logger.logkv('param/validation_datasize', validation_dataset.size)
+
+
     logger.logkv('param/batch_size', batch_size)
 
     best_eval_rew = 0
 
+    val_loss_interval = 1
+
     for update in range(1, nupdates+1):
         obs, acts = dataset.get_next_batch(batch_size=batch_size)
-        loss = model.train_bc(obs=obs, actions=acts, lr=3e-4)[0]
+        loss = model.train_bc(obs=obs, actions=acts, lr=lr)[0]
 
         print(f"step: {update}/{nupdates} bc loss: {loss}")
         logger.logkv("_train/loss", loss)
 
+        
+        if (update % val_loss_interval == 0 or update == 1 or update==nupdates) and validation_dataset.size>batch_size:
+            
+            
+            val_losses = []
+
+            for _ in range(int(validation_dataset.size/batch_size)):
+                val_obs, val_acts = validation_dataset.get_next_batch(batch_size=batch_size)
+                val_loss = model.evaluate_bc_loss(obs = val_obs, actions=val_acts, lr=lr)[0]
+                val_losses.append(val_loss)
+            
+            logger.logkv("_train/val_loss", np.mean(val_losses))
+            #logger.logkv("_train/val_loss", np.mean(val_losses))
+            
+
+
+
         if eval_env is not None:
-                if update % eval_interval == 0 or update == 1 or update==nupdates:
-                    print("Running Evaluation")
-                    eval_obs, eval_returns, eval_masks, eval_actions, eval_values, eval_neglogpacs, eval_states, eval_epinfos = eval_runner.run()
+            if update % eval_interval == 0 or update == 1 or update==nupdates:
+                print("Running Evaluation")
+                eval_obs, eval_returns, eval_masks, eval_actions, eval_values, eval_neglogpacs, eval_states, eval_epinfos = eval_runner.run()
 
-                    eval_rew = safemean([epinfo['r'] for epinfo in eval_epinfos])
-                    logger.logkv('_eval/reward_mean',  eval_rew)
-                    logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfos]) )
-                    logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfos]) )
-                    logger.logkv('dataset/mean_reward', mean_dataset_rew)
-                    logger.logkv('dataset/timesteps', ds_size)
+                eval_rew = safemean([epinfo['r'] for epinfo in eval_epinfos])
+                logger.logkv('_eval/reward_mean',  eval_rew)
+                logger.logkv('_eval/score_mean', safemean([epinfo['score_reward'] for epinfo in eval_epinfos]) )
+                logger.logkv('_eval/ep_len_mean', safemean([epinfo['l'] for epinfo in eval_epinfos]) )
 
-                    if eval_rew>best_eval_rew and logger.get_dir():
-                        best_eval_rew = eval_rew 
-                        checkdir = osp.join(logger.get_dir(), 'checkpoints')
-                        os.makedirs(checkdir, exist_ok=True)
-                        savepath = osp.join(checkdir, 'test_best')
-                        model.save(savepath)
+
+                if eval_rew>best_eval_rew and logger.get_dir():
+                    best_eval_rew = eval_rew 
+                    checkdir = osp.join(logger.get_dir(), 'checkpoints')
+                    os.makedirs(checkdir, exist_ok=True)
+                    savepath = osp.join(checkdir, 'test_best')
+                    model.save(savepath)
+
+        
                     
 
         logger.dumpkvs()
