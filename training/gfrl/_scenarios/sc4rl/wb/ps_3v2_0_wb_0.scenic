@@ -39,8 +39,8 @@ behavior GreedyPlay():
     #dests = [dest_1, dest_2, dest_3]
     dests = [dest_2]
 
-    x_lim = random.randint(75, 80)
-    pass_ts = random.randint(7,10)
+    x_lim = random.randint(75, 77)
+    pass_ts = random.randint(7,8)
 
     passed = False
 
@@ -76,7 +76,7 @@ behavior GreedyPlay():
 
         else:
 
-            if self.x > 75 and abs(self.y) < 10:
+            if self.x > x_lim and abs(self.y) < 10:
 
 
                 for _ in range(1):
@@ -140,7 +140,7 @@ behavior GreedyPlay():
                         sel_dest = dest
 
 
-                if min_ds < 7 and opcb.x > self.x:
+                if min_ds < pass_ts and opcb.x > self.x:
                     if passed:
                         if self.is_controlled and verbose: print("noaction")
                         take NoAction()
