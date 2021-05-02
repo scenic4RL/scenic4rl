@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.simulators.gfootball.behaviors import *
 
-param game_duration = 100
+param game_duration = 200
 param deterministic = False
 param offsides = False
 param end_episode_on_score = True
@@ -76,7 +76,15 @@ behavior GreedyPlay():
 
         else:
 
-            if self.x > 75 and abs(self.y) < 20:
+            if self.x > 75 and abs(self.y) < 10:
+
+
+                for _ in range(1):
+                    sel_dest = (99 @ -5)
+                    dir = lookup_direction(sel_dest.x - self.x, sel_dest.y - self.y)
+                    action = SetDirection(dir)
+                    if verbose: print("take ", action, " ")
+                    take action
 
                 """
                 for _ in range(1):
@@ -132,7 +140,7 @@ behavior GreedyPlay():
                         sel_dest = dest
 
 
-                if min_ds < 7:
+                if min_ds < 7 and opcb.x > self.x:
                     if passed:
                         if self.is_controlled and verbose: print("noaction")
                         take NoAction()
