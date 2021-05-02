@@ -32,7 +32,7 @@ behavior GreedyPlay():
     import random
 
     dest_1 = 80 @ 0
-    dest_2 = 80 @ 10
+    dest_2 = 80 @ random.randint(8,12)
     dest_3 = 80 @ -10
 
     #dest_ys = [y + random.random() * random.choice([-1, 1]) for y in range(-10, 10 + 1, 2)]
