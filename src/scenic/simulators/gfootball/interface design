@@ -1,0 +1,19 @@
+
+Single player + Monologuing + Scenic Behavior
+---------------------------
+
+in reset ()
+    -> wait for scenic signal
+
+
+in step(action)
+
+    idx <- controlled_player_idx
+
+    acts <- get actions from scenic, for all player
+    acts[idx] <- action #updating input/rl action
+
+    obs, rew, done, info = step(acts)
+
+    return obs[idx], rew[idx], done, info
+
