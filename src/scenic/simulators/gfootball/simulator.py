@@ -104,11 +104,6 @@ class GFootBallSimulation(Simulation):
 		if gf_env_settings is not None:
 			self.gf_env_settings.update(gf_env_settings)
 
-		#self.render = self.gf_env_settings["render"]
-
-		self.env = self.create_gfootball_environment()
-		#self.first_time = True
-
 
 		if env_type is not None:
 			import scenic.syntax.veneer as veneer
@@ -119,7 +114,7 @@ class GFootBallSimulation(Simulation):
 
 		self.env_type = env_type
 
-		player_setting = ""
+		player_setting = None
 
 		if env_type == "v2":
 			self.run_pre_post_step = True
@@ -127,7 +122,14 @@ class GFootBallSimulation(Simulation):
 			self.constraints_checking = True
 			self.compute_scenic_actions = True
 
+			from scenic.simulators.gfootball.interface import is_my_player, is_op_player
+			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
 
+			internal_control_left = num_my_player
+			internal_control_right = num_op_player
+
+			player_setting = [f"agent:left_players={num_my_player}, right_players={num_op_player}"]
 
 		elif env_type == "v1":
 			self.env_type = env_type
@@ -135,7 +137,11 @@ class GFootBallSimulation(Simulation):
 			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
 			self.constraints_checking = False
 			self.compute_scenic_actions = False
-			player_setting = f"agent:right_players=1"
+
+			internal_control_left = 1
+			internal_control_right = 0
+
+			player_setting = [f"agent:left_players=1"]
 
 		elif env_type == "keyboard":
 			self.env_type = env_type
@@ -145,18 +151,31 @@ class GFootBallSimulation(Simulation):
 			self.compute_scenic_actions = False
 
 			#f"agent:left_players={num_my_player}", "keyboard:right_players=1"
-			player_setting = f"keyboard:right_players=1"
+			player_setting = [f"keyboard:right_players=1"]
 
 
 		elif env_type is None:
 			for_gym_env = False
 			self.for_gym_env = False
+
+			from scenic.simulators.gfootball.interface import is_my_player, is_op_player
+			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
+
+			internal_control_left = num_my_player
+			internal_control_right = num_op_player
+			player_setting = [f"agent:left_players={num_my_player}, right_players={num_op_player}"]
+
 		else:
-			for_gym_env = False
-			self.for_gym_env = False
+			raise Exception
 
 
-		self.configure_player_settings(self.scene)
+		self.gf_env_settings["players"] = player_setting
+		self.gf_env_settings["internal_control_left"] = internal_control_left
+		self.gf_env_settings["internal_control_right"] = internal_control_right
+
+
+		self.env = self.create_gfootball_environment()
 
 		if not for_gym_env:
 			self.reset()
@@ -241,6 +260,7 @@ class GFootBallSimulation(Simulation):
 
 		return GameDS(my_players, op_players, ball=ball, game_state=game_state, scene=scene)
 
+	"""
 	def get_player_settings(self, scene, agent_left, agent_right,):
 
 		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
@@ -248,7 +268,7 @@ class GFootBallSimulation(Simulation):
 		num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
 
 		return [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
-
+	"""
 	def configure_player_settings(self, scene):
 
 		from scenic.simulators.gfootball.interface import is_my_player, is_op_player

@@ -113,15 +113,15 @@ def create_environment(env_name='',
     #representation=None
     #rewards='scoring'
     """For now keep it fixed, would need to change once multi agent training is started"""
-    number_of_left_players_agent_controls=1
-    number_of_right_players_agent_controls=0
+    #number_of_left_players_agent_controls=1
+    #number_of_right_players_agent_controls=0
     """"""
+
+
 
     channel_dimensions=(
            observation_preprocessing.SMM_WIDTH,
            observation_preprocessing.SMM_HEIGHT)
-
-
     assert env_name
 
     settings["level"]=env_name
@@ -133,7 +133,11 @@ def create_environment(env_name='',
     rewards = settings["rewards"]
     stacked = settings["stacked"]
     dump_frequency = settings["dump_frequency"]
-    scenario_config = config.Config({'level': env_name}).ScenarioConfig()
+
+    number_of_left_players_agent_controls = settings["internal_control_left"]
+    number_of_right_players_agent_controls = settings["internal_control_right"]
+
+    #scenario_config = config.Config({'level': env_name}).ScenarioConfig()
     """
     players = [('agent:left_players=%d,right_players=%d' % (
         number_of_left_players_agent_controls,
