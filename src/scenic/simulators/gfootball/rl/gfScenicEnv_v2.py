@@ -10,7 +10,6 @@ from gfootball.env import football_action_set
 from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
-
 class GFScenicEnv_v2(gym.Env):
 	metadata = {'render.modes': ['human']}
 

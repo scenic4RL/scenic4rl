@@ -34,6 +34,17 @@ class GameDS:
 		else:
 			return self.get_num_my_players()+self.get_num_op_players()
 
+
+	def get_most_important_player_idx(self):
+		import numpy as np
+		df = lambda p1,p2: np.sqrt((p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]))
+
+		dists= {p: df(p.position, self.ball.position) for p in self.my_players}
+
+		player = min(dists, key=dists.get)
+		print("player in control: ", player)
+		return [self.player_to_ctrl_idx[player]]
+
 	@staticmethod
 	def player_str(player):
 		import math

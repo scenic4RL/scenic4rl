@@ -335,7 +335,13 @@ class GFootBallSimulation(Simulation):
 		return self.actions
 
 	def get_controlled_player_idx(self):
-		return [0]
+
+		#if self.env_type == "v1":
+		#	idx = self.game_ds.controlled_player
+
+		idx = self.game_ds.get_most_important_player_idx()
+
+		return idx
 
 
 
