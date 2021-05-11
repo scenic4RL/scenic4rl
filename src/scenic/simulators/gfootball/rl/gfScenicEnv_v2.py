@@ -62,6 +62,7 @@ class GFScenicEnv_v2(gym.Env):
 		assert action != 19, "Cannot take built in ai action for rl!"
 
 		self.simulation.pre_step()
+		#self.simulation.update_designated_player()
 		scenic_actions = self.simulation.get_actions()
 		player_idx = self.simulation.get_controlled_player_idx()[0]
 

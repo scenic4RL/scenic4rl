@@ -235,6 +235,7 @@ class GFootBallSimulation(Simulation):
 		else:
 			update_control_index(self.last_raw_obs, gameds=self.game_ds)
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
+			self.update_designated_player()
 		self.done = False
 
 		#self.first_time = False
@@ -334,14 +335,22 @@ class GFootBallSimulation(Simulation):
 	def get_actions(self):
 		return self.actions
 
+	def get_designated_player_action(self):
+		return self.actions[self.game_ds.designated_player_idx]
+
+	def update_designated_player(self):
+		self.game_ds.compute_designated_player_idx()
+
 	def get_controlled_player_idx(self):
 
 		#if self.env_type == "v1":
 		#	idx = self.game_ds.controlled_player
 
-		idx = self.game_ds.get_most_important_player_idx()
+		idx = self.game_ds.get_designated_player_idx()
+		#idx = self.game_ds.compute_designated_player_idx()
 
 		return idx
+
 
 
 
@@ -351,7 +360,6 @@ class GFootBallSimulation(Simulation):
 		#	new_done = self.pre_step()
 		#	#TODO if simulation ended for constraints handle it
 
-		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before and after calling this function
 		#input()
 		#print("in step")
 		# Run simulation for one timestep
@@ -403,6 +411,7 @@ class GFootBallSimulation(Simulation):
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
 		else:
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
+			self.update_designated_player()
 
 		"""
 		print("Printing objects")
