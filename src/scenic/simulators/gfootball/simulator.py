@@ -65,20 +65,19 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
-				 use_scenic_behavior_in_step=False, constraints_checking=True, compute_scenic_actions=True, tag=""):
-		if for_gym_env:
-			import scenic.syntax.translator as translator
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag=""):
 
-		#compute_scenic_actions is not used right now
+		"""
+		def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
+					 use_scenic_behavior_in_step=False, constraints_checking=True, compute_scenic_actions=True, tag=""):
+		"""
+
 
 		super().__init__(scene, timestep=timestep, verbosity=verbosity)
 
 
-		assert not for_gym_env or use_scenic_behavior_in_step == constraints_checking,    "for now constraing checking has to be done when using scenic behavior"
-		#assert compute_scenic_actions ==  use_scenic_behavior_in_step, "for now compute action must be equal to use_scenic_behavior_in_step"
 
-		self.run_pre_post_step = use_scenic_behavior_in_step and constraints_checking
+
 		self.scene = scene
 		self.verbosity = verbosity
 		self.record = record
@@ -89,14 +88,15 @@ class GFootBallSimulation(Simulation):
 		self.done = None
 		self.for_gym_env = for_gym_env
 		self.multi_player_rl = False
-		self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
-		self.constraints_checking = constraints_checking
-		self.compute_scenic_actions = compute_scenic_actions
 
 		self.settings = self.scene.params.copy()
 		self.settings.update(settings)
+
+
+
+		#assert not for_gym_env or use_scenic_behavior_in_step == constraints_checking,    "for now constraing checking has to be done when using scenic behavior"
+
 		#MUST BE DONE TO CONFIGURE PLAYER SETTINGS FROM SCENIC PARAMETERS, FOR RL TRAINING, UPDATED PLAYER SETTINGS CAN BE PROVIDED via gf_env_settings
-		self.configure_player_settings(self.scene)
 
 		self.gf_env_settings = self.settings.copy()
 		self.tag = tag
@@ -110,20 +110,59 @@ class GFootBallSimulation(Simulation):
 		#self.first_time = True
 
 
-		if for_gym_env:
+		if env_type is not None:
 			import scenic.syntax.veneer as veneer
 			veneer.reset()
 			self.init_run()
+
+		"""Select environment modes"""
+
+		self.env_type = env_type
+
+		player_setting = ""
+
+		if env_type == "v2":
+			self.run_pre_post_step = True
+			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
+			self.constraints_checking = True
+			self.compute_scenic_actions = True
+
+
+
+		elif env_type == "v1":
+			self.env_type = env_type
+			self.run_pre_post_step = False
+			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
+			self.constraints_checking = False
+			self.compute_scenic_actions = False
+			player_setting = f"agent:right_players=1"
+
+		elif env_type == "keyboard":
+			self.env_type = env_type
+			self.run_pre_post_step = False
+			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
+			self.constraints_checking = False
+			self.compute_scenic_actions = False
+
+			#f"agent:left_players={num_my_player}", "keyboard:right_players=1"
+			player_setting = f"keyboard:right_players=1"
+
+
+		elif env_type is None:
+			for_gym_env = False
+			self.for_gym_env = False
+		else:
+			for_gym_env = False
+			self.for_gym_env = False
+
+
+		self.configure_player_settings(self.scene)
 
 		if not for_gym_env:
 			self.reset()
 
 
 
-
-
-
-		#if self.gf_env_settings["render"] and not for_gym_env: self.env.render()
 	"""
 	def disable_rl_action(self):
 		self.ignore_rl_action =  True
@@ -202,6 +241,14 @@ class GFootBallSimulation(Simulation):
 
 		return GameDS(my_players, op_players, ball=ball, game_state=game_state, scene=scene)
 
+	def get_player_settings(self, scene, agent_left, agent_right,):
+
+		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
+		num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
+		num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
+
+		return [f"agent:left_players={num_my_player}", "keyboard:right_players=1"]
+
 	def configure_player_settings(self, scene):
 
 		from scenic.simulators.gfootball.interface import is_my_player, is_op_player
@@ -213,7 +260,7 @@ class GFootBallSimulation(Simulation):
 			op_players = [obj for obj in scene.objects if is_op_player(obj)]
 			opp_with_bhv = [obj for obj in op_players if obj.behavior is not None]
 			assert len(
-				opp_with_bhv) == 0, "For now, if manual control is enabled, the opposition players cannot have scenice behaviors"
+				opp_with_bhv) == 0, "For now, if manual control is enabled, the opposition players cannot have scenic behaviors"
 
 			# ALL MY_PLAYER WILL BE controlled by `agent` i.e., the simulator expects actions for every agent
 			# the opposition will be controlled by keyboard
@@ -225,7 +272,7 @@ class GFootBallSimulation(Simulation):
 			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
 			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
 
-			self.settings["players"] = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
+			self.settings["players"] = [f"agent:left_players={num_my_player}, right_players={num_op_player}"]
 
 
 	def get_base_gfootball_env(self):
@@ -258,8 +305,6 @@ class GFootBallSimulation(Simulation):
 
 
 	def step(self, action=None):
-
-
 
 		if self.run_pre_post_step:
 			new_done = self.pre_step()
@@ -302,8 +347,6 @@ class GFootBallSimulation(Simulation):
 			#clean up after simulation ended
 			if self.done and self.run_pre_post_step:
 				self.post_run()
-
-
 
 			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)

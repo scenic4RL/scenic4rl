@@ -17,3 +17,22 @@ in step(action)
 
     return obs[idx], rew[idx], done, info
 
+
+
+
+
+-----------
+env type:
+
+
+
+
+settings:
+
+single_player rl vs multiplayer vs single-player-keyboard
+player control method
+
+compute scenic actions
+compute scenic constraints
+do pre-post steps for scenic
+
