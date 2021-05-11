@@ -117,8 +117,6 @@ def create_environment(env_name='',
     #number_of_right_players_agent_controls=0
     """"""
 
-
-
     channel_dimensions=(
            observation_preprocessing.SMM_WIDTH,
            observation_preprocessing.SMM_HEIGHT)
