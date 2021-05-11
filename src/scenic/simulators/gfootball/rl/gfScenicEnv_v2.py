@@ -48,11 +48,32 @@ class GFScenicEnv_v2(gym.Env):
 											  tag=str(self.rank))
 
 		self.gf_gym_env = self.simulation.get_underlying_gym_env()
-		return self.simulation.reset()
+
+		obs = self.simulation.reset()
+		player_idx = self.simulation.get_controlled_player_idx()[0]
+		return obs[player_idx]
+
+	#def filter_obs(self, obs):
+
 
 	def step(self, action):
 		# Execute one time step within the environment
-		return self.simulation.step(action)
+
+		#assert isinstance(action, int), "action must be int"
+		assert action != 19, "Cannot take built in ai action for rl!"
+
+		self.simulation.pre_step()
+		scenic_actions = self.simulation.get_actions()
+		player_idx = self.simulation.get_controlled_player_idx()[0]
+
+
+		actions = scenic_actions.copy()
+		actions[player_idx] = action
+
+		obs, rew, done, info = self.simulation.step(actions)
+
+		self.simulation.post_step()
+		return obs[player_idx], rew[player_idx], done, info
 
 	def render(self, mode='human', close=False):
 		# Render the environment to the screen
@@ -66,7 +87,7 @@ def render(self, mode='human', close=False):
 	return None
 
 
-def test_env_v2():
+def test_shape():
 	import os
 
 	cwd = os.getcwd()
@@ -81,7 +102,7 @@ def test_env_v2():
 
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
-	num_trials = 2
+	num_trials = 1
 	scenario_file = f"/Users/azadsalam/codebase/scenic/examples/gfootball/monologue.scenic"
 	scenario = buildScenario(scenario_file)
 
@@ -89,8 +110,26 @@ def test_env_v2():
 
 	from scenic.simulators.gfootball.rl import utils
 
-	perf = utils.mean_reward_random_agent(env, num_trials=1)
+	num_epi = 0
+	total_r = 0
+	from tqdm import tqdm
+	for i in tqdm(range(0, num_trials)):
+		obs = env.reset()
+		assert obs.shape == (72,96,16)
+		done = False
+		# input("Enter")
+		while not done:
+			action = env.action_space.sample()
+			obs, reward, done, info = env.step(action)
+			assert obs.shape == (72, 96, 16)
+			# env.render()
+			total_r += reward
+			if done:
+				obs = env.reset()
+				num_epi += 1
+
+	perf =  total_r / num_epi
 	print("random agent performance: ", perf)
 
 if __name__=="__main__":
-	test_env_v2()
+	test_shape()

@@ -83,7 +83,7 @@ class GFootBallSimulation(Simulation):
 		self.record = record
 		self.timestep = timestep
 		self.render = render
-		self.rewards = []
+		#self.rewards = []
 		self.last_raw_obs = None
 		self.done = None
 		self.for_gym_env = for_gym_env
@@ -117,6 +117,9 @@ class GFootBallSimulation(Simulation):
 		player_setting = None
 
 		if env_type == "v2":
+
+			for_gym_env = True
+			self.for_gym_env = True
 			self.run_pre_post_step = True
 			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
 			self.constraints_checking = True
@@ -225,7 +228,7 @@ class GFootBallSimulation(Simulation):
 		#print("In Reset Simulation")
 		#self.game_ds.print_mini()
 
-		if self.for_gym_env:
+		if self.env_type == "v1": #		if self.for_gym_env:
 			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_index_ds(self.last_raw_obs, gameds=self.game_ds)
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
@@ -309,8 +312,9 @@ class GFootBallSimulation(Simulation):
 		gameds = self.game_ds
 
 		#when no behavior is specified, built in AI takes charge
-		self.action = [football_action_set.action_builtin_ai] * gameds.get_num_controlled()
+		self.actions = [football_action_set.action_builtin_ai] * gameds.get_num_controlled()
 
+		"""
 		if self.for_gym_env:
 			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			controlled_player = self.game_ds.controlled_player
@@ -321,24 +325,32 @@ class GFootBallSimulation(Simulation):
 
 			#print(self.game_ds.player_str_mini(controlled_player), self.action)
 		else:
-			for agent, act in allActions.items():
-				idx = gameds.player_to_ctrl_idx[agent]
-				self.action[idx] = act[0].code
+		"""
+		for agent, act in allActions.items():
+			idx = gameds.player_to_ctrl_idx[agent]
+			self.actions[idx] = act[0].code
 
+
+	def get_actions(self):
+		return self.actions
+
+	def get_controlled_player_idx(self):
+		return [0]
 
 
 
 	def step(self, action=None):
 
-		if self.run_pre_post_step:
-			new_done = self.pre_step()
-			#TODO if simulation ended for constraints handle it
+		#if self.run_pre_post_step:
+		#	new_done = self.pre_step()
+		#	#TODO if simulation ended for constraints handle it
 
 		#TODO: wrap around code from core/simulation/run/while loop , to do additional stuff that scenic did in each times step before and after calling this function
 		#input()
 		#print("in step")
 		# Run simulation for one timestep
 		if self.done:
+			#TODO: how to signal end of simulation
 			#print(f"Reward Sum: {sum(self.rewards)}")
 			self.env.close()
 
@@ -346,16 +358,26 @@ class GFootBallSimulation(Simulation):
 			#the code may not ever come here for gym ??
 			assert not self.for_gym_env, "Must not come here ??"
 
-			return sum(self.rewards)
+			return 0
 
 			#signal scenic backend to stop simulation
 			#askEddie: Signal end of simulation
 
+
+		if action==None:
+			assert not self.for_gym_env
+			action_to_take = self.actions
+		else:
+			action_to_take = action
+
+
+		"""
 		if self.for_gym_env and not self.use_scenic_behavior_in_step:
 			#TODO: For now pass whatever the RL training is passing, however when training with scenarios having agents using scenic behavior it may needed to be changed
 			action_to_take = action
 		else:
-			action_to_take = self.action
+			action_to_take = self.actions
+		"""
 
 		#print(action_to_take)
 		obs, rew, self.done, info = self.env.step(action_to_take)
@@ -364,14 +386,13 @@ class GFootBallSimulation(Simulation):
 
 		#print(self.last_raw_obs[0]['active'])
 
-		self.rewards.append(rew)
+		#self.rewards.append(rew)
 
 
-		if self.for_gym_env:
+		if self.env_type == "v1":
 			#clean up after simulation ended
-			if self.done and self.run_pre_post_step:
-				self.post_run()
-
+			#if self.done and self.run_pre_post_step:
+			#	self.post_run()
 			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
 		else:
@@ -384,8 +405,8 @@ class GFootBallSimulation(Simulation):
 		print("*" * 80)
 		print()
 		"""
-		if self.for_gym_env:
-			self.post_step()
+		#if self.for_gym_env:
+		#	self.post_step()
 
 		#self.game_ds.print_mini()
 
