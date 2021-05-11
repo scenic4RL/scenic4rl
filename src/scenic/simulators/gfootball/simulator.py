@@ -129,7 +129,7 @@ class GFootBallSimulation(Simulation):
 			internal_control_left = num_my_player
 			internal_control_right = num_op_player
 
-			player_setting = [f"agent:left_players={num_my_player}, right_players={num_op_player}"]
+			player_setting = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
 		elif env_type == "v1":
 			self.env_type = env_type
@@ -158,13 +158,17 @@ class GFootBallSimulation(Simulation):
 			for_gym_env = False
 			self.for_gym_env = False
 
+			self.run_pre_post_step = True
+			self.constraints_checking=True
+			self.compute_scenic_actions=True
+
 			from scenic.simulators.gfootball.interface import is_my_player, is_op_player
 			num_my_player = len([obj for obj in scene.objects if is_my_player(obj)])
 			num_op_player = len([obj for obj in scene.objects if is_op_player(obj)])
 
 			internal_control_left = num_my_player
 			internal_control_right = num_op_player
-			player_setting = [f"agent:left_players={num_my_player}, right_players={num_op_player}"]
+			player_setting = [f"agent:left_players={num_my_player},right_players={num_op_player}"] #cannot be any space in the middle
 
 		else:
 			raise Exception
@@ -335,7 +339,7 @@ class GFootBallSimulation(Simulation):
 		#print("in step")
 		# Run simulation for one timestep
 		if self.done:
-			print(f"Reward Sum: {sum(self.rewards)}")
+			#print(f"Reward Sum: {sum(self.rewards)}")
 			self.env.close()
 
 			#if self.for_gym_env:
