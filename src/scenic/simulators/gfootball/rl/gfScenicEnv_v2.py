@@ -50,6 +50,9 @@ class GFScenicEnv_v2(gym.Env):
 
 		obs = self.simulation.reset()
 		player_idx = self.simulation.get_controlled_player_idx()[0]
+
+		self.simulation.pre_step()
+
 		return obs[player_idx]
 
 	#def filter_obs(self, obs):
@@ -61,8 +64,8 @@ class GFScenicEnv_v2(gym.Env):
 		#assert isinstance(action, int), "action must be int"
 		assert action != 19, "Cannot take built in ai action for rl!"
 
-		self.simulation.pre_step()
-		#self.simulation.update_designated_player()
+		#self.simulation.pre_step()
+
 		scenic_actions = self.simulation.get_actions()
 		player_idx = self.simulation.get_controlled_player_idx()[0]
 
@@ -73,6 +76,7 @@ class GFScenicEnv_v2(gym.Env):
 		obs, rew, done, info = self.simulation.step(actions)
 
 		self.simulation.post_step()
+		self.simulation.pre_step() #For computing the actions before step is called
 		return obs[player_idx], rew[player_idx], done, info
 
 	def render(self, mode='human', close=False):
