@@ -124,6 +124,7 @@ def update_objects_from_obs_single_rl_agent(last_obs, gameds):
             tired = obs[f"{tp}_tired_factor"][idx]
             yellows = obs[f"{tp}_yellow_card"][idx]
             active = bool(obs[f"{tp}_active"][idx])
+            #designated = bool(obs[f"{tp}_designated"][idx])
 
 
             #calculate required properties
@@ -163,10 +164,18 @@ def update_objects_from_obs_single_rl_agent(last_obs, gameds):
     ###############
 
     #set controlled player field
+
+    #	self.designated_player = player
+	#	self.designated_player_idx = self.player_to_ctrl_idx[player]
+
     controlled_player_idx =  obs["active"]
     controlled_player = gameds.left_idx_to_player[controlled_player_idx]
     controlled_player.is_controlled = True
-    gameds.controlled_player = controlled_player
+    #gameds.controlled_player = controlled_player
+
+    gameds.designated_player = controlled_player
+    gameds.designated_player_idx = controlled_player_idx
+
 
 
     #update ball and game state

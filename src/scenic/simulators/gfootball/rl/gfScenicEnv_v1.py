@@ -10,13 +10,14 @@ from gfootball.env import football_action_set
 from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
-"""Single agent environment with scenic behaviors, Always does pre_step (hence, computes all actions in scenic), and post_step"""
-class GFScenicEnv_v2(gym.Env):
+"""Single Agent Interface"""
+class GFScenicEnv_v1(gym.Env):
 	metadata = {'render.modes': ['human']}
 
-	def __init__(self, initial_scenario, gf_env_settings={}, allow_render = False, rank=0):
-		super(GFScenicEnv_v2, self).__init__()
+	def __init__(self, initial_scenario, gf_env_settings={}, allow_render = False, compute_scenic_behavior=False, rank=0):
+		super(GFScenicEnv_v1, self).__init__()
 
+		self.compute_scenic_behavior = compute_scenic_behavior
 		self.gf_env_settings = gf_env_settings
 		self.allow_render = allow_render
 		self.scenario = initial_scenario
@@ -31,6 +32,8 @@ class GFScenicEnv_v2(gym.Env):
 		assert self.gf_env_settings["stacked"] == True
 
 		self.observation_space = Box(low=0, high=255, shape=(72, 96, 16), dtype=uint8)
+
+		#if self.compute_scenic_behavior:
 		self.action_space = Discrete(19)
 
 
@@ -43,18 +46,19 @@ class GFScenicEnv_v2(gym.Env):
 		from scenic.simulators.gfootball.simulator import GFootBallSimulation
 		self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
 											  render=self.allow_render, verbosity=1,
-											  env_type="v2",
+											  env_type="v1",
 											  gf_env_settings=self.gf_env_settings,
 											  tag=str(self.rank))
 
 		self.gf_gym_env = self.simulation.get_underlying_gym_env()
 
 		obs = self.simulation.reset()
-		player_idx = self.simulation.get_controlled_player_idx()[0]
+		#player_idx = self.simulation.get_controlled_player_idx()[0]
 
-		self.simulation.pre_step()
+		if self.compute_scenic_behavior:
+			self.simulation.pre_step()
 
-		return obs[player_idx]
+		return obs
 
 	#def filter_obs(self, obs):
 
@@ -64,21 +68,15 @@ class GFScenicEnv_v2(gym.Env):
 
 		#assert isinstance(action, int), "action must be int"
 		assert action != 19, "Cannot take built in ai action for rl!"
+		#if action == 19: print("Using BUILT IN AI!!!!!")
 
-		#self.simulation.pre_step()
+		obs, rew, done, info = self.simulation.step(action)
 
-		scenic_actions = self.simulation.get_actions()
-		player_idx = self.simulation.get_controlled_player_idx()[0]
+		if self.compute_scenic_behavior:
+			self.simulation.post_step()
+			self.simulation.pre_step() #For computing the actions before step is called
 
-
-		actions = scenic_actions.copy()
-		actions[player_idx] = action
-
-		obs, rew, done, info = self.simulation.step(actions)
-
-		self.simulation.post_step()
-		self.simulation.pre_step() #For computing the actions before step is called
-		return obs[player_idx], rew[player_idx], done, info
+		return obs, rew, done, info
 
 	def render(self, mode='human', close=False):
 		# Render the environment to the screen
@@ -158,7 +156,8 @@ def test_observation():
 	scenario = buildScenario(scenario_file)
 
 	compute_scenic_behavior = True
-	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
+
+	env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=compute_scenic_behavior)
 
 	from scenic.simulators.gfootball.rl import utils
 
@@ -207,50 +206,6 @@ def test_observation():
 	print("random agent performance: ", perf)
 
 
-
-def test_shape():
-	import os
-
-	cwd = os.getcwd()
-
-	gf_env_settings = {
-		"stacked": True,
-		"rewards": 'scoring',
-		"representation": 'extracted',
-		"players": [f"agent:left_players=1"],
-		"real_time": True
-	}
-
-	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
-
-	num_trials = 1
-	scenario_file = f"/Users/azadsalam/codebase/scenic/examples/gfootball/monologue.scenic"
-	scenario = buildScenario(scenario_file)
-
-	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
-
-	from scenic.simulators.gfootball.rl import utils
-
-	num_epi = 0
-	total_r = 0
-	from tqdm import tqdm
-	for i in tqdm(range(0, num_trials)):
-		obs = env.reset()
-		assert obs.shape == (72,96,16)
-		done = False
-		# input("Enter")
-		while not done:
-			action = env.action_space.sample()
-			obs, reward, done, info = env.step(action)
-			assert obs.shape == (72, 96, 16)
-			# env.render()
-			total_r += reward
-			if done:
-				obs = env.reset()
-				num_epi += 1
-
-	perf =  total_r / num_epi
-	print("random agent performance: ", perf)
 
 if __name__=="__main__":
 	test_observation()

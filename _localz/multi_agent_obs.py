@@ -20,7 +20,7 @@ settings = {
 
     "representation": 'extracted',
     "stacked": True,
-    'action_set': "full",
+    'action_set': "v2",
     'dump_full_episodes': True,
     'real_time': True,
     'players': [f"agent:left_players={num_my_player},right_players={num_op_player}"],

@@ -135,11 +135,13 @@ class GFootBallSimulation(Simulation):
 			player_setting = [f"agent:left_players={num_my_player},right_players={num_op_player}"]
 
 		elif env_type == "v1":
+			for_gym_env = True
+			self.for_gym_env = True
 			self.env_type = env_type
-			self.run_pre_post_step = False
-			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
-			self.constraints_checking = False
-			self.compute_scenic_actions = False
+
+			#self.run_pre_post_step = False
+			#self.constraints_checking = False
+			#self.compute_scenic_actions = False
 
 			internal_control_left = 1
 			internal_control_right = 0
@@ -229,9 +231,10 @@ class GFootBallSimulation(Simulation):
 		#self.game_ds.print_mini()
 
 		if self.env_type == "v1": #		if self.for_gym_env:
-			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
+			#assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_index_ds(self.last_raw_obs, gameds=self.game_ds)
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
+			self.update_designated_player()
 		else:
 			update_control_index(self.last_raw_obs, gameds=self.game_ds)
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
@@ -327,19 +330,47 @@ class GFootBallSimulation(Simulation):
 			#print(self.game_ds.player_str_mini(controlled_player), self.action)
 		else:
 		"""
-		for agent, act in allActions.items():
-			idx = gameds.player_to_ctrl_idx[agent]
-			self.actions[idx] = act[0].code
+		"""
+		if self.env_type=="v1":
+			designated_player = self.game_ds.designated_player
+			if designated_player in allActions:
+				self.action = allActions[designated_player][0].code
+
+		elif self.env_type=="v2":
+			for agent, act in allActions.items():
+				idx = gameds.player_to_ctrl_idx[agent]
+				self.actions[idx] = act[0].code
+
+		elif not self.for_gym_env:
+			for agent, act in allActions.items():
+				idx = gameds.player_to_ctrl_idx[agent]
+				self.actions[idx] = act[0].code
+		"""
+
+		if self.env_type=="v2" or not self.for_gym_env:
+			for agent, act in allActions.items():
+				idx = gameds.player_to_ctrl_idx[agent]
+				self.actions[idx] = act[0].code
+
+		elif self.env_type=="v1":
+			designated_player = self.game_ds.designated_player
+			self.designated_player_action = allActions[designated_player][0].code
 
 
 	def get_actions(self):
 		return self.actions
 
-	def get_designated_player_action(self):
-		return self.actions[self.game_ds.designated_player_idx]
+	def get_scenic_designated_player_action(self):
+		if self.env_type == "v1":
+			return self.designated_player_action
+		else:
+			return self.actions[self.game_ds.designated_player_idx]
 
 	def update_designated_player(self):
-		self.game_ds.compute_designated_player_idx()
+		if self.env_type == "v1":
+			pass
+		else:
+			self.game_ds.compute_designated_as_closest_idx()
 
 	def get_controlled_player_idx(self):
 
@@ -407,8 +438,9 @@ class GFootBallSimulation(Simulation):
 			#clean up after simulation ended
 			#if self.done and self.run_pre_post_step:
 			#	self.post_run()
-			assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
+			#assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
+			self.update_designated_player()
 		else:
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
 			self.update_designated_player()

@@ -37,7 +37,11 @@ class GameDS:
 	def get_designated_player_idx(self):
 		return [self.designated_player_idx]
 
-	def compute_designated_player_idx(self):
+
+	def compute_designated_from_obs(self):
+		pass
+
+	def compute_designated_as_closest_idx(self):
 		import numpy as np
 		df = lambda p1,p2: np.sqrt((p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]))
 
