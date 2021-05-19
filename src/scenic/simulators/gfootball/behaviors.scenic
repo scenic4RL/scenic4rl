@@ -145,7 +145,7 @@ behavior PassToPoint(x, y, pass_type="long"):
 
     # aim at target player
     # do MoveInDirection(lookup_direction(x - self_x, y - self_y)) for 0.3 seconds
-    while self.owns_ball:
+    if self.owns_ball:
         take SetDirection(lookup_direction(x - self_x, y - self_y))
 
         if pass_type == "shoot":
