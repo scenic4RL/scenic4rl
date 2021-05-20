@@ -1,7 +1,7 @@
 from scenic.simulators.gfootball.actions import *
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball import model
-from scenic.core.regions import regionFromShapelyObject
+from scenic.core.regions import regionFromShapelyObject, SectorRegion
 import math
 
 from scenic.simulators.gfootball.utilities import *
@@ -9,6 +9,23 @@ from scenic.simulators.gfootball.utilities import *
 
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
+
+def currentDirectionIndex(player):
+    direction = math.degrees(player.heading)
+    direction = direction + 360 if direction < 0 else direction % 360
+    action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
+    corresponding_dir = action_lookup[round(direction/ 45)]
+    return corresponding_dir
+
+def nearestOpponent(player):
+    closest_dist = math.inf
+    nearestOpponent = None
+    for p in simulation().objects:
+        distance = distance from player to p
+        if distance < closest_dist:
+            nearestOpponent = p
+            closest_dist = distance
+    return nearestOpponent
 
 
 def set_dir_if_not(action, sticky_actions):
@@ -18,6 +35,19 @@ def set_dir_if_not(action, sticky_actions):
     else:
         return NoAction()
 
+def opponentInRunway(player, radius=5):
+    '''
+    checks if there is a different team player in the player's runway
+    this runway region is modelled as a half circle centered at the player's position, 
+    with radius of 4 meters, in the direction of the player's heading
+    '''
+    runwayRegion = SectorRegion(center=player.position, radius=radius, heading=player.heading, angle=math.pi/2)
+    for p in simulation().objects:
+        if isinstance(p, Ball):
+            continue
+        if player.team is not p.team and runwayRegion.containsPoint(p.position):
+            return True
+    return False
 
 behavior IdleBehavior():
     '''
@@ -65,7 +95,6 @@ behavior MoveInDirection(direction_code):
         take SetDirection(direction_code)
 
 
-
 behavior FollowObject(object_to_follow, sprint=False, opponent=False):
     '''
     Let a player follow the object (e.g. Ball)'s position
@@ -95,35 +124,43 @@ behavior FollowObject(object_to_follow, sprint=False, opponent=False):
             if sprint:
                 take Sprint()
 
-
-behavior MoveToPosition(x, y, sprint=False, opponent=False):
+behavior MoveToPosition(dest_point, sprint=False, opponent=False):
     '''
     Move a player to position x,y. Will Stop if within 0.5 meter but the behavior won't exit.
     '''
-    while True:
-        #ball = simulation().game_ds.ball
+    x = dest_point.x
+    y = dest_point.y
+    self_x = self.position.x
+    self_y = self.position.y
+    distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
 
-        self_x = self.position.x
-        self_y = self.position.y
-
-        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
-
+    while distance > 2:
         if opponent:
             corresponding_dir = lookup_direction(self_x - x, self_y - y)
         else:
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
 
-        if distance < 0.5:
-            if sprint:
-                take ReleaseSprint()
-            take ReleaseDirection()
-            break
-        else:
-            take SetDirection(corresponding_dir)
-            if sprint:
-                take Sprint()
+        take SetDirection(corresponding_dir)
+        if sprint:
+            take Sprint()
 
-        # print(self.x, self.y, direction, corresponding_dir)
+        self_x = self.position.x
+        self_y = self.position.y
+        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+
+    if sprint:
+        take ReleaseSprint()
+    take ReleaseDirection()
+
+
+# behavior MoveToPosition(destination_point):
+#     dist = distance from self to destination_point
+#     while dist > 0.5:
+#         dest_x = destination_point.x
+#         dest_y = destination_point.y
+#         self_x = self.position.x
+#         self_y = self.position.y
+#         take MoveTowardsPoint(dest_x, dest_y, self_x, self_y, opponent= self.team is 'opponent')
 
 
 behavior PassToPlayer(player, pass_type="long"):
@@ -145,7 +182,7 @@ behavior PassToPoint(x, y, pass_type="long"):
 
     # aim at target player
     # do MoveInDirection(lookup_direction(x - self_x, y - self_y)) for 0.3 seconds
-    if self.owns_ball:
+    while self.owns_ball:
         take SetDirection(lookup_direction(x - self_x, y - self_y))
 
         if pass_type == "shoot":
