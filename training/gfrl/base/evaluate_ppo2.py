@@ -39,6 +39,9 @@ flags.DEFINE_string('level', 'academy_empty_goal_close',
                     'Defines type of problem being solved')
 flags.DEFINE_string('eval_level', '',
                     'Defines type of problem being solved')
+flags.DEFINE_string('load_path', None,
+                    'Path to load initial checkpoint from.')
+
 flags.DEFINE_enum('state', 'extracted_stacked', ['extracted',
                   'extracted_stacked'],
                   'Observation to be used for training.')
@@ -48,7 +51,7 @@ flags.DEFINE_enum('reward_experiment', 'scoring', ['scoring',
                   'Reward to be used for training.')
 flags.DEFINE_enum('policy', 'cnn', ['cnn', 'lstm', 'mlp', 'impala_cnn',
                   'gfootball_impala_cnn'], 'Policy architecture')
-flags.DEFINE_integer('num_timesteps', int(2e6),
+flags.DEFINE_integer('num_timesteps', int(0),
                      'Number of timesteps to run for.')
 flags.DEFINE_integer('num_envs', 8,
                      'Number of environments to run in parallel.')
@@ -72,8 +75,7 @@ flags.DEFINE_bool('dump_full_episodes', False,
                   'If True, trace is dumped after every episode.')
 flags.DEFINE_bool('dump_scores', False,
                   'If True, sampled traces after scoring are dumped.')
-flags.DEFINE_string('load_path', None,
-                    'Path to load initial checkpoint from.')
+
 flags.DEFINE_string('exp_root', "~/logs_ppo_gfootball/",
                     'Path to save logfiles, tb, and models.')
 flags.DEFINE_string('exp_name', "dev",
@@ -143,6 +145,13 @@ def configure_logger(log_path, **kwargs):
 
 
 def train(_):
+
+    assert FLAGS.num_timesteps==0, "For testing must be 0"
+    print("Testing Model: ", FLAGS.load_path)
+    assert FLAGS.load_path is not None, "Must provide load path of the model you want to test" 
+    assert FLAGS.load_path != "", "Must provide load path of the model you want to test" 
+
+    
     """Trains a PPO2 policy."""
 
     #CREATE DIRECTORIES
@@ -200,10 +209,10 @@ def train(_):
     
     print(tf.__version__)
 
-    assert FLAGS.num_timesteps==0, "For testing"
+    
     
     from gfrl.common.mybase.ppo2_eval import eval
-    reward_mean, score_mean, ep_len_mean = eval(
+    reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps = eval(
         network=FLAGS.policy,
         total_timesteps=FLAGS.num_timesteps,
         env=None,
@@ -223,10 +232,24 @@ def train(_):
         load_path=FLAGS.load_path
         )
 
-    
+    #print("reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps")
+    #print(reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps)
 
+    fstr = "FLAGS.eval_level, FLAGS.load_path, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps\n"
+    fstr += str((FLAGS.eval_level, FLAGS.load_path, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps))[1:-1]
+    fstr += "\n"
+
+    print(fstr)
     
-    print(reward_mean, score_mean, ep_len_mean)
+    res_file = os.path.join(exp_root, "test_perf.csv")
+    with open(res_file, "a+") as res:
+        res.write(fstr)
+
 
 if __name__ == '__main__':
+    #FLAGS.level = None
+    #FLAGS.num_envs =  2
+    #FLAGS.policy = "gfootball_impala_cnn"
+    #FLAGS.eval_level = "/home/ubuntu/ScenicGFootBall/training/gfrl/_scenarios/sc4rl/ps_3v2_0.scenic"
+    #FLAGS.load_path = "/home/ubuntu/ScenicGFootBall/training/gfrl/_res_bc/bc_ps_3v2_0_rand_8K_success_0/checkpoints/bc_00125"
     app.run(train)

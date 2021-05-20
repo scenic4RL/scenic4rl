@@ -145,6 +145,15 @@ def configure_logger(log_path, **kwargs):
 def train(_):
     """Trains a PPO2 policy."""
 
+    if FLAGS.seed == -1:
+        import random
+        import time
+        FLAGS.seed = int(time.time())%1000
+
+    
+    print("Using Seed: ", FLAGS.seed)
+
+    
     #CREATE DIRECTORIES
     import os 
     from gfrl.common import utils

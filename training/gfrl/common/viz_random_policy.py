@@ -28,7 +28,8 @@ gf_env_settings = {
 #scenario_file = f"../_scenarios/generic/rts/gen_0.scenic"
 #scenario_file = f"../_scenarios/sc4rl/fg_11v1.scenic"
 #scenario_file = f"../_scenarios/sc4rl/fg_5v5.scenic"
-scenario_file = f"../_scenarios/sc4rl/atck_5v5.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/sc4rl/defense_3vs3.scenic"
+
 #scenario_file = f"../_scenarios/academy/11v1.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)

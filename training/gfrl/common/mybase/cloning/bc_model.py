@@ -197,3 +197,19 @@ class BCModel(object):
 
 
         return ret
+
+    def evaluate_bc_loss(self, obs, actions, lr):
+
+        td_map = {
+            self.train_model.X : obs,
+            self.gt_A : actions,
+            self.LR : lr,
+        }
+
+        ret = self.sess.run(
+            [self.bc_loss],
+            td_map
+        )
+
+        #print(ret)
+        return ret

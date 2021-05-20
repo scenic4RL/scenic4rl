@@ -1,16 +1,16 @@
 import numpy as np
 class GFDset(object):
     
-    def __init__(self, expert_path, randomize=True):
+    def __init__(self, inputs, labels, info, randomize=True):
         
-        traj_data = np.load(expert_path)
+        #traj_data = np.load(expert_path)
         
-        self.inputs = traj_data["obs"]
+        self.inputs = inputs
         self.obs  = self.inputs
-        self.labels = traj_data["acs"]
+        self.labels = labels
         self.acts = self.labels
-
-        for k,v in traj_data.items():
+        self.info = info
+        for k,v in info.items():
             if k in ["obs", "acs"]: continue 
             setattr(self, k, v)
             
@@ -41,3 +41,75 @@ class GFDset(object):
         self.pointer = end
         return inputs, labels
 
+    def summary(self):
+        msg = ""
+
+        msg += f"Obs Shape: {self.obs.shape}\n"
+        msg += f"Act Shape: {self.acts.shape}\n"
+
+        for k, v in self.info.items():
+            if k in ["rewards"]:continue
+            msg += f"{k}: {v}\n"
+
+        return msg
+
+
+def get_datasets(path, validation_ratio=0.2):
+    traj_data = np.load(path)
+
+    inputs = traj_data["obs"]
+    labels = traj_data["acs"]
+    
+    info = {}
+    for k,v in traj_data.items():
+        if k in ["obs", "acs"]: continue 
+        info[k] = v 
+    
+
+    assert len(inputs) == len(labels)
+
+    
+    n = inputs.shape[0]
+
+    #val_n = int(n*validation_ratio)
+    train_n = n-int(n*validation_ratio)
+
+    idx = np.arange(n)
+    np.random.shuffle(idx)
+
+    t_idx = idx[0:train_n]
+    v_idx = idx[train_n:]
+
+    train_inputs = inputs[t_idx, :]
+    train_labels = labels[t_idx, :]
+
+    val_inputs = inputs[v_idx, :]
+    val_labels = labels[v_idx, :]
+
+    tds = GFDset(train_inputs, train_labels, info)
+    vds = GFDset(val_inputs, val_labels, info)
+
+    return tds, vds
+    
+    #self.inputs = self.inputs[idx, :]
+    #self.labels = self.labels[idx, :]
+
+ 
+
+if __name__ == "__main__":
+
+    path = "/home/ubuntu/ScenicGFootBall/training/gfrl/_data/sc4rl_fg11v1_rns_success_10000.npz"
+    #path = "/home/ubuntu/ScenicGFootBall/training/gfrl/_data/pns_1000.npz"
+
+    tds, vds = get_datasets(path, validation_ratio=0.0)
+
+    print("train")
+    print(tds.summary())
+    print()
+
+    print("validation")
+    print(vds.summary())
+    print()
+
+
+    

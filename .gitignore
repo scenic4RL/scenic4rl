@@ -146,3 +146,7 @@ nohup*.out
 *.out
 src/scenic/simulators/gfootball/rl/tboard/
 *.npz
+
+*/.vscode
+.vscode
+~/
