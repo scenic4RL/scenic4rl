@@ -37,6 +37,8 @@ FLAGS = flags.FLAGS
 
 flags.DEFINE_string('level', 'academy_empty_goal_close',
                     'Defines type of problem being solved')
+flags.DEFINE_string('env_mode', 'version of environment',
+                    'v1 -> default AI, v2 -> Scenic Behavior')
 flags.DEFINE_string('eval_level', '',
                     'Defines type of problem being solved')
 flags.DEFINE_enum('state', 'extracted_stacked', ['extracted',
@@ -112,7 +114,17 @@ def create_single_scenic_environment(iprocess, level):
     }
 
     scenario = buildScenario(scenario_file)
-    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+
+    if FLAGS.env_mode == "v1":
+        env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
+    elif FLAGS.env_mode == "v2":
+        env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
+    else:
+        print("ENVIRONMENT MODE MUST BE SELECTED!")
+
+    #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
     env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)), info_keywords=("score_reward",))
     return env
 
