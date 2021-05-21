@@ -7,7 +7,7 @@ cwd = os.getcwd()
 
 tracedir = f"vids"
 rewards = "scoring"#'scoring,checkpoints'
-
+"""
 gf_env_settings = {
     "stacked": True,
     "rewards": rewards,
@@ -23,23 +23,31 @@ gf_env_settings = {
     "write_goal_dumps": True,
     "render": True
 }
+"""
+gf_env_settings = {
+    "stacked": True,
+    "rewards": 'scoring',
+    "representation": 'extracted',
+    "players": [f"agent:left_players=1"],
+    "real_time": True
+}
 
-#scenario_file = f"{cwd}/exp_0_5/academy_pass_and_shoot_with_keeper.scenic"
-#scenario_file = f"../_scenarios/generic/rts/gen_0.scenic"
-scenario_file = f"../_scenarios/generic/pass_n_shoot/gen_0.scenic"
+
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/sc4rl/wb/defense_1vs1_gk_wb.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
-env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+#env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
-
+from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, compute_scenic_behavior=False)
 import gfootball
 
 #env = gfootball.env.create_environment("academy_pass_and_shoot_with_keeper", number_of_left_players_agent_controls=1, render=False, representation="extracted",
 #                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
 rews =  []
 
-for _ in range(100):
+for _ in range(50):
     env.reset()
     rew = 0
     #input("Press Any Key to Continue")
@@ -48,8 +56,8 @@ for _ in range(100):
     while not done:
         _,r,done,_ = env.step(env.action_space.sample())
         rew+=r
-
-    rews.append(r)
+    print(rew)
+    rews.append(rew)
 
 import numpy as np
 rews  = np.array(rews)

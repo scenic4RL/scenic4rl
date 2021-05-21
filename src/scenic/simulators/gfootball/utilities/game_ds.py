@@ -48,7 +48,7 @@ class GameDS:
 		dists= {p: df(p.position, self.ball.position) for p in self.my_players}
 
 		player = min(dists, key=dists.get)
-		print("player in control: ", player)
+		#print("player in control: ", player)
 		self.designated_player = player
 		self.designated_player_idx = self.player_to_ctrl_idx[player]
 		return [self.designated_player_idx]
