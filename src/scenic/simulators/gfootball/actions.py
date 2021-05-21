@@ -150,9 +150,11 @@ def lookup_direction(dx, dy):
     if direction < 0:
         direction += 360
 
+    # print("direction: ", direction)
+
     # lookup action based on direction
     action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
-    corresponding_dir = action_lookup[round(direction / 45)]
+    corresponding_dir = action_lookup[round(direction / 40) % 9]
     return corresponding_dir
 
 
