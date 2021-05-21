@@ -40,14 +40,18 @@ scenario = buildScenario(scenario_file)
 #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
 from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
-env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, compute_scenic_behavior=False)
+from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
+
+#env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, compute_scenic_behavior=False)
+
+env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 import gfootball
 
 #env = gfootball.env.create_environment("academy_pass_and_shoot_with_keeper", number_of_left_players_agent_controls=1, render=False, representation="extracted",
 #                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
 rews =  []
 
-for _ in range(50):
+for _ in range(100):
     env.reset()
     rew = 0
     #input("Press Any Key to Continue")
