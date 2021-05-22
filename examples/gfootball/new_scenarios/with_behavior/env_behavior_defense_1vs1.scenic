@@ -10,26 +10,52 @@ param offsides = False
 param right_team_difficulty = 1
 
 
-behavior dribble_evasive_turn():
-	corresponding_dir = currentDirectionIndex(self)
-	angleToOpponent = angle from self.position to yellow_defender.position
-	is_player_opponent = self.team is "opponent"
+behavior dribble_evasive_zigzag(destination_point):
+	opponent = nearestOpponent(self)
+	angleToOpponent = angle from self.position to opponent.position
 	current_heading = self.heading
+	print("current position: ", self.position)
 
 	if angleToOpponent > 0: # if the opponent is on the right side of self player executing this behavior
 		print("turn to left")
-		destination_point = self offset along (-45 deg relative to current_heading) by 0 @ Range(10,15)
+		point_to_evadeTo = self offset along (-45 deg relative to current_heading) by 0 @ Range(5,15)
 	else: 
 		print("turn to right")
-		destination_point = self offset along (45 deg relative to current_heading) deg by 0 @ Range(10,15)
+		point_to_evadeTo = self offset along (45 deg relative to current_heading) by 0 @ Range(5,15)
 
-	print("angleToOpponent: ", angleToOpponent)
-	print("self.position: ", self.position)
-	print("self.heading: ", self.heading * 180 / 3.1412)
+	print("point_to_evadeTo: ", point_to_evadeTo)
+	do MoveToPosition(point_to_evadeTo) # zig behavior
+	print("end evasion behavior and start returning to destination_point")
 	print("destination_point: ", destination_point)
+	do MoveToPosition(destination_point, sprint =True) # zag behavior
 
-	do MoveToPosition(destination_point, opponent=is_player_opponent)
-	do IdleBehavior()
+# behavior evadeOpponentAndShoot(destination_point):
+# 	opponent = nearestOpponent(self)
+# 	is_player_opponent = self.team is "opponent"
+
+# 	print("start dribble_evasive_zigzag")
+# 	do dribble_evasive_zigzag(destination_point) until abs(self.position.y - opponent.position.y) > 1
+# 	print("end dribble_evasive_zigzag")
+
+# 	if abs(self.position.y - opponent.position.y) > 1:
+# 		print("case1")
+# 		take MoveTowardsPoint(penaltyBox_myteam_center, opponent=is_player_opponent)
+# 		take Shoot()
+# 	else:
+# 		print("case2")
+# 		point_to_evadeTo = self.position.x @ destination_point.y
+# 		do MoveToPosition(point_to_evadeTo, sprint=True) until abs(self.position.y - opponent.position.y) > 1
+
+# 		aimPoint = aimPointToShoot(self)
+# 		take MoveTowardsPoint(aimPoint, opponent=is_player_opponent)
+# 		take Shoot()
+
+# 	take ReleaseDirection()
+# 	take ReleaseSprint()
+# 	print("end evadeOpponentAndShoot")
+
+
+	# do IdleBehavior()
 	
 	# if angleToOpponent > 0:
 	# 	turn_direction = -1
@@ -63,32 +89,36 @@ behavior dribble_evasive_turn():
 	# 	take SetDirection(corresponding_dir)
 	# 	take Shoot()
 
-	take ReleaseDirection()
+behavior AimGoalCornerAndShoot():
+	aimPoint = aimPointToShoot(self)
+	is_player_opponent = self.team is "opponent"
+	take MoveTowardsPoint(aimPoint, self.position, is_player_opponent)
+	take Shoot()
 	take ReleaseSprint()
-
+	take ReleaseDirection()
 
 behavior dribbleTo(destination_point):
-	player_type = self.team is 'opponent'
-	
+	# had_ball_possession = False
 	try:
-		do MoveToPosition(destination_point, opponent=player_type)
-	interrupt when opponentInRunway(self, radius=Range(10,12)):
-		do dribble_evasive_turn()
-	interrupt when left_pbox.containsPoint(ball.position):
-		take Shoot()
-		take ReleaseSprint()
-		take ReleaseDirection()
-		do IdleBehavior()
+		do MoveToPosition(destination_point)
+	interrupt when opponentInRunway(self, radius=Range(5,10)):
+		# had_ball_possession = True
+		do dribble_evasive_zigzag(destination_point)
+	interrupt when myTeam_penaltyBox.containsPoint(ball.position):
+		do AimGoalCornerAndShoot()
+	interrupt when (distance from self to ball) > 2:
+		do FollowObject(ball, sprint=True)
+	do IdleBehavior()
 
 
 defender_region = get_reg_from_edges(-52, -48, 5, -5)
 attacker_region = get_reg_from_edges(-26, -22, 5, -5)
 
 MyGK at 95 @ 40, with behavior IdleBehavior()
-yellow_defender = MyCB on defender_region
+# yellow_defender = MyCB on defender_region
 
 OpGK at 95 @ 40, with behavior IdleBehavior()
 ego = OpCM on attacker_region, with behavior dribbleTo(-80 @ 0)
-ball = Ball ahead of ego by 0.5
+ball = Ball ahead of ego by 0.1
 
 # yellow_defender = MyCB offset by -15 @ 6, with behavior IdleBehavior()

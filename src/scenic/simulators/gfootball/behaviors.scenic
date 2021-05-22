@@ -10,6 +10,32 @@ from scenic.simulators.gfootball.utilities import *
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 
+def aimPointToShoot(player):
+    '''
+    returns a point at which the player should aim to shoot a goal
+    this point is either left or right corner point of the other team's goal
+    This aim point is computed with respect to only the nearest opponent
+    '''
+    if player.team is 'opponent':
+        goal_leftside_aimPoint = myTeam_goal_left_corner
+        goal_rightside_aimPoint = myTeam_goal_right_corner
+    else:
+        goal_leftside_aimPoint = opponentTeam_goal_left_corner
+        goal_rightside_aimPoint = opponentTeam_goal_right_corner
+
+    opponent = nearestOpponent(player)
+    left_radius = distance from player to goal_leftside_aimPoint
+    left_heading = angle from player to goal_leftside_aimPoint
+
+    left_shootingSpace = SectorRegion(center=player.position, radius=left_radius, heading=left_heading, angle= 40 deg)
+
+    if not left_shootingSpace.containsPoint(opponent.position):
+        print("aim for leftside goal")
+        return goal_leftside_aimPoint
+    print("aim for rightside goal")
+    return goal_rightside_aimPoint
+
+
 def currentDirectionIndex(player):
     direction = math.degrees(player.heading)
     direction = direction + 360 if direction < 0 else direction % 360
@@ -95,11 +121,13 @@ behavior MoveInDirection(direction_code):
         take SetDirection(direction_code)
 
 
-behavior FollowObject(object_to_follow, sprint=False, opponent=False):
+behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
     '''
     Let a player follow the object (e.g. Ball)'s position
     '''
+    opponent = self.team is "opponent"
     while True:
+        print("following object")
         #ball = simulation().game_ds.ball
         x = object_to_follow.position.x
         y = object_to_follow.position.y
@@ -115,16 +143,17 @@ behavior FollowObject(object_to_follow, sprint=False, opponent=False):
         else:
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
 
-        if distance < 0.5:
+        if distance < terminate_distance:
             if sprint:
                 take ReleaseSprint()
             take ReleaseDirection()
+            break
         else:
             take SetDirection(corresponding_dir)
             if sprint:
                 take Sprint()
 
-behavior MoveToPosition(dest_point, sprint=False, opponent=False):
+behavior MoveToPosition(dest_point, sprint=False):
     '''
     Move a player to position x,y. Will Stop if within 0.5 meter but the behavior won't exit.
     '''
@@ -133,6 +162,7 @@ behavior MoveToPosition(dest_point, sprint=False, opponent=False):
     self_x = self.position.x
     self_y = self.position.y
     distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+    opponent = self.team is "opponent"
 
     while distance > 2:
         if opponent:

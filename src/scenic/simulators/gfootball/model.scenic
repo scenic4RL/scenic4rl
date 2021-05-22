@@ -79,11 +79,17 @@ pbox_width  = 29 # was set based on eyeballing by setting balls' location.. The 
 field_hw = field_width/2
 field_hh = field_height/2
 
-pbox_left_center = -1 * (field_width / 2 - pbox_width / 2)
-pbox_right_center = -1 * pbox_left_center
+myteam_penaltyBox_center = -1 * (field_width / 2 - pbox_width / 2)
+opponent_penaltyBox_center = -1 * myteam_penaltyBox_center
 
 my_goal_midpoint = -(field_width/2) @ 0
 opponent_goal_midpoint = (field_width/2) @ 0
+
+myTeam_goal_left_corner = -100 @ -2.76
+myTeam_goal_right_corner = -100 @ 2.76
+
+opponentTeam_goal_left_corner = 100 @ 2.76
+opponentTeam_goal_right_corner = 100 @ -2.76
 
 goal_width = 0.1
 #regions
@@ -93,8 +99,8 @@ workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 opponent_goal = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 my_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 
-left_pbox =  RectangularRegion(pbox_left_center @ 0, 0, pbox_width, pbox_height)
-right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 0 deg, pbox_width, pbox_height)
+myTeam_penaltyBox =  RectangularRegion(myteam_penaltyBox_center @ 0, 0, pbox_width, pbox_height)
+opponentTeam_penaltyBox = RectangularRegion(-1 * myteam_penaltyBox_center @ 0, 0 deg, pbox_width, pbox_height)
 
 center = 0 @ 0
 corner_tr = (field_hw@field_hh)
