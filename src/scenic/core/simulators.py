@@ -96,6 +96,11 @@ class Simulation:
         except:
             pass
 
+    def calculate_reward(self):
+
+        dynamicScenario = self.scene.dynamicScenario
+        newReason = dynamicScenario._runMonitors()
+
     def pre_step(self):
 
         dynamicScenario = self.scene.dynamicScenario
@@ -110,9 +115,9 @@ class Simulation:
         dynamicScenario._checkAlwaysRequirements()
 
         # Run monitors
-        newReason = dynamicScenario._runMonitors()
-        if newReason is not None:
-            terminationReason = newReason
+        #newReason = dynamicScenario._runMonitors()
+        #if newReason is not None:
+        #    terminationReason = newReason
 
         # "Always" and scenario-level requirements have been checked;
         # now safe to terminate if the top-level scenario has finished

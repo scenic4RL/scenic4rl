@@ -91,7 +91,7 @@ class GFootBallSimulation(Simulation):
 
 		self.settings = self.scene.params.copy()
 		self.settings.update(settings)
-
+		self.scenic_reward = None
 
 
 		#assert not for_gym_env or use_scenic_behavior_in_step == constraints_checking,    "for now constraing checking has to be done when using scenic behavior"
@@ -425,8 +425,9 @@ class GFootBallSimulation(Simulation):
 		"""
 
 		#print(action_to_take)
-		obs, rew, self.done, info = self.env.step(action_to_take)
+		obs, sim_rew, self.done, info = self.env.step(action_to_take)
 		info["action_taken"] = action_to_take
+		self.last_action = action_to_take
 		self.last_raw_obs = self.scenic_wrapper.latest_raw_observation
 
 		#print(self.last_raw_obs[0]['active'])
@@ -445,6 +446,13 @@ class GFootBallSimulation(Simulation):
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
 			self.update_designated_player()
 
+		total_rew = sim_rew
+		self.calculate_reward()
+		if self.scenic_reward is not None:
+			scenic_reward = self.scenic_reward
+			total_rew += scenic_reward
+			#print(f"{self.timestep}: scenic_reward: ", scenic_reward, "total reward: ", total_rew)
+
 		"""
 		print("Printing objects")
 		for obj in self.objects:
@@ -457,8 +465,10 @@ class GFootBallSimulation(Simulation):
 
 		#self.game_ds.print_mini()
 
+
+
 		if self.for_gym_env:
-			return obs, rew, self.done, info
+			return obs, total_rew, self.done, info
 
 		else:
 			return None
