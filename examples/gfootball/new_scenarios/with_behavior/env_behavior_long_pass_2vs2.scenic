@@ -19,7 +19,7 @@ behavior egoBehavior(destination_point):
 	try:
 		do dribbleToAndShoot(destination_point)
 
-	interrupt when myTeam_penaltyBox.containsPoint(self.position):
+	interrupt when yellow_penaltyBox.containsPoint(self.position):
 		print("case1")
 		if aimPointToShoot(self) is not None:
 			do AimGoalCornerAndShoot()

@@ -74,7 +74,7 @@ behavior RunToSafe(op, target_point):
 behavior DynamicRunShoot(op, target_point):
     try:
         do CloseInAndAct(op, target_point)
-    interrupt when (distance from self to opponent_goal_midpoint) <= MIN_SHOOT_DIS:
+    interrupt when (distance from self to blue_goal_midpoint) <= MIN_SHOOT_DIS:
         take Shoot()
 
 
@@ -82,7 +82,7 @@ behavior DynamicRunShoot(op, target_point):
 behavior JustShoot():
     while True:
         if self.owns_ball:
-            if (distance from self to opponent_goal_midpoint) < 30:
+            if (distance from self to blue_goal_midpoint) < 30:
                 shoot_option = Uniform("down", "up", "direct")
                 if shoot_option == "down":
                     take SetDirection(6)
@@ -93,7 +93,7 @@ behavior JustShoot():
 
                 take Shoot()
             else:
-                take MoveTowardsPoint(opponent_goal_midpoint.x, opponent_goal_midpoint.y, self.x, self.y)
+                take MoveTowardsPoint(blue_goal_midpoint.x, blue_goal_midpoint.y, self.x, self.y)
 
         else:
             take ReleaseDirection()
@@ -130,7 +130,7 @@ behavior P2Behavior(selection, op, tp):
 
 
 # target point in goal
-tp = Point in opponent_goal
+tp = Point in blue_goalRegion
 
 # ball at top
 ball = Ball at 70 @ 28

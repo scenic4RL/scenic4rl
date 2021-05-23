@@ -14,9 +14,9 @@ yellow_defender2 = MyCB
 
 OpGK at 95 @ 40, with behavior IdleBehavior()
 ego = OpCM on LeftReg_CM
-opponent = OpAM on LeftReg_CM
+blue_attacking_midfielder = OpAM on LeftReg_CM
 
 Ball ahead of ego by 0.5
 
 require (distance from yellow_defender1 to yellow_defender2) > 3
-require (distance from ego to opponent) > 4
+require (distance from ego to blue_attacking_midfielder) > 4

@@ -16,6 +16,6 @@ yellow_defender2 = MyLM on MyLeftMidRegion
 
 OpGK at 90 @ -40, with behavior IdleBehavior()
 ego = OpRM
-attacking_opponent = OpAM on OpAttackRegion
+blue_attacking_midfielder = OpAM on OpAttackRegion
 
 Ball ahead of ego by 0.5

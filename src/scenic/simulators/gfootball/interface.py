@@ -341,13 +341,13 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
         code_str += "\n"
         code_str += "\n"
 
-    # addOponentPlayers:
+    # add blue Team Players:
     if len(opo_players ) >0:
         code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
         opo_players.sort(key=lambda x: 0 if x.role == 'GK' else 1)
         for player in opo_players:
             player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=True, mirrory=True)
-            #MIRRORING the position of the opponent player, as it seems the simulator mirrors it automatically
+            #MIRRORING the position of the blueTeam player, as it seems the simulator mirrors it automatically
             code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
 
         code_str += "\n"
