@@ -180,7 +180,7 @@ def player_with_ball(ds, ball, team=None):
         return ds.op_players[ball.owned_player_idx]
     return None
 
-def get_closest_player_dis(position, players):
+def get_closest_player_info(position, players):
     min_distance = None
     closest_player = None
 
@@ -192,3 +192,7 @@ def get_closest_player_dis(position, players):
             closest_player = p
             min_distance = dist
     return closest_player, min_distance
+
+def get_closest_player_dis(position, players):
+    print("Warning: get_closest_player_dis has changed. Use get_closest_player_info() instead.")
+    return get_closest_player_info(position, players)

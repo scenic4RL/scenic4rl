@@ -261,6 +261,7 @@ behavior dribbleToAndShoot(destination_point, sprint=False):
 
 behavior JustPass():
     '''
+<<<<<<< HEAD
     Always try to pass. If not owned ball, will move to the ball.
     '''
     while True:
@@ -273,6 +274,17 @@ behavior JustShoot():
     while True:
         if not self.is_controlled:
             take NoAction()
+
+    x = dest_point.x
+    y = dest_point.y
+    self_x = self.position.x
+    self_y = self.position.y
+    distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+    opponent = self.team == "opponent"
+
+    while distance > 1:
+        if opponent:
+            corresponding_dir = lookup_direction(self_x - x, self_y - y)
         else:
             if self.owns_ball:
                 take Shoot()
