@@ -1,7 +1,7 @@
 from scenic.simulators.gfootball.actions import *
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball import model
-from scenic.core.regions import regionFromShapelyObject
+from scenic.core.regions import regionFromShapelyObject, SectorRegion
 import math
 
 from scenic.simulators.gfootball.utilities import *
@@ -10,6 +10,86 @@ from scenic.simulators.gfootball.utilities import *
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 
+def aimPointToShoot(player):
+    '''
+    returns a point at which the player should aim to shoot a goal
+    this point is either left or right corner point of the other team's goal
+    This aim point is computed with respect to only the nearest opponent
+    '''
+    if player.team == 'opponent':
+        goal_leftside_aimPoint = RLTeam_goal_left_corner
+        goal_rightside_aimPoint = RLTeam_goal_right_corner
+    else:
+        goal_leftside_aimPoint = opponentTeam_goal_left_corner
+        goal_rightside_aimPoint = opponentTeam_goal_right_corner
+
+    opponent = nearestOpponent(player)
+    left_radius = distance from player to goal_leftside_aimPoint
+    left_heading = angle from player to goal_leftside_aimPoint
+    left_shootingSpace = SectorRegion(center=player.position, radius=left_radius, heading=left_heading, angle= 30 deg)
+    left_goalside_is_open = not left_shootingSpace.containsPoint(opponent.position)
+
+    right_radius = distance from player to goal_rightside_aimPoint
+    right_heading = angle from player to goal_rightside_aimPoint
+    right_shootingSpace = SectorRegion(center=player.position, radius=right_radius, heading=right_heading, angle= 30 deg)
+    right_goalside_is_open = not right_shootingSpace.containsPoint(opponent.position)
+
+    print("left_goalside_is_open: ", left_goalside_is_open)
+    print("right_goalside_is_open: ", right_goalside_is_open)
+    print("left_heading: ", left_heading)
+    print("right_heading: ", right_heading)
+
+    if left_goalside_is_open and right_goalside_is_open:
+        return Uniform(goal_leftside_aimPoint, goal_rightside_aimPoint)
+    elif not left_goalside_is_open and right_goalside_is_open:
+        return goal_rightside_aimPoint
+    elif left_goalside_is_open and not right_goalside_is_open:
+        return goal_leftside_aimPoint
+    else:
+        return None
+    return None
+
+
+def currentDirectionIndex(player):
+    direction = math.degrees(player.heading)
+    direction = direction + 360 if direction < 0 else direction % 360
+    action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
+    corresponding_dir = action_lookup[round(direction/ 45)]
+    return corresponding_dir
+
+def nearestOpponent(player):
+    closest_dist = math.inf
+    nearestOpponent = None
+    for p in simulation().objects:
+        distance = distance from player to p
+        if not isinstance(p, Ball) and p.team != player.team and distance < closest_dist:
+            nearestOpponent = p
+            closest_dist = distance
+    return nearestOpponent
+
+def nearestTeammate(player):
+    closest_dist = math.inf
+    nearestTeammate = None
+    for p in simulation().objects:
+        distance = distance from player to p
+        if not isinstance(p, Ball) and p.team == player.team and distance < closest_dist:
+            nearestTeammate = p
+            closest_dist = distance
+    return nearestTeammate
+
+def teammateHasBallPossession(player):
+    ''' this includes case when the player itself has the ball possession '''
+    for p in simulation().objects:
+        if not isinstance(p, Ball) and p.team == player.team and p.owns_ball:
+            return True
+    return False
+
+def otherTeamHasBallPossession(player):
+    ''' this includes case when the player itself has the ball possession '''
+    for p in simulation().objects:
+        if not isinstance(p, Ball) and p.team != player.team and p.owns_ball:
+            return True
+    return False
 
 def set_dir_if_not(action, sticky_actions):
     is_running = ActionCode.sticky_direction(sticky_actions)
@@ -18,6 +98,20 @@ def set_dir_if_not(action, sticky_actions):
     else:
         return NoAction()
 
+def opponentInRunway(player, reactionDistance=5):
+    '''
+    checks if there is a different team player in the player's runway
+    this runway region is modelled as a half circle centered at the player's position,
+    with radius of 4 meters, in the direction of the player's heading
+    '''
+    radius = reactionDistance
+    runwayRegion = SectorRegion(center=player.position, radius=radius, heading=player.heading, angle=math.pi/2)
+    for p in simulation().objects:
+        if isinstance(p, Ball):
+            continue
+        if player.team is not p.team and runwayRegion.containsPoint(p.position):
+            return True
+    return False
 
 behavior IdleBehavior():
     '''
@@ -26,50 +120,110 @@ behavior IdleBehavior():
     while True:
         take NoAction()
 
-behavior JustShoot():
+behavior MoveToPosition(dest_point, sprint=False):
     '''
-    Always tries to Shoot if owns ball, otherwise will Pass.
+    Move a player to position x,y. Will Stop if within 2 meter 
     '''
-    while True:
-        if not self.is_controlled:
-            take NoAction()
+    x = dest_point.x
+    y = dest_point.y
+    self_x = self.position.x
+    self_y = self.position.y
+    distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+    opponent = self.team == "opponent"
+    withinDistanceFromDestPt = 10 if sprint else 2
+
+    while distance > withinDistanceFromDestPt:
+        if opponent:
+            corresponding_dir = lookup_direction(self_x - x, self_y - y)
         else:
-            if self.owns_ball:
-                take Shoot()
-            else:
-                take Pass()
+            corresponding_dir = lookup_direction(x - self_x, y - self_y)
+
+        take SetDirection(corresponding_dir)
+        if sprint:
+            take Sprint()
+
+        self_x = self.position.x
+        self_y = self.position.y
+        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+
+    if sprint:
+        take ReleaseSprint()
+    take ReleaseDirection()
 
 
-behavior JustPass():
+behavior ShortPassTo(player):
     '''
     Always try to pass. If not owned ball, will move to the ball.
     '''
+    is_player_opponent = self.team == "opponent"
+    take MoveTowardsPoint(player.position, self.position, is_player_opponent)
+    take Pass("short")
+    take ReleaseSprint()
+    take ReleaseDirection()
+
+
+behavior HighPassTo(player):
+    '''
+    Always try to pass. If not owned ball, will move to the ball.
+    '''
+    is_player_opponent = self.team == "opponent"
+    take MoveTowardsPoint(player.position, self.position, is_player_opponent)
+    take Pass("high")
+    take ReleaseSprint()
+    take ReleaseDirection()
+
+behavior LongPassTo(player):
+    '''
+    Always try to pass. If not owned ball, will move to the ball.
+    '''
+    is_player_opponent = self.team == "opponent"
+    take MoveTowardsPoint(player.position, self.position, is_player_opponent)
+    take Pass("long")
+    take ReleaseSprint()
+    take ReleaseDirection()
+
+behavior HoldPosition():
     while True:
-        take Pass()
+        take ReleaseSprint()
+        take ReleaseDirection()
 
+behavior dribble_evasive_zigzag(destination_point):
+    opponent = nearestOpponent(self)
+    angleToOpponent = angle from self.position to opponent.position
+    current_heading = self.heading
+    print("dribble_evasive_zigzag's angleToOpponent: ", angleToOpponent)
 
-behavior RunInCircle(s=1):
+    if angleToOpponent > 0: # if the opponent is on the right side of self player executing this behavior
+        point_to_evadeTo = self offset along (-45 deg relative to current_heading) by 0 @ Range(5,15)
+    else:
+        point_to_evadeTo = self offset along (45 deg relative to current_heading) by 0 @ Range(5,15)
+
+    do MoveToPosition(point_to_evadeTo) # zig behavior
+    do MoveToPosition(destination_point, sprint =True) # zag behavior
+
+behavior AimGoalCornerAndShoot():
+    ''' 
+    Only takes a shot if there is available left/right goalside region to shoot,
+    otherwise, just hold position with the ball and exit this behavior
     '''
-    The agent will run in circle, changing direction every s second.
-    '''
-    while True:
-        for i in range(1,9):
-            print(i)
-            do MoveInDirection(i) for s seconds
+    take ReleaseSprint()
+    aimPoint = aimPointToShoot(self)
+    is_player_opponent = self.team == "opponent"
 
-behavior MoveInDirection(direction_code):
-    '''
-    Always heading to given direction.
-    '''
-    while True:
-        take SetDirection(direction_code)
+    if aimPoint is not None:
+        take MoveTowardsPoint(aimPoint, self.position, is_player_opponent)
+        take Shoot()
+
+    take ReleaseSprint()
+    take ReleaseDirection()
 
 
-
-behavior FollowObject(object_to_follow, sprint=False, opponent=False):
+behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
     '''
     Let a player follow the object (e.g. Ball)'s position
+    this behavior exits once the player is within "terminate_distance" from the "object_to_follow"
     '''
+    opponent = self.team == "opponent"
     while True:
         #ball = simulation().game_ds.ball
         x = object_to_follow.position.x
@@ -86,34 +240,7 @@ behavior FollowObject(object_to_follow, sprint=False, opponent=False):
         else:
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
 
-        if distance < 0.5:
-            if sprint:
-                take ReleaseSprint()
-            take ReleaseDirection()
-        else:
-            take SetDirection(corresponding_dir)
-            if sprint:
-                take Sprint()
-
-
-behavior MoveToPosition(x, y, sprint=False, opponent=False):
-    '''
-    Move a player to position x,y. Will Stop if within 0.5 meter but the behavior won't exit.
-    '''
-    while True:
-        #ball = simulation().game_ds.ball
-
-        self_x = self.position.x
-        self_y = self.position.y
-
-        distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
-
-        if opponent:
-            corresponding_dir = lookup_direction(self_x - x, self_y - y)
-        else:
-            corresponding_dir = lookup_direction(x - self_x, y - self_y)
-
-        if distance < 0.5:
+        if distance < terminate_distance:
             if sprint:
                 take ReleaseSprint()
             take ReleaseDirection()
@@ -123,8 +250,62 @@ behavior MoveToPosition(x, y, sprint=False, opponent=False):
             if sprint:
                 take Sprint()
 
-        # print(self.x, self.y, direction, corresponding_dir)
+behavior dribbleToAndShoot(destination_point, sprint=False):
+    reactionDistance = Range(7,12) if not sprint else Range(15, 20)
+    try:
+        do MoveToPosition(destination_point)
+    interrupt when opponentInRunway(self, reactionDistance=reactionDistance):
+        do dribble_evasive_zigzag(destination_point)
+    interrupt when RLTeam_penaltyBox.containsPoint(self.position):
+        do AimGoalCornerAndShoot()
 
+behavior JustPass():
+    '''
+<<<<<<< HEAD
+    Always try to pass. If not owned ball, will move to the ball.
+    '''
+    while True:
+        take Pass()
+
+behavior JustShoot():
+    '''
+    Always tries to Shoot if owns ball, otherwise will Pass.
+    '''
+    while True:
+        if not self.is_controlled:
+            take NoAction()
+
+    x = dest_point.x
+    y = dest_point.y
+    self_x = self.position.x
+    self_y = self.position.y
+    distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+    opponent = self.team == "opponent"
+
+    while distance > 1:
+        if opponent:
+            corresponding_dir = lookup_direction(self_x - x, self_y - y)
+        else:
+            if self.owns_ball:
+                take Shoot()
+            else:
+                take Pass()
+
+behavior RunInCircle(s=1):
+    '''
+    The agent will run in circle, changing direction every s second.
+    '''
+    while True:
+        for i in range(1,9):
+            print(i)
+            do MoveInDirection(i) for s seconds
+
+behavior MoveInDirection(direction_code):
+    '''
+    Always heading to given direction.
+    '''
+    while True:
+        take SetDirection(direction_code)
 
 behavior PassToPlayer(player, pass_type="long"):
     '''
@@ -145,7 +326,7 @@ behavior PassToPoint(x, y, pass_type="long"):
 
     # aim at target player
     # do MoveInDirection(lookup_direction(x - self_x, y - self_y)) for 0.3 seconds
-    if self.owns_ball:
+    while self.owns_ball:
         take SetDirection(lookup_direction(x - self_x, y - self_y))
 
         if pass_type == "shoot":

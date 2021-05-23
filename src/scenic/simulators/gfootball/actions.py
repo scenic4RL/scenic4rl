@@ -19,10 +19,11 @@ class SetDirection(Action):
         return f"direction {self.direction}"
 
 class Pass(Action):
-    def __init__(self, type="short"):
-        allowed_type = {"long":9, "short":11, "high":10}
-        assert type in allowed_type
-        self.code = allowed_type[type]
+    def __init__(self, pass_type="short"):
+        print("pass action: ", pass_type)
+        allowed_type = {"long":9, "high":10, "short":11}
+        assert pass_type in allowed_type
+        self.code = allowed_type[pass_type]
 
     def applyTo(self, obj, sim):
         pass
@@ -125,10 +126,13 @@ class MoveTowardsPoint(Action):
     '''
     Move Towards given point. Will calculate correct heading for you.
     '''
-    def __init__(self, x, y, self_x, self_y, opponent = False):
-        self.x = x
-        self.y = y
-        self.opponent = opponent
+    # def __init__(self, x, y, self_x, self_y, opponent = False):
+    def __init__(self, destination_point, player_position, opponent = False):
+
+        self_x = player_position.x
+        self_y = player_position.y
+        x = destination_point.x
+        y = destination_point.y
 
         if opponent:
             corresponding_dir = lookup_direction(self_x - x, self_y - y)
@@ -150,9 +154,11 @@ def lookup_direction(dx, dy):
     if direction < 0:
         direction += 360
 
+    # print("direction: ", direction)
+
     # lookup action based on direction
     action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
-    corresponding_dir = action_lookup[round(direction / 45)]
+    corresponding_dir = action_lookup[round(direction / 40) % 9]
     return corresponding_dir
 
 
@@ -174,7 +180,7 @@ def player_with_ball(ds, ball, team=None):
         return ds.op_players[ball.owned_player_idx]
     return None
 
-def get_closest_player_dis(position, players):
+def get_closest_player_info(position, players):
     min_distance = None
     closest_player = None
 
@@ -186,3 +192,7 @@ def get_closest_player_dis(position, players):
             closest_player = p
             min_distance = dist
     return closest_player, min_distance
+
+def get_closest_player_dis(position, players):
+    print("Warning: get_closest_player_dis has changed. Use get_closest_player_info() instead.")
+    return get_closest_player_info(position, players)

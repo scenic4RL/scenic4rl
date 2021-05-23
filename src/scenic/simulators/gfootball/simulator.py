@@ -239,6 +239,8 @@ class GFootBallSimulation(Simulation):
 			update_control_index(self.last_raw_obs, gameds=self.game_ds)
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
 			self.update_designated_player()
+
+		#print("AT reset in simulation: Ball: ", self.game_ds.ball.position)
 		self.done = False
 
 		#self.first_time = False

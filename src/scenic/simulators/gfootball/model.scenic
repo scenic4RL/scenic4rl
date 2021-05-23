@@ -72,7 +72,6 @@ field_height =  84
 field_width_su = 2           #fieldWidth in terms of Simulator unit
 field_height_su = 0.42*2
 
-
 pbox_height = 48
 pbox_width  = 29 # was set based on eyeballing by setting balls' location.. The simulator places a ball/a player in slightly different positions for some reason
 
@@ -80,22 +79,28 @@ pbox_width  = 29 # was set based on eyeballing by setting balls' location.. The 
 field_hw = field_width/2
 field_hh = field_height/2
 
-pbox_left_center = -1 * (field_width / 2 - pbox_width / 2)
-pbox_right_center = -1 * pbox_left_center
+RLTeam_penaltyBox_center = -1 * (field_width / 2 - pbox_width / 2)
+opponent_penaltyBox_center = -1 * RLTeam_penaltyBox_center
 
-left_goal_midpoint = -(field_width/2) @ 0
-right_goal_midpoint = (field_width/2) @ 0
+my_goal_midpoint = -(field_width/2) @ 0
+opponent_goal_midpoint = (field_width/2) @ 0
+
+RLTeam_goal_left_corner = -100 @ -2.76
+RLTeam_goal_right_corner = -100 @ 2.76
+
+opponentTeam_goal_left_corner = 100 @ 3
+opponentTeam_goal_right_corner = 100 @ -3
 
 goal_width = 0.1
 #regions
 
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
-right_goal = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
-left_goal = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
+opponent_goalRegion = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
+my_goalRegion = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 
-left_pbox =  RectangularRegion(pbox_left_center @ 0, 0, pbox_width, pbox_height)
-right_pbox = RectangularRegion(-1 * pbox_left_center @ 0, 0 deg, pbox_width, pbox_height)
+RLTeam_penaltyBox =  RectangularRegion(RLTeam_penaltyBox_center @ 0, 0, pbox_width, pbox_height)
+opponentTeam_penaltyBox = RectangularRegion(-1 * RLTeam_penaltyBox_center @ 0, 0 deg, pbox_width, pbox_height)
 
 center = 0 @ 0
 corner_tr = (field_hw@field_hh)
@@ -164,6 +169,7 @@ Speed vectors represent a change in the position of the object within a single s
 class Player:
     #gfootball properties
     position[dynamic]: Point on workspace
+    team: str
     #position_sim[dynamic]: Vector
 
     direction[dynamic]: Range(0, 360) deg
@@ -262,54 +268,67 @@ LeftReg_CF = get_reg_from_edges(-5, -1, 2, -2)
 class MyGK(MyPlayer):
     position[dynamic]: Point on LeftReg_GK
     role[dynamic]: "GK"
+    team: 'RLTeam'
 
 class MyLB(MyPlayer):
     position[dynamic]: Point on LeftReg_LB
     role[dynamic]: "LB"
+    team: 'RLTeam'
 
 class MyRB(MyPlayer):
     position[dynamic]: Point on LeftReg_RB
     role[dynamic]: "RB"
+    team: 'RLTeam'
 
 class MyCB(MyPlayer):
     position[dynamic]: Point on LeftReg_CB
     role[dynamic]: "CB"
+    team: 'RLTeam'
 
 class MyLM(MyPlayer):
     position[dynamic]: Point on LeftReg_LM
     role[dynamic]: "LM"
+    team: 'RLTeam'
 
 class MyDM(MyPlayer):
     position[dynamic]: Point on LeftReg_DM
     role[dynamic]: "DM"
+    team: 'RLTeam'
 
 class MyRM(MyPlayer):
     position[dynamic]: Point on LeftReg_RM
     role[dynamic]: "RM"
+    team: 'RLTeam'
 
 class MyCM(MyPlayer):
     position[dynamic]: Point on LeftReg_CM
     role[dynamic]: "CM"
+    team: 'RLTeam'
 
 class MyCMM(MyPlayer):
     position[dynamic]: Point on LeftReg_CMM
     role[dynamic]: "CM"
+    team: 'RLTeam'
 
 class MyCML(MyPlayer):
     position[dynamic]: Point on LeftReg_CML
     role[dynamic]: "CM"
+    team: 'RLTeam'
 
 class MyCMR(MyPlayer):
     position[dynamic]: Point on LeftReg_CMR
     role[dynamic]: "CM"
+    team: 'RLTeam'
 
 class MyCF(MyPlayer):
     position[dynamic]: Point on LeftReg_CF
     role[dynamic]: "CF"
+    team: 'RLTeam'
 
 class MyAM(MyPlayer):
     position[dynamic]: Point on LeftReg_AM
     role[dynamic]: "AM"
+    team: 'RLTeam'
 
 
 RightReg_GK = get_reg_from_edges(100, 98, 2, -2)
@@ -333,55 +352,67 @@ RightReg_CF = get_reg_from_edges(5, 1, 2, -2)
 class OpGK(MyPlayer):
     position[dynamic]: Point on RightReg_GK
     role[dynamic]: "GK"
+    team: 'opponent'
 
 class OpLB(MyPlayer):
     position[dynamic]: Point on RightReg_LB
     role[dynamic]: "LB"
+    team: 'opponent'
 
 class OpRB(MyPlayer):
     position[dynamic]: Point on RightReg_RB
     role[dynamic]: "RB"
+    team: 'opponent'
 
 class OpCB(MyPlayer):
     position[dynamic]: Point on RightReg_CB
     role[dynamic]: "CB"
+    team: 'opponent'
 
 class OpLM(MyPlayer):
     position[dynamic]: Point on RightReg_LM
     role[dynamic]: "LM"
+    team: 'opponent'
 
 class OpDM(MyPlayer):
     position[dynamic]: Point on RightReg_DM
     role[dynamic]: "DM"
-
+    team: 'opponent'
 
 class OpRM(MyPlayer):
     position[dynamic]: Point on RightReg_RM
     role[dynamic]: "RM"
+    team: 'opponent'
 
 class OpCM(MyPlayer):
     position[dynamic]: Point on RightReg_CM
     role[dynamic]: "CM"
+    team: 'opponent'
 
 class OpCMM(MyPlayer):
     position[dynamic]: Point on RightReg_CMM
     role[dynamic]: "CM"
+    team: 'opponent'
 
 class OpCML(MyPlayer):
     position[dynamic]: Point on RightReg_CML
     role[dynamic]: "CM"
+    team: 'opponent'
 
 class OpCMR(MyPlayer):
     position[dynamic]: Point on RightReg_CMR
     role[dynamic]: "CM"
+    team: 'opponent'
 
 class OpCF(MyPlayer):
     position[dynamic]: Point on RightReg_CF
     role[dynamic]: "CF"
+    team: 'opponent'
 
 class OpAM(MyPlayer):
     position[dynamic]: Point on RightReg_AM
     role[dynamic]: "AM"
+    team: 'opponent'
 
 MY_PLAYER_DEFAULT_POSITIONS = {
     "GK": [(-1.00, 0.00)],
