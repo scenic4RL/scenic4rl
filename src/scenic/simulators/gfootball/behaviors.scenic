@@ -34,10 +34,10 @@ def aimPointToShoot(player):
     right_shootingSpace = SectorRegion(center=player.position, radius=right_radius, heading=right_heading, angle= 30 deg)
     right_goalside_is_open = not right_shootingSpace.containsPoint(opponent.position)
 
-    print("left_goalside_is_open: ", left_goalside_is_open)
-    print("right_goalside_is_open: ", right_goalside_is_open)
-    print("left_heading: ", left_heading)
-    print("right_heading: ", right_heading)
+    # print("left_goalside_is_open: ", left_goalside_is_open)
+    # print("right_goalside_is_open: ", right_goalside_is_open)
+    # print("left_heading: ", left_heading)
+    # print("right_heading: ", right_heading)
 
     if left_goalside_is_open and right_goalside_is_open:
         return Uniform(goal_leftside_aimPoint, goal_rightside_aimPoint)
@@ -243,7 +243,7 @@ behavior AimGoalCornerAndShoot():
         if left_corner_distance > right_corner_distance:
             aimPoint = goal_leftside_aimPoint
         else:
-            aimpoint = goal_rightside_aimPoint
+            aimPoint = goal_rightside_aimPoint
 
     take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
     take Shoot()
@@ -294,35 +294,10 @@ behavior dribbleToAndShoot(destination_point, sprint=False):
 
 behavior JustPass():
     '''
-<<<<<<< HEAD
     Always try to pass. If not owned ball, will move to the ball.
     '''
     while True:
         take Pass()
-
-# behavior JustShoot():
-#     '''
-#     Always tries to Shoot if owns ball, otherwise will Pass.
-#     '''
-#     while True:
-#         if not self.is_controlled:
-#             take NoAction()
-
-#     x = dest_point.x
-#     y = dest_point.y
-#     self_x = self.position.x
-#     self_y = self.position.y
-#     distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
-#     is_player_blueTeam = self.team == "blue"
-
-#     while distance > 1:
-#         if is_player_blueTeam:
-#             corresponding_dir = lookup_direction(self_x - x, self_y - y)
-#         else:
-#             if self.owns_ball:
-#                 take Shoot()
-#             else:
-#                 take Pass()
 
 behavior RunInCircle(s=1):
     '''
@@ -541,7 +516,7 @@ behavior BallRunShoot():
 
 
         else:
-           #print("Will Do Nothing now!!")
+            #print("Will Do Nothing now!!")
             take NoAction()
 
 

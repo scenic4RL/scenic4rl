@@ -12,27 +12,7 @@ param end_episode_on_possession_change = True
 max_shoot_distance = 30 # if empty goal
 shoot_distance = 25 # normal
 
-
-def can_shoot(me, ops, target_point, shoot_distance):
-    if not me.owns_ball:
-        return False
-    if (distance from me to target_point) > shoot_distance:
-        return False
-    goal_relative_heading = angle from me to target_point
-    shoot_cone = SectorRegion(me, shoot_distance, goal_relative_heading, 40 deg)  # center, radius, heading, angle
-    # if (distance from me to target_point) < MIN_SHOOT_DIS:
-    #     return True
-    return all([op not in shoot_cone for op in ops])
-
 # -----Behavior-----
-behavior AimGoalCornerAndShoot():
-    aimPoint = aimPointToShoot(self)
-    is_player_blueTeam = self.team == "blue"
-    take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
-    take Shoot()
-    take ReleaseSprint()
-    take ReleaseDirection()
-
 behavior dribble_evasive_zigzag(destination_point):
     # opponent = nearestOpponent(self)
     blueGK = opgk
@@ -55,6 +35,8 @@ behavior dribble_evasive_zigzag(destination_point):
 behavior P1Behavior():
     # destination_point = Point in blue_penaltyBox
     ds = simulation().game_ds
+    # print(player_with_ball(ds, ball))
+
     # destination_point = Point at 70 @ (Uniform(1) * Range(-28,-22))
     destination_point = Point at 99 @ 0
     evaded = False
@@ -79,13 +61,13 @@ behavior P1Behavior():
 ball = Ball at 2 @ 0
 
 # Left Team
-ego = MyGK at -99 @ 0, with behavior IdleBehavior()
-p1 = MyCB at 0 @ 0, with behavior P1Behavior()
+ego = YellowGK at -99 @ 0, with behavior IdleBehavior()
+p1 = YellowCB at 0 @ 0, with behavior P1Behavior()
 
 # Right Team
-opgk = OpGK at 99 @ 0
-OpLB at -12 @ 8.4
-OpCB at -12 @ 4.2
-OpCM at -12 @ 0
-OpCB at -12 @ -4.2
-OpRB at -12 @ -8.4
+opgk = BlueGK at 99 @ 0
+BlueLB at -12 @ 8.4
+BlueCB at -12 @ 4.2
+BlueCM at -12 @ 0
+BlueCB at -12 @ -4.2
+BlueRB at -12 @ -8.4
