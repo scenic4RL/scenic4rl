@@ -50,7 +50,6 @@ behavior opRMBehavior(destination_point):
 		do egoBehavior(new_dest_point)
 	interrupt when opponentTeamHasBallPossession(self):
 		do FollowObject(ball, sprint=True)
-
 	do IdleBehavior()
 
 MyGK with behavior HoldPosition()

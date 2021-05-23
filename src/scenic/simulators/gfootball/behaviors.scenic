@@ -186,34 +186,61 @@ behavior HoldPosition():
         take ReleaseSprint()
         take ReleaseDirection()
 
-def nearestOpponentRelativePositionTo(player):
-    opponent = nearestOpponent(self)
-    angleToOpponent = angle from self.position to opponent.position
-    diff_y = opponent.position.y - self.position.y
-    diff_x = opponent.position.x - self.position.x
+def nearestOpponentRelativePositionAhead(player):
+    ''' for the given player, this function returns which side its nearest opponent is 
+    with respect to the player's heading direction. If there is no nearest opponent in
+    the player's heading direction, then the function returns 'None'
+    If there is, returns which side the opponent is w.r.t. the player's heading: "right" or "left"
+    '''
+    # if not opponentInRunway(player, reactionDistance=5):
+    #     return None
+
+    opponent = nearestOpponent(player)
+    diff_y = opponent.position.y - player.position.y
+    diff_x = opponent.position.x - player.position.x
+    angleToOpponent = math.atan2(diff_y, diff_x)
+
+    # undo atan2 +/- pi operation : https://stackoverflow.com/questions/35749246/python-atan-or-atan2-what-should-i-use
+    if diff_y >= 0 and diff_x < 0:
+        angleToOpponent += -math.pi
+    if diff_y < 0 and diff_x < 0:
+        angleToOpponent += math.pi
+
+    if angleToOpponent < 0:
+        return 'right'
+
+    return 'left'
+
 
 behavior dribble_evasive_zigzag(destination_point):
-    opponent = nearestOpponent(self)
-    print("opponent: ", opponent)
-    print("self.position: ", self.position)
-    print("opponent position: ", opponent.position)
-    angleToOpponent = angle from self.position to opponent.position
-    print("scenic's angleToOpponent: ", angleToOpponent)
-    diff_y = opponent.position.y - self.position.y
-    diff_x = opponent.position.x - self.position.x
-    print("diff_y: ", diff_y)
-    print("diff_x: ", diff_x)
-    angleToOpponent = math.atan2(diff_y, diff_x)
+    # opponent = nearestOpponent(self)
+    # print("opponent: ", opponent)
+    # print("self.position: ", self.position)
+    # print("opponent position: ", opponent.position)
+    # angleToOpponent = angle from self.position to opponent.position
+    # print("scenic's angleToOpponent: ", angleToOpponent)
+    # diff_y = opponent.position.y - self.position.y
+    # diff_x = opponent.position.x - self.position.x
+    # print("diff_y: ", diff_y)
+    # print("diff_x: ", diff_x)
+    angleToOpponent = nearestOpponentRelativePositionAhead(self)
+    print("dribble_evasive_zigzag angleToOpponent: ", angleToOpponent)
     current_heading = self.heading
-    print("dribble_evasive_zigzag's angleToOpponent: ", angleToOpponent)
+    # print("dribble_evasive_zigzag's angleToOpponent: ", angleToOpponent)
 
-    if angleToOpponent < 0: # if the opponent is on the right side of self player executing this behavior
+    if angleToOpponent == 'right': 
+        # if opponent on the right side ahead, evade to left
         point_to_evadeTo = self offset along (45 deg relative to current_heading) by 0 @ Range(10,15)
-    else: 
+    elif angleToOpponent == 'left': 
+        # if opponent on the left side, evade to right
         point_to_evadeTo = self offset along (-45 deg relative to current_heading) by 0 @ Range(10,15)
+    else:
+        # if there is no opponent in front, move straight to the destination point
+        point_to_evadeTo = destination_point
 
-    do MoveToPosition(point_to_evadeTo) # zig behavior
-    take ReleaseDirection()
+    if point_to_evadeTo != destination_point:
+        do MoveToPosition(point_to_evadeTo) # zig behavior
+        take ReleaseDirection()
     do MoveToPosition(destination_point, sprint =True) # zag behavior
     take ReleaseSprint()
     take ReleaseDirection()
@@ -223,6 +250,7 @@ behavior AimGoalCornerAndShoot():
     Only takes a shot if there is available left/right goalside region to shoot,
     otherwise, just hold position with the ball and exit this behavior
     '''
+    print("AimGoalCornerAndShoot")
     take ReleaseSprint()
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
