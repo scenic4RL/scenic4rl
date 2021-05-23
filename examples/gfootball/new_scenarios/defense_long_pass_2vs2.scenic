@@ -14,7 +14,7 @@ MyGK at 95 @ -40, with behavior IdleBehavior()
 yellow_defender1 = MyRB
 yellow_defender2 = MyLM on MyLeftMidRegion
 
-OpGK at 95 @ -40, with behavior IdleBehavior()
+OpGK at 90 @ -40, with behavior IdleBehavior()
 ego = OpRM
 attacking_opponent = OpAM on OpAttackRegion
 

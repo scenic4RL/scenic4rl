@@ -19,10 +19,11 @@ class SetDirection(Action):
         return f"direction {self.direction}"
 
 class Pass(Action):
-    def __init__(self, type="short"):
-        allowed_type = {"long":9, "short":11, "high":10}
-        assert type in allowed_type
-        self.code = allowed_type[type]
+    def __init__(self, pass_type="short"):
+        print("pass action: ", pass_type)
+        allowed_type = {"long":9, "high":10, "short":11}
+        assert pass_type in allowed_type
+        self.code = allowed_type[pass_type]
 
     def applyTo(self, obj, sim):
         pass
