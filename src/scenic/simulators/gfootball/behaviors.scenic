@@ -16,7 +16,7 @@ def aimPointToShoot(player):
     this point is either left or right corner point of the other team's goal
     This aim point is computed with respect to only the nearest opponent
     '''
-    if player.team is 'opponent':
+    if player.team == 'opponent':
         goal_leftside_aimPoint = myTeam_goal_left_corner
         goal_rightside_aimPoint = myTeam_goal_right_corner
     else:
@@ -125,7 +125,7 @@ behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
     '''
     Let a player follow the object (e.g. Ball)'s position
     '''
-    opponent = self.team is "opponent"
+    opponent = self.team == "opponent"
     while True:
         print("following object")
         #ball = simulation().game_ds.ball
@@ -155,16 +155,16 @@ behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
 
 behavior MoveToPosition(dest_point, sprint=False):
     '''
-    Move a player to position x,y. Will Stop if within 0.5 meter but the behavior won't exit.
+    Move a player to position x,y. Will Stop if within 1 meter.
     '''
     x = dest_point.x
     y = dest_point.y
     self_x = self.position.x
     self_y = self.position.y
     distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
-    opponent = self.team is "opponent"
+    opponent = self.team == "opponent"
 
-    while distance > 2:
+    while distance > 1:
         if opponent:
             corresponding_dir = lookup_direction(self_x - x, self_y - y)
         else:
