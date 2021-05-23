@@ -37,7 +37,7 @@ o1_pos = Point at p1_pos offset along -90 deg by 0 @ 20
 # , facing toward right_goal_midpoint
 p1 = MyPlayer with role "CM", at p1_pos, with behavior SlideAndRun()
 
-o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(ego, opponent=True)
+o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(ego)
 o0 = OpGK with behavior IdleBehavior()
 
 #Ball

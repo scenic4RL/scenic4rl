@@ -27,16 +27,16 @@ def can_shoot(me, ops, target_point, shoot_distance):
 # -----Behavior-----
 behavior AimGoalCornerAndShoot():
     aimPoint = aimPointToShoot(self)
-    is_player_opponent = self.team == "opponent"
-    take MoveTowardsPoint(aimPoint, self.position, is_player_opponent)
+    is_player_blueTeam = self.team == "blue"
+    take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
     take Shoot()
     take ReleaseSprint()
     take ReleaseDirection()
 
 behavior dribble_evasive_zigzag(destination_point):
     # opponent = nearestOpponent(self)
-    opponent = opgk
-    angleToOpponent = angle from self.position to opponent.position
+    blueGK = opgk
+    angleToblueGK = angle from self.position to blueGK.position
     current_heading = self.heading
 
     evade_direction = Uniform("left", "right")
@@ -46,14 +46,14 @@ behavior dribble_evasive_zigzag(destination_point):
         point_to_evadeTo = self offset along (Range(-50,-30) deg relative to current_heading) by 0 @ Range(50,60)
 
     # print("point_to_evadeTo: ", point_to_evadeTo)
-    while self.x <= opponent.x and (opponent.heading < 200 deg or opponent.heading > 340):
+    while self.x <= blueGK.x and (blueGK.heading < 200 deg or blueGK.heading > 340):
         take MoveTowardsPoint(point_to_evadeTo, self.position)
 
     # print("end evasion behavior and exit")
 
 
 behavior P1Behavior():
-    # destination_point = Point in opponentTeam_penaltyBox
+    # destination_point = Point in blue_penaltyBox
     ds = simulation().game_ds
     # destination_point = Point at 70 @ (Uniform(1) * Range(-28,-22))
     destination_point = Point at 99 @ 0
@@ -62,7 +62,7 @@ behavior P1Behavior():
     try:
         do MoveToPosition(destination_point, sprint=True)
 
-    interrupt when opponentTeam_penaltyBox.containsPoint(ball.position):
+    interrupt when blue_penaltyBox.containsPoint(ball.position):
         # print("Normal Shoot!")
         do AimGoalCornerAndShoot()
 

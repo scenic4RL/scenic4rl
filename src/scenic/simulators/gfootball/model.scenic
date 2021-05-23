@@ -222,10 +222,10 @@ class Player:
 
 #AskEddie: should we specify a boolean field in player? instead of My/Op Player
 
-class MyPlayer(Player):
+class YellowPlayer(Player):
     pass
 
-class OpPlayer(Player):
+class BluePlayer(Player):
     pass
 
 
@@ -265,67 +265,67 @@ LeftReg_AM = get_reg_from_edges(-10, -15, 2, -2)
 LeftReg_CF = get_reg_from_edges(-5, -1, 2, -2)
 
 
-class YellowGK(MyPlayer):
+class YellowGK(YellowPlayer):
     position[dynamic]: Point on LeftReg_GK
     role[dynamic]: "GK"
     team: 'yellow'
 
-class YellowLB(MyPlayer):
+class YellowLB(YellowPlayer):
     position[dynamic]: Point on LeftReg_LB
     role[dynamic]: "LB"
     team: 'yellow'
 
-class YellowRB(MyPlayer):
+class YellowRB(YellowPlayer):
     position[dynamic]: Point on LeftReg_RB
     role[dynamic]: "RB"
     team: 'yellow'
 
-class YellowCB(MyPlayer):
+class YellowCB(YellowPlayer):
     position[dynamic]: Point on LeftReg_CB
     role[dynamic]: "CB"
     team: 'yellow'
 
-class YellowLM(MyPlayer):
+class YellowLM(YellowPlayer):
     position[dynamic]: Point on LeftReg_LM
     role[dynamic]: "LM"
     team: 'yellow'
 
-class YellowDM(MyPlayer):
+class YellowDM(YellowPlayer):
     position[dynamic]: Point on LeftReg_DM
     role[dynamic]: "DM"
     team: 'yellow'
 
-class YellowRM(MyPlayer):
+class YellowRM(YellowPlayer):
     position[dynamic]: Point on LeftReg_RM
     role[dynamic]: "RM"
     team: 'yellow'
 
-class YellowCM(MyPlayer):
+class YellowCM(YellowPlayer):
     position[dynamic]: Point on LeftReg_CM
     role[dynamic]: "CM"
     team: 'yellow'
 
-class YellowCMM(MyPlayer):
+class YellowCMM(YellowPlayer):
     position[dynamic]: Point on LeftReg_CMM
     role[dynamic]: "CM"
     team: 'yellow'
 
-class YellowCML(MyPlayer):
+class YellowCML(YellowPlayer):
     position[dynamic]: Point on LeftReg_CML
     role[dynamic]: "CM"
     team: 'yellow'
 
-class YellowCMR(MyPlayer):
+class YellowCMR(YellowPlayer):
     position[dynamic]: Point on LeftReg_CMR
     role[dynamic]: "CM"
     team: 'yellow'
 
-class YellowCF(MyPlayer):
+class YellowCF(YellowPlayer):
     position[dynamic]: Point on LeftReg_CF
     role[dynamic]: "CF"
     team: 'yellow'
 
-class YellowAM(MyPlayer):
+class YellowAM(YellowPlayer):
     position[dynamic]: Point on LeftReg_AM
     role[dynamic]: "AM"
     team: 'yellow'
@@ -349,67 +349,67 @@ RightReg_CMM = get_reg_from_edges(30, 24, 2, -2)
 RightReg_AM = get_reg_from_edges(10, 15, 2, -2)
 RightReg_CF = get_reg_from_edges(5, 1, 2, -2)
 
-class BlueGK(MyPlayer):
+class BlueGK(BluePlayer):
     position[dynamic]: Point on RightReg_GK
     role[dynamic]: "GK"
     team: 'blue'
 
-class BlueLB(MyPlayer):
+class BlueLB(BluePlayer):
     position[dynamic]: Point on RightReg_LB
     role[dynamic]: "LB"
     team: 'blue'
 
-class BlueRB(MyPlayer):
+class BlueRB(BluePlayer):
     position[dynamic]: Point on RightReg_RB
     role[dynamic]: "RB"
     team: 'blue'
 
-class BlueCB(MyPlayer):
+class BlueCB(BluePlayer):
     position[dynamic]: Point on RightReg_CB
     role[dynamic]: "CB"
     team: 'blue'
 
-class BlueLM(MyPlayer):
+class BlueLM(BluePlayer):
     position[dynamic]: Point on RightReg_LM
     role[dynamic]: "LM"
     team: 'blue'
 
-class BlueDM(MyPlayer):
+class BlueDM(BluePlayer):
     position[dynamic]: Point on RightReg_DM
     role[dynamic]: "DM"
     team: 'blue'
 
-class BlueRM(MyPlayer):
+class BlueRM(BluePlayer):
     position[dynamic]: Point on RightReg_RM
     role[dynamic]: "RM"
     team: 'blue'
 
-class BlueCM(MyPlayer):
+class BlueCM(BluePlayer):
     position[dynamic]: Point on RightReg_CM
     role[dynamic]: "CM"
     team: 'blue'
 
-class BlueCMM(MyPlayer):
+class BlueCMM(BluePlayer):
     position[dynamic]: Point on RightReg_CMM
     role[dynamic]: "CM"
     team: 'blue'
 
-class BlueCML(MyPlayer):
+class BlueCML(BluePlayer):
     position[dynamic]: Point on RightReg_CML
     role[dynamic]: "CM"
     team: 'blue'
 
-class BlueCMR(MyPlayer):
+class BlueCMR(BluePlayer):
     position[dynamic]: Point on RightReg_CMR
     role[dynamic]: "CM"
     team: 'blue'
 
-class BlueCF(MyPlayer):
+class BlueCF(BluePlayer):
     position[dynamic]: Point on RightReg_CF
     role[dynamic]: "CF"
     team: 'blue'
 
-class BlueAM(MyPlayer):
+class BlueAM(BluePlayer):
     position[dynamic]: Point on RightReg_AM
     role[dynamic]: "AM"
     team: 'blue'

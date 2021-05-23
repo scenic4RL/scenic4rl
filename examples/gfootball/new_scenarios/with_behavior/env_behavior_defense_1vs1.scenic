@@ -19,11 +19,15 @@ behavior egoBehavior(destination_point):
 defender_region = get_reg_from_edges(-52, -48, 5, -5)
 attacker_region = get_reg_from_edges(-26, -22, 5, -5)
 
-MyGK with behavior HoldPosition()
-# yellow_defender = MyCB on defender_region
+# YellowGK with behavior HoldPosition()
+# yellow_defender = YellowCB on defender_region
 
-OpGK
-ego = OpCM on attacker_region, with behavior egoBehavior(-80 @ 0)
-ball = Ball ahead of ego by 0.1
+# BlueGK
+# ego = BlueCM on attacker_region, with behavior egoBehavior(-80 @ 0)
+# ball = Ball ahead of ego by 0.1
 
-yellow_defender = MyCB offset by -15 @ 5, with behavior HoldPosition()
+# yellow_defender = YellowCB offset by -15 @ 5, with behavior HoldPosition()
+
+ego = YellowGK
+Ball ahead of ego by 0.5
+BlueGK

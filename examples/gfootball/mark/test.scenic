@@ -36,7 +36,7 @@ o1_pos = Point at p1_pos offset along -90 deg by 0 @ 20
 #Ball
 ball = Ball ahead of p1_pos by 1
 
-o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(ball, opponent=True)
+o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(ball)
 p1 = MyPlayer with role "CM", at p1_pos, with behavior DribbleWhenClose(o1)
 o0 = OpGK with behavior IdleBehavior()
 

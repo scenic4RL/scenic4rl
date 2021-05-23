@@ -188,15 +188,9 @@ behavior HoldPosition():
 
 def nearestOpponentRelativePositionTo(player):
     opponent = nearestOpponent(self)
-    print("opponent: ", opponent)
-    print("self.position: ", self.position)
-    print("opponent position: ", opponent.position)
     angleToOpponent = angle from self.position to opponent.position
-    print("scenic's angleToOpponent: ", angleToOpponent)
     diff_y = opponent.position.y - self.position.y
     diff_x = opponent.position.x - self.position.x
-    print("diff_y: ", diff_y)
-    print("diff_x: ", diff_x)
 
 behavior dribble_evasive_zigzag(destination_point):
     opponent = nearestOpponent(self)
