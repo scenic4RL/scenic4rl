@@ -33,7 +33,7 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/sc4rl/wb/defense_1vs1_gk_wb.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/sc4rl/defense_1vs1_wk_with_rew.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
