@@ -33,46 +33,23 @@ behavior AimGoalCornerAndShoot():
     take ReleaseSprint()
     take ReleaseDirection()
 
-behavior AimGoalCenterAndShoot():
-    take MoveTowardsPoint(opponent_goal_midpoint, self.position)
-    take Shoot()
-    take ReleaseSprint()
-    take ReleaseDirection()
-
 behavior dribble_evasive_zigzag(destination_point):
     # opponent = nearestOpponent(self)
     opponent = opgk
     angleToOpponent = angle from self.position to opponent.position
     current_heading = self.heading
-    print("current position: ", self.position)
 
-    if angleToOpponent > 0: # if the opponent is on the right side of self player executing this behavior
-        print("turn to left")
-        point_to_evadeTo = self offset along (-45 deg relative to current_heading) by 0 @ 60
+    evade_direction = Uniform("left", "right")
+    if evade_direction == "left":
+        point_to_evadeTo = self offset along (Range(30,50) deg relative to current_heading) by 0 @ Range(50,60)
     else:
-        print("turn to right")
-        point_to_evadeTo = self offset along (45 deg relative to current_heading) by 0 @ 60
+        point_to_evadeTo = self offset along (Range(-50,-30) deg relative to current_heading) by 0 @ Range(50,60)
 
-    print("point_to_evadeTo: ", point_to_evadeTo)
-    while self.x <= opponent.x:
+    # print("point_to_evadeTo: ", point_to_evadeTo)
+    while self.x <= opponent.x and (opponent.heading < 200 deg or opponent.heading > 340):
         take MoveTowardsPoint(point_to_evadeTo, self.position)
 
-    print("end evasion behavior and exit")
-    # print("destination_point: ", destination_point)
-    # do MoveToPosition(destination_point, sprint =True) # zag behavior
-
-
-behavior CloseIn(destination_point):
-    evaded = False
-    try:
-        do MoveToPosition(destination_point, sprint=True)
-        print("Close In!")
-        do MoveToPosition(opponent_goal_midpoint, sprint=True)
-
-    interrupt when (not evaded) and (distance from self to opgk) < 40:
-        # take ReleaseSprint()
-        evaded = True
-        do dribble_evasive_zigzag(destination_point)
+    # print("end evasion behavior and exit")
 
 
 behavior P1Behavior():
@@ -80,17 +57,18 @@ behavior P1Behavior():
     ds = simulation().game_ds
     # destination_point = Point at 70 @ (Uniform(1) * Range(-28,-22))
     destination_point = Point at 99 @ 0
+    evaded = False
 
     try:
-        do CloseIn(destination_point)
+        do MoveToPosition(destination_point, sprint=True)
 
-    interrupt when can_shoot(self, ds.op_players, opponent_goal_midpoint, max_shoot_distance):
-        print("Clear to shoot")
-        do AimGoalCenterAndShoot()
-
-    interrupt when (distance from ball to opponent_goal_midpoint) < shoot_distance:
-        print("Normal Shoot!")
+    interrupt when opponentTeam_penaltyBox.containsPoint(ball.position):
+        # print("Normal Shoot!")
         do AimGoalCornerAndShoot()
+
+    interrupt when (not evaded) and (distance from self to opgk) < 40:
+        evaded = True
+        do dribble_evasive_zigzag(destination_point)
 
     do IdleBehavior()
 

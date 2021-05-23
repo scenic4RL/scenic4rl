@@ -30,9 +30,9 @@ def aimPointToShoot(player):
     left_shootingSpace = SectorRegion(center=player.position, radius=left_radius, heading=left_heading, angle= 40 deg)
 
     if not left_shootingSpace.containsPoint(opponent.position):
-        print("aim for leftside goal")
+        # print("aim for leftside goal")
         return goal_leftside_aimPoint
-    print("aim for rightside goal")
+    # print("aim for rightside goal")
     return goal_rightside_aimPoint
 
 
