@@ -113,32 +113,6 @@ def opponentInRunway(player, reactionDistance=5):
             return True
     return False
 
-def nearestOpponentRelativePositionAhead(player):
-    ''' for the given player, this function returns which side its nearest opponent is 
-    with respect to the player's heading direction. If there is no nearest opponent in
-    the player's heading direction, then the function returns 'None'
-    If there is, returns which side the opponent is w.r.t. the player's heading: "right" or "left"
-    '''
-    # if not opponentInRunway(player, reactionDistance=5):
-    #     return None
-
-    opponent = nearestOpponent(player)
-    diff_y = opponent.position.y - player.position.y
-    diff_x = opponent.position.x - player.position.x
-    angleToOpponent = math.atan2(diff_y, diff_x)
-
-    # undo atan2 +/- pi operation : https://stackoverflow.com/questions/35749246/python-atan-or-atan2-what-should-i-use
-    if diff_y >= 0 and diff_x < 0:
-        angleToOpponent += -math.pi
-    if diff_y < 0 and diff_x < 0:
-        angleToOpponent += math.pi
-
-    if angleToOpponent < 0:
-        return 'right'
-
-    return 'left'
-
-
 behavior IdleBehavior():
     '''
     Always takes NoAction. Note it will not release direction.
@@ -150,7 +124,6 @@ behavior MoveToPosition(dest_point, sprint=False):
     '''
     Move a player to position x,y. Will Stop if within 2 meter 
     '''
-    print("MoveToPosition()")
     x = dest_point.x
     y = dest_point.y
     self_x = self.position.x
@@ -213,29 +186,49 @@ behavior HoldPosition():
         take ReleaseSprint()
         take ReleaseDirection()
 
+def nearestOpponentRelativePositionAhead(player):
+    ''' for the given player, this function returns which side its nearest opponent is 
+    with respect to the player's heading direction. If there is no nearest opponent in
+    the player's heading direction, then the function returns 'None'
+    If there is, returns which side the opponent is w.r.t. the player's heading: "right" or "left"
+    '''
+    # if not opponentInRunway(player, reactionDistance=5):
+    #     return None
+
+    opponent = nearestOpponent(player)
+    diff_y = opponent.position.y - player.position.y
+    diff_x = opponent.position.x - player.position.x
+    angleToOpponent = math.atan2(diff_y, diff_x)
+
+    # undo atan2 +/- pi operation : https://stackoverflow.com/questions/35749246/python-atan-or-atan2-what-should-i-use
+    if diff_y >= 0 and diff_x < 0:
+        angleToOpponent += -math.pi
+    if diff_y < 0 and diff_x < 0:
+        angleToOpponent += math.pi
+
+    if angleToOpponent < 0:
+        return 'right'
+
+    return 'left'
+
 
 behavior dribble_evasive_zigzag(destination_point):
     angleToOpponent = nearestOpponentRelativePositionAhead(self)
-    breakpoint()
     print("dribble_evasive_zigzag angleToOpponent: ", angleToOpponent)
     current_heading = self.heading
     # print("dribble_evasive_zigzag's angleToOpponent: ", angleToOpponent)
 
     if angleToOpponent == 'right': 
-        print("right")
         # if opponent on the right side ahead, evade to left
         point_to_evadeTo = self offset along (45 deg relative to current_heading) by 0 @ Range(10,15)
     elif angleToOpponent == 'left': 
-        print("left")
         # if opponent on the left side, evade to right
         point_to_evadeTo = self offset along (-45 deg relative to current_heading) by 0 @ Range(10,15)
     else:
         # if there is no opponent in front, move straight to the destination point
-        print("None")
         point_to_evadeTo = destination_point
 
     if point_to_evadeTo != destination_point:
-        print("point_to_evadeTo defined")
         do MoveToPosition(point_to_evadeTo) # zig behavior
         take ReleaseDirection()
     do MoveToPosition(destination_point, sprint =True) # zag behavior
@@ -252,6 +245,7 @@ behavior AimGoalCornerAndShoot():
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
     is_player_blueTeam = self.team == "blue"
+    print("aimPoint: ", aimPoint)
 
     if is_player_blueTeam:
         goal_leftside_aimPoint = yellow_goal_left_corner
@@ -261,6 +255,7 @@ behavior AimGoalCornerAndShoot():
         goal_rightside_aimPoint = blue_goal_right_corner
 
     if aimPoint is None:
+        print("aimPoint is None")
         # if there is no aimpoint to shoot, by default then shoot towards 
         # the goal corner further away from the player
         left_corner_distance = distance from self to goal_leftside_aimPoint
@@ -268,12 +263,14 @@ behavior AimGoalCornerAndShoot():
         if left_corner_distance > right_corner_distance:
             aimPoint = goal_leftside_aimPoint
         else:
-            aimpoint = goal_rightside_aimPoint
+            aimPoint = goal_rightside_aimPoint
 
+    print("aimPoint: ", aimPoint)
     take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
     take Shoot()
     take ReleaseSprint()
     take ReleaseDirection()
+    print("exit AimGoalCornerAndShoot")
 
 
 behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
@@ -313,10 +310,8 @@ behavior dribbleToAndShoot(destination_point, sprint=False):
     try:
         do MoveToPosition(destination_point)
     interrupt when opponentInRunway(self, reactionDistance=reactionDistance):
-        print("dribbleToAndShoot opponentInRunway")
         do dribble_evasive_zigzag(destination_point)
     interrupt when yellow_penaltyBox.containsPoint(self.position):
-        print("dribbleToAndShoot player in the yellow_penaltyBox")
         do AimGoalCornerAndShoot()
 
 

@@ -33,7 +33,7 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/examples/gfootball/new_scenarios/with_behavior/env_behavior_defense_1vs1.scenic"
+scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/examples/gfootball/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 

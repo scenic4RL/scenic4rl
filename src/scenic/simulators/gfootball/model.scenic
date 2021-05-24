@@ -97,7 +97,7 @@ goal_width = 0.1
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
 blue_goalRegion = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
-yellow_goalRegion = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
+my_goalRegion = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 
 yellow_penaltyBox =  RectangularRegion(yellow_penaltyBox_center @ 0, 0, pbox_width, pbox_height)
 blue_penaltyBox = RectangularRegion(-1 * yellow_penaltyBox_center @ 0, 0 deg, pbox_width, pbox_height)
