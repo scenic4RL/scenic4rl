@@ -10,7 +10,7 @@ from scenic.simulators.gfootball.utilities import *
 #model is copied here
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 
-def aimPointToShoot(player, angle = 30 deg):
+def aimPointToShoot(player):
     '''
     returns a point at which the player should aim to shoot a goal
     this point is either left or right corner point of the other team's goal
@@ -26,18 +26,18 @@ def aimPointToShoot(player, angle = 30 deg):
     opponent = nearestOpponent(player)
     left_radius = distance from player to goal_leftside_aimPoint
     left_heading = angle from player to goal_leftside_aimPoint
-    left_shootingSpace = SectorRegion(center=player.position, radius=left_radius, heading=left_heading, angle= angle)
+    left_shootingSpace = SectorRegion(center=player.position, radius=left_radius, heading=left_heading, angle= 30 deg)
     left_goalside_is_open = not left_shootingSpace.containsPoint(opponent.position)
 
     right_radius = distance from player to goal_rightside_aimPoint
     right_heading = angle from player to goal_rightside_aimPoint
-    right_shootingSpace = SectorRegion(center=player.position, radius=right_radius, heading=right_heading, angle= angle)
+    right_shootingSpace = SectorRegion(center=player.position, radius=right_radius, heading=right_heading, angle= 30 deg)
     right_goalside_is_open = not right_shootingSpace.containsPoint(opponent.position)
 
-    print("left_goalside_is_open: ", left_goalside_is_open)
-    print("right_goalside_is_open: ", right_goalside_is_open)
-    print("left_heading: ", left_heading)
-    print("right_heading: ", right_heading)
+    # print("left_goalside_is_open: ", left_goalside_is_open)
+    # print("right_goalside_is_open: ", right_goalside_is_open)
+    # print("left_heading: ", left_heading)
+    # print("right_heading: ", right_heading)
 
     if left_goalside_is_open and right_goalside_is_open:
         return Uniform(goal_leftside_aimPoint, goal_rightside_aimPoint)
@@ -213,6 +213,16 @@ def nearestOpponentRelativePositionAhead(player):
 
 
 behavior dribble_evasive_zigzag(destination_point):
+    # opponent = nearestOpponent(self)
+    # print("opponent: ", opponent)
+    # print("self.position: ", self.position)
+    # print("opponent position: ", opponent.position)
+    # angleToOpponent = angle from self.position to opponent.position
+    # print("scenic's angleToOpponent: ", angleToOpponent)
+    # diff_y = opponent.position.y - self.position.y
+    # diff_x = opponent.position.x - self.position.x
+    # print("diff_y: ", diff_y)
+    # print("diff_x: ", diff_x)
     angleToOpponent = nearestOpponentRelativePositionAhead(self)
     print("dribble_evasive_zigzag angleToOpponent: ", angleToOpponent)
     current_heading = self.heading
@@ -240,12 +250,11 @@ behavior AimGoalCornerAndShoot():
     Only takes a shot if there is available left/right goalside region to shoot,
     otherwise, just hold position with the ball and exit this behavior
     '''
-    print("AimGoalCornerAndShoot")
+    # print("AimGoalCornerAndShoot")
     take ReleaseSprint()
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
     is_player_blueTeam = self.team == "blue"
-    print("aimPoint: ", aimPoint)
 
     if is_player_blueTeam:
         goal_leftside_aimPoint = yellow_goal_left_corner
@@ -255,7 +264,6 @@ behavior AimGoalCornerAndShoot():
         goal_rightside_aimPoint = blue_goal_right_corner
 
     if aimPoint is None:
-        print("aimPoint is None")
         # if there is no aimpoint to shoot, by default then shoot towards 
         # the goal corner further away from the player
         left_corner_distance = distance from self to goal_leftside_aimPoint
@@ -265,12 +273,10 @@ behavior AimGoalCornerAndShoot():
         else:
             aimPoint = goal_rightside_aimPoint
 
-    print("aimPoint: ", aimPoint)
     take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
     take Shoot()
     take ReleaseSprint()
     take ReleaseDirection()
-    print("exit AimGoalCornerAndShoot")
 
 
 behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
@@ -314,6 +320,28 @@ behavior dribbleToAndShoot(destination_point, sprint=False):
     interrupt when yellow_penaltyBox.containsPoint(self.position):
         do AimGoalCornerAndShoot()
 
+behavior JustPass():
+    '''
+    Always try to pass. If not owned ball, will move to the ball.
+    '''
+    while True:
+        take Pass()
+
+behavior RunInCircle(s=1):
+    '''
+    The agent will run in circle, changing direction every s second.
+    '''
+    while True:
+        for i in range(1,9):
+            print(i)
+            do MoveInDirection(i) for s seconds
+
+behavior MoveInDirection(direction_code):
+    '''
+    Always heading to given direction.
+    '''
+    while True:
+        take SetDirection(direction_code)
 
 behavior PassToPlayer(player, pass_type="long"):
     '''
@@ -349,6 +377,7 @@ behavior BuiltinAIBot():
     '''
     while True:
         take BuiltinAIAction()
+
 
 
 behavior RunRight():
@@ -515,7 +544,7 @@ behavior BallRunShoot():
 
 
         else:
-           #print("Will Do Nothing now!!")
+            #print("Will Do Nothing now!!")
             take NoAction()
 
 

@@ -1,7 +1,7 @@
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 
-param game_duration = 400
+param game_duration = 200
 param deterministic = False
 param offsides = False
 param end_episode_on_score = True
@@ -71,3 +71,4 @@ BlueCB at -12 @ 10
 BlueCM at -12 @ 0
 BlueCB at -12 @ -10
 BlueRB at -12 @ -20
+

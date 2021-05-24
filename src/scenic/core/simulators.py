@@ -258,6 +258,7 @@ class Simulation:
                 # Run the simulation for a single step and read its state back into Scenic
                 self.step()
                 self.updateObjects()
+                
                 self.currentTime += 1
 
                 # Save the new state

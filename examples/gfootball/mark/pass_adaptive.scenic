@@ -44,7 +44,7 @@ behavior KeepPosition(center):
         p = player_with_ball(ds, ball)
 
         if p is not None and p != self:
-            # check if opponent is in the way
+            # check if blue player is in the way
             relative_heading = angle from p to self
             danger_cone = SectorRegion(p, danger_cone_radius, relative_heading, danger_cone_angle) # center, radius, heading, angle
             if any([op in danger_cone for op in ds.op_players]):
@@ -100,15 +100,15 @@ behavior MoveAndPass(center):
 
 
 
-behavior OpponentBehavior(center):
+behavior BluePlayerBehavior(center):
     #do RunInCircle()
     #do BuiltinAIBot()
     # ball is a global variable
     try:
-        do FollowObject(ball, opponent=True)
+        do FollowObject(ball)
     interrupt when (distance from self to ball) < 6:
         print("reset")
-        do MoveToPosition(center.x, center.y, opponent=True)
+        do MoveToPosition(center.x, center.y)
     interrupt when self.owns_ball:
         take Shoot()
 
@@ -130,7 +130,7 @@ p1 = MyPlayer with role "CM", at p1_pos, with behavior MoveAndPass(p1_pos)
 p2 = MyPlayer with role "CM", at p2_pos, with behavior MoveAndPass(p2_pos)
 p3 = MyPlayer with role "CM", at p3_pos, with behavior MoveAndPass(p3_pos)
 
-o1 = OpPlayer with role "CM", at o1_pos, with behavior OpponentBehavior(o1_pos)
+o1 = OpPlayer with role "CM", at o1_pos, with behavior BluePlayerBehavior(o1_pos)
 # o2 = OpCF
 # o3 = OpCB
 o0 = OpGK with behavior IdleBehavior()
