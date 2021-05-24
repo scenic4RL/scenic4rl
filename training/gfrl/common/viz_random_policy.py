@@ -28,18 +28,17 @@ gf_env_settings = {
 #scenario_file = f"../_scenarios/generic/rts/gen_0.scenic"
 #scenario_file = f"../_scenarios/sc4rl/fg_11v1.scenic"
 #scenario_file = f"../_scenarios/sc4rl/fg_5v5.scenic"
-scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/sc4rl/defense_1vs1_wk_with_rew.scenic"
+scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/examples/gfootball/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
 
 #scenario_file = f"../_scenarios/academy/11v1.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
-from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+# from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+# env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=False)
+
 from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
-
-
-env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=False)
-#env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
+env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
 #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
 
 

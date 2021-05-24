@@ -245,6 +245,7 @@ behavior AimGoalCornerAndShoot():
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
     is_player_blueTeam = self.team == "blue"
+    print("aimPoint: ", aimPoint)
 
     if is_player_blueTeam:
         goal_leftside_aimPoint = yellow_goal_left_corner
@@ -254,6 +255,7 @@ behavior AimGoalCornerAndShoot():
         goal_rightside_aimPoint = blue_goal_right_corner
 
     if aimPoint is None:
+        print("aimPoint is None")
         # if there is no aimpoint to shoot, by default then shoot towards 
         # the goal corner further away from the player
         left_corner_distance = distance from self to goal_leftside_aimPoint
@@ -261,12 +263,14 @@ behavior AimGoalCornerAndShoot():
         if left_corner_distance > right_corner_distance:
             aimPoint = goal_leftside_aimPoint
         else:
-            aimpoint = goal_rightside_aimPoint
+            aimPoint = goal_rightside_aimPoint
 
+    print("aimPoint: ", aimPoint)
     take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
     take Shoot()
     take ReleaseSprint()
     take ReleaseDirection()
+    print("exit AimGoalCornerAndShoot")
 
 
 behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
