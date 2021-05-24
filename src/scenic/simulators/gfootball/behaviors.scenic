@@ -250,7 +250,7 @@ behavior AimGoalCornerAndShoot():
     Only takes a shot if there is available left/right goalside region to shoot,
     otherwise, just hold position with the ball and exit this behavior
     '''
-    print("AimGoalCornerAndShoot")
+    # print("AimGoalCornerAndShoot")
     take ReleaseSprint()
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
