@@ -66,8 +66,8 @@ p1 = YellowCB at 0 @ 0, with behavior P1Behavior()
 
 # Right Team
 opgk = BlueGK at 99 @ 0
-BlueLB at -12 @ 8.4
-BlueCB at -12 @ 4.2
+BlueLB at -12 @ 20
+BlueCB at -12 @ 10
 BlueCM at -12 @ 0
-BlueCB at -12 @ -4.2
-BlueRB at -12 @ -8.4
+BlueCB at -12 @ -10
+BlueRB at -12 @ -20
