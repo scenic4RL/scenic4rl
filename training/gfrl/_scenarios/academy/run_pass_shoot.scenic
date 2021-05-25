@@ -11,9 +11,9 @@ param end_episode_on_possession_change = True
 
 ego = Ball at 70 @ 28
 
-MyGK at -99 @ 0
-MyCB at 70 @ 0
-MyCB at 70 @ 30
+YellowGK at -99 @ 0
+YellowCB at 70 @ 0
+YellowCB at 70 @ 30
 
-OpGK at 99 @ 0
-OpCB at 75 @ 10
+BlueGK at 99 @ 0
+BlueCB at 75 @ 10

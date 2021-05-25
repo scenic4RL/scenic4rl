@@ -28,7 +28,7 @@ gf_env_settings = {
 #scenario_file = f"../_scenarios/generic/rts/gen_0.scenic"
 #scenario_file = f"../_scenarios/sc4rl/fg_11v1.scenic"
 #scenario_file = f"../_scenarios/sc4rl/fg_5v5.scenic"
-scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/examples/gfootball/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/run_pass_shoot.scenic"
 
 #scenario_file = f"../_scenarios/academy/11v1.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
