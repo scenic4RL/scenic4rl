@@ -68,7 +68,7 @@ behavior RunToSafe(op, target_point):
     target_pt = pt_a
     if (distance from pt_a to target_point) > (distance from pt_b to target_point):
         target_pt = pt_b
-    take MoveTowardsPoint(target_pt.x, target_pt.y, self.x, self.y)
+    take MoveTowardsPoint(target_pt.position, self.position)
 
 
 behavior DynamicRunShoot(op, target_point):
@@ -93,7 +93,7 @@ behavior JustShoot():
 
                 take Shoot()
             else:
-                take MoveTowardsPoint(blue_goal_midpoint.x, blue_goal_midpoint.y, self.x, self.y)
+                take MoveTowardsPoint(blue_goal_midpoint, self.position)
 
         else:
             take ReleaseDirection()
@@ -112,7 +112,7 @@ behavior JustPass():
                 take SetDirection(5)
                 passed = True
             else:
-                take MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
+                take MoveTowardsPoint(ball.position, self.position)
 
 
 # Selection Behavior
@@ -135,10 +135,10 @@ tp = Point in blue_goalRegion
 # ball at top
 ball = Ball at 70 @ 28
 
-OpGK at 99 @ 0
-op = OpCB at 75 @ 30
+BlueGK at 99 @ 0
+op = BlueCB at 75 @ 30
 
-ego = MyGK at -99 @ 0, with behavior IdleBehavior()
+ego = YellowGK at -99 @ 0, with behavior IdleBehavior()
 gk = ego
 
 # select behavior
@@ -146,7 +146,7 @@ sel = Uniform("pass", "shoot")
 # sel = "shoot"
 
 # P2 Turing
-p2 = MyCF at 70 @ 0, with behavior P2Behavior(sel, op, tp)
+p2 = YellowCF at 70 @ 0, with behavior P2Behavior(sel, op, tp)
 # P1 top with ball
-p1 = MyCB at 70 @ 30, with behavior P1Behavior(sel, op, tp)
+p1 = YellowCB at 70 @ 30, with behavior P1Behavior(sel, op, tp)
 
