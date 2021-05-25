@@ -38,6 +38,7 @@ def aimPointToShoot(player, angle = 30 deg):
     print("right_goalside_is_open: ", right_goalside_is_open)
     print("left_heading: ", left_heading)
     print("right_heading: ", right_heading)
+    print("return")
 
     if left_goalside_is_open and right_goalside_is_open:
         return Uniform(goal_leftside_aimPoint, goal_rightside_aimPoint)

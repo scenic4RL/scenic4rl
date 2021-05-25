@@ -20,6 +20,7 @@ behavior egoBehavior(destination_point):
 	passedToTeammate = False
 
 	try:
+		print("starting dribbleToAndShoot")
 		do dribbleToAndShoot(destination_point)
 
 	interrupt when yellow_penaltyBox.containsPoint(self.position):
