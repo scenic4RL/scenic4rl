@@ -65,7 +65,7 @@ flags.DEFINE_integer('nminibatches', 8,
                      'Number of minibatches to split one epoch to.')
 flags.DEFINE_integer('save_interval', 100,
                      'How frequently checkpoints are saved.')
-flags.DEFINE_integer('seed', 0, 'Random seed.')
+flags.DEFINE_integer('seed', -1, 'Random seed.')
 flags.DEFINE_float('lr', 0.00008, 'Learning rate')
 flags.DEFINE_float('ent_coef', 0.01, 'Entropy coeficient')
 flags.DEFINE_float('gamma', 0.993, 'Discount factor')
