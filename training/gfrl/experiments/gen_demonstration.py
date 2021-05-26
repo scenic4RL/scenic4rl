@@ -2,7 +2,7 @@ from gfrl.base.bc.utils import generate_expert_successful_data
 
 
 scenario = "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/wb/test.scenic"
-num_interactions = 1000
+num_interactions = 500
 data_path = "/Users/azadsalam/codebase/scenic/training/gfrl/_data/test"
 
 expert_observations, acts_oh, expert_rewards = generate_expert_successful_data(scenario_file=scenario, num_interactions=num_interactions, file_name=data_path)
