@@ -177,10 +177,10 @@ behavior GreedyPlay():
 ball = Ball at 52 @ 0
 ego = ball
 
-mygk = MyGK at -98 @  0, with behavior GreedyPlay()
-myam = MyAM at 50 @  0, with behavior GreedyPlay()
-mycf = MyCF at 80 @ -10, with behavior GreedyPlay()
+mygk = YellowGK at -98 @  0, with behavior GreedyPlay()
+myam = YellowAM at 50 @  0, with behavior GreedyPlay()
+mycf = YellowCF at 80 @ -10, with behavior GreedyPlay()
 
-opgk = OpGK at  98 @   0
-opcb = OpCB at  70 @  -5
+opgk = BlueGK at  98 @   0
+opcb = BlueCB at  70 @  -5
 
