@@ -33,13 +33,13 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/examples/gfootball/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
 #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
-# from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
 #env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False, compute_scenic_behavior=False)
 
 from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
