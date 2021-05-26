@@ -37,6 +37,8 @@ FLAGS = flags.FLAGS
 
 flags.DEFINE_string('level', 'academy_empty_goal_close',
                     'Defines type of problem being solved')
+flags.DEFINE_string('env_mode', 'version of environment',
+                    'v1 -> default AI, v2 -> Scenic Behavior')
 flags.DEFINE_string('eval_level', '',
                     'Defines type of problem being solved')
 flags.DEFINE_string('load_path', None,
@@ -73,6 +75,8 @@ flags.DEFINE_bool('render', False,
                   'If True, environment rendering is enabled.')
 flags.DEFINE_bool('dump_full_episodes', False,
                   'If True, trace is dumped after every episode.')
+flags.DEFINE_bool('write_video', False,
+                  'If True, trace is dumped after every episode.')
 flags.DEFINE_bool('dump_scores', False,
                   'If True, sampled traces after scoring are dumped.')
 
@@ -104,17 +108,27 @@ def create_single_scenic_environment(iprocess, level):
         "players": [f"agent:left_players=1"],
         "real_time": False,
         "action_set": "default",
-        "dump_full_episodes": False,
+        "dump_full_episodes": FLAGS.dump_full_episodes,
         "dump_scores": False,
-        "write_video": False,
+        "write_video": FLAGS.write_video,
         "tracesdir": "dummy",
-        "write_full_episode_dumps": False,
+        "write_full_episode_dumps": FLAGS.dump_full_episodes,
         "write_goal_dumps": False,
         "render": False
     }
 
     scenario = buildScenario(scenario_file)
-    env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+
+    if FLAGS.env_mode == "v1":
+        env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
+    elif FLAGS.env_mode == "v2":
+        env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
+    else:
+        assert False, "ENVIRONMENT MODE MUST BE SELECTED!"
+
+    #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
     env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)), info_keywords=("score_reward",))
     return env
 
@@ -146,11 +160,19 @@ def configure_logger(log_path, **kwargs):
 
 def train(_):
 
+    assert FLAGS.env_mode is not None, "ENVIRONMENT MODE MUST BE SELECTED!"
+
+    if FLAGS.seed == -1:
+        import random
+        import time
+        FLAGS.seed = int(time.time())%1000
+
     assert FLAGS.num_timesteps==0, "For testing must be 0"
     print("Testing Model: ", FLAGS.load_path)
     assert FLAGS.load_path is not None, "Must provide load path of the model you want to test" 
     assert FLAGS.load_path != "", "Must provide load path of the model you want to test" 
 
+    print("Using Seed: ", FLAGS.seed)
     
     """Trains a PPO2 policy."""
 
