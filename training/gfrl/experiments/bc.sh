@@ -3,7 +3,7 @@
 python3 -u -m gfrl.base.run_bc \
   --level /home/ubuntu/ScenicGFootBall/training/gfrl/_scenarios/attack/avoid_pass_shoot.scenic  \
   --eval_level /home/ubuntu/ScenicGFootBall/training/gfrl/_scenarios/attack/avoid_pass_shoot.scenic  \
-  --env_mode v1 \
+  --env_mode v1  \
   --dataset /home/ubuntu/ScenicGFootBall/training/gfrl/_data/attack_avoid_pass_shoot.npz  \
   --reward_experiment scoring \
   --policy gfootball_impala_cnn \
