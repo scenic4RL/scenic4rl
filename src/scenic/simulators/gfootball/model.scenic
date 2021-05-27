@@ -79,28 +79,28 @@ pbox_width  = 29 # was set based on eyeballing by setting balls' location.. The 
 field_hw = field_width/2
 field_hh = field_height/2
 
-yellow_penaltyBox_center = -1 * (field_width / 2 - pbox_width / 2)
-blue_penaltyBox_center = -1 * yellow_penaltyBox_center
+left_penaltyBox_center = -1 * (field_width / 2 - pbox_width / 2)
+right_penaltyBox_center = -1 * left_penaltyBox_center
 
-yellow_goal_midpoint = -(field_width/2) @ 0
-blue_goal_midpoint = (field_width/2) @ 0
+left_goal_midpoint = -(field_width/2) @ 0
+right_goal_midpoint = (field_width/2) @ 0
 
-yellow_goal_left_corner = -100 @ -2.76
-yellow_goal_right_corner = -100 @ 2.76
+left_goal_left_corner = -100 @ -2.76
+left_goal_right_corner = -100 @ 2.76
 
-blue_goal_left_corner = 100 @ 3
-blue_goal_right_corner = 100 @ -3
+right_goal_left_corner = 100 @ 3
+right_goal_right_corner = 100 @ -3
 
 goal_width = 0.1
 #regions
 
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
 
-blue_goalRegion = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
+right_goalRegion = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 my_goalRegion = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 
-yellow_penaltyBox =  RectangularRegion(yellow_penaltyBox_center @ 0, 0, pbox_width, pbox_height)
-blue_penaltyBox = RectangularRegion(-1 * yellow_penaltyBox_center @ 0, 0 deg, pbox_width, pbox_height)
+left_penaltyBox =  RectangularRegion(left_penaltyBox_center @ 0, 0, pbox_width, pbox_height)
+right_penaltyBox = RectangularRegion(-1 * left_penaltyBox_center @ 0, 0 deg, pbox_width, pbox_height)
 
 center = 0 @ 0
 corner_tr = (field_hw@field_hh)
@@ -222,10 +222,10 @@ class Player:
 
 #AskEddie: should we specify a boolean field in player? instead of My/Op Player
 
-class YellowPlayer(Player):
+class LeftPlayer(Player):
     pass
 
-class BluePlayer(Player):
+class RightPlayer(Player):
     pass
 
 
@@ -265,70 +265,70 @@ LeftReg_AM = get_reg_from_edges(-10, -15, 2, -2)
 LeftReg_CF = get_reg_from_edges(-5, -1, 2, -2)
 
 
-class YellowGK(YellowPlayer):
+class LeftGK(LeftPlayer):
     position[dynamic]: Point on LeftReg_GK
     role[dynamic]: "GK"
     team: 'yellow'
 
-class YellowLB(YellowPlayer):
+class LeftLB(LeftPlayer):
     position[dynamic]: Point on LeftReg_LB
     role[dynamic]: "LB"
-    team: 'yellow'
+    team: 'left'
 
-class YellowRB(YellowPlayer):
+class LeftRB(LeftPlayer):
     position[dynamic]: Point on LeftReg_RB
     role[dynamic]: "RB"
-    team: 'yellow'
+    team: 'left'
 
-class YellowCB(YellowPlayer):
+class LeftCB(LeftPlayer):
     position[dynamic]: Point on LeftReg_CB
     role[dynamic]: "CB"
-    team: 'yellow'
+    team: 'left'
 
-class YellowLM(YellowPlayer):
+class LeftLM(LeftPlayer):
     position[dynamic]: Point on LeftReg_LM
     role[dynamic]: "LM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowDM(YellowPlayer):
+class LeftDM(LeftPlayer):
     position[dynamic]: Point on LeftReg_DM
     role[dynamic]: "DM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowRM(YellowPlayer):
+class LeftRM(LeftPlayer):
     position[dynamic]: Point on LeftReg_RM
     role[dynamic]: "RM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowCM(YellowPlayer):
+class LeftCM(LeftPlayer):
     position[dynamic]: Point on LeftReg_CM
     role[dynamic]: "CM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowCMM(YellowPlayer):
+class LeftCMM(LeftPlayer):
     position[dynamic]: Point on LeftReg_CMM
     role[dynamic]: "CM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowCML(YellowPlayer):
+class LeftCML(LeftPlayer):
     position[dynamic]: Point on LeftReg_CML
     role[dynamic]: "CM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowCMR(YellowPlayer):
+class LeftCMR(LeftPlayer):
     position[dynamic]: Point on LeftReg_CMR
     role[dynamic]: "CM"
-    team: 'yellow'
+    team: 'left'
 
-class YellowCF(YellowPlayer):
+class LeftCF(LeftPlayer):
     position[dynamic]: Point on LeftReg_CF
     role[dynamic]: "CF"
-    team: 'yellow'
+    team: 'left'
 
-class YellowAM(YellowPlayer):
+class LeftAM(LeftPlayer):
     position[dynamic]: Point on LeftReg_AM
     role[dynamic]: "AM"
-    team: 'yellow'
+    team: 'left'
 
 
 RightReg_GK = get_reg_from_edges(100, 98, 2, -2)
@@ -349,70 +349,70 @@ RightReg_CMM = get_reg_from_edges(30, 24, 2, -2)
 RightReg_AM = get_reg_from_edges(10, 15, 2, -2)
 RightReg_CF = get_reg_from_edges(5, 1, 2, -2)
 
-class BlueGK(BluePlayer):
+class RightGK(RightPlayer):
     position[dynamic]: Point on RightReg_GK
     role[dynamic]: "GK"
-    team: 'blue'
+    team: 'right'
 
-class BlueLB(BluePlayer):
+class RightLB(RightPlayer):
     position[dynamic]: Point on RightReg_LB
     role[dynamic]: "LB"
-    team: 'blue'
+    team: 'right'
 
-class BlueRB(BluePlayer):
+class RightRB(RightPlayer):
     position[dynamic]: Point on RightReg_RB
     role[dynamic]: "RB"
-    team: 'blue'
+    team: 'right'
 
-class BlueCB(BluePlayer):
+class RightCB(RightPlayer):
     position[dynamic]: Point on RightReg_CB
     role[dynamic]: "CB"
-    team: 'blue'
+    team: 'right'
 
-class BlueLM(BluePlayer):
+class RightLM(RightPlayer):
     position[dynamic]: Point on RightReg_LM
     role[dynamic]: "LM"
-    team: 'blue'
+    team: 'right'
 
-class BlueDM(BluePlayer):
+class RightDM(RightPlayer):
     position[dynamic]: Point on RightReg_DM
     role[dynamic]: "DM"
-    team: 'blue'
+    team: 'right'
 
-class BlueRM(BluePlayer):
+class RightRM(RightPlayer):
     position[dynamic]: Point on RightReg_RM
     role[dynamic]: "RM"
-    team: 'blue'
+    team: 'right'
 
-class BlueCM(BluePlayer):
+class RightCM(RightPlayer):
     position[dynamic]: Point on RightReg_CM
     role[dynamic]: "CM"
-    team: 'blue'
+    team: 'right'
 
-class BlueCMM(BluePlayer):
+class RightCMM(RightPlayer):
     position[dynamic]: Point on RightReg_CMM
     role[dynamic]: "CM"
-    team: 'blue'
+    team: 'right'
 
-class BlueCML(BluePlayer):
+class RightCML(RightPlayer):
     position[dynamic]: Point on RightReg_CML
     role[dynamic]: "CM"
-    team: 'blue'
+    team: 'right'
 
-class BlueCMR(BluePlayer):
+class RightCMR(RightPlayer):
     position[dynamic]: Point on RightReg_CMR
     role[dynamic]: "CM"
-    team: 'blue'
+    team: 'right'
 
-class BlueCF(BluePlayer):
+class RightCF(RightPlayer):
     position[dynamic]: Point on RightReg_CF
     role[dynamic]: "CF"
-    team: 'blue'
+    team: 'right'
 
-class BlueAM(BluePlayer):
+class RightAM(RightPlayer):
     position[dynamic]: Point on RightReg_AM
     role[dynamic]: "AM"
-    team: 'blue'
+    team: 'right'
 
 MY_PLAYER_DEFAULT_POSITIONS = {
     "GK": [(-1.00, 0.00)],

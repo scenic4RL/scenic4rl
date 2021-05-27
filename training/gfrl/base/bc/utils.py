@@ -7,7 +7,7 @@ from tqdm import tqdm
 import tensorflow as tf
 
 
-def generate_expert_successful_data(scenario_file, num_interactions=1000, file_name="expert_data", act_ndim=19):
+def generate_expert_successful_data(scenario_file, num_interactions=1000, file_name="expert_data", env_type="v1",  act_ndim=19):
 	# from gfrl.base.run_my_ppo2 import create_single_scenic_environment
 	import numpy as np
 	expert_observations = []
@@ -22,11 +22,23 @@ def generate_expert_successful_data(scenario_file, num_interactions=1000, file_n
 		"action_set": "default",  # "default" "v2"
 	}
 
+	"""
 	from scenic.simulators.gfootball.rl_interface import GFScenicEnv
-	from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
-	scenario = buildScenario(scenario_file)
 	env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, use_scenic_behavior_in_step=True,
 					  constraints_checking=True)
+	"""
+	from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
+	scenario = buildScenario(scenario_file)
+
+	from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
+
+	if env_type=="v1":
+		env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, compute_scenic_behavior=True)
+	elif env_type=="v2":
+		env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+	else:
+		assert False, "invalid env_type"
 
 	tr = 0
 
@@ -41,14 +53,16 @@ def generate_expert_successful_data(scenario_file, num_interactions=1000, file_n
 				obs = env.reset()
 
 			obs_buf.append(obs)
-			obs, reward, done, info = env.step(env.action_space.sample())
+			action = env.simulation.get_scenic_designated_player_action()
+			acts_buf.append(action)
+			obs, reward, done, info = env.step(action)
 
 			# rew_buf.append(reward)
 
 			tr += reward
 			# print(info)
-			action = info["action_taken"]
-			acts_buf.append(action)
+			#action = info["action_taken"]
+
 
 			if done:
 

@@ -1,7 +1,7 @@
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
-param game_duration = 200
+param game_duration = 400
 param deterministic = False
 param offsides = False
 param end_episode_on_score = True
@@ -11,10 +11,10 @@ param end_episode_on_possession_change = True
 
 ego = Ball at 52 @ 0
 
-MyGK at -98 @  0
-MyAM at 50 @  0
-MyCF at 80 @ -10
+LeftGK at -98 @  0
+LeftAM at 50 @  0
+LeftCF at 80 @ -10
 
-OpGK at  98 @   0
-OpCB at  70 @  -5
+RightGK at  98 @   0
+RightCB at  70 @  -5
 

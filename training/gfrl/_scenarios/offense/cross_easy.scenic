@@ -1,7 +1,5 @@
 from scenic.simulators.gfootball.model import *
-from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
-from scenic.core.geometry import normalizeAngle
 
 param game_duration = 400
 param deterministic = False
@@ -10,14 +8,13 @@ param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
+dx = 2
+ego = Ball at 77 @ -13
 
+YellowGK at -98 @  0
+YellowAM in get_reg_from_edges(75+dx, 75-dx, -15+dx, -15-dx)
+YellowCF in get_reg_from_edges(75+dx, 75-dx, 15+dx, 15-dx)
 
-MyGK at -98 @ 0
-yellow_defender = MyRB
+BlueGK at 98 @ 0
+BlueCB in get_reg_from_edges(75+dx, 75-dx, dx, -dx)
 
-reg = get_reg_from_edges(-75, -85, 2, -2)
-
-OpGK at 98 @ 0
-ego = OpCF on LeftReg_CB, facing 90 deg
-
-Ball ahead of ego by 2
