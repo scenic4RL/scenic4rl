@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
-param game_duration = 600
+param game_duration = 400
 param deterministic = False
 param offsides = False
 param right_team_difficulty = 1
@@ -20,15 +20,15 @@ behavior egoBehavior(destination_point):
 	passedToTeammate = False
 
 	try:
-		print("starting dribbleToAndShoot")
+		#print("starting dribbleToAndShoot")
 		do dribbleToAndShoot(destination_point)
 
 	interrupt when left_penaltyBox.containsPoint(self.position):
-		print("case1")
+		#print("case1")
 		do AimGoalCornerAndShoot()
 
 	interrupt when passedToTeammate and teammateHasBallPossession(self):
-		print("case2")
+		#print("case2")
 		fallbackpoint = Point on fallBackRegion
 		do MoveToPosition(fallbackpoint, sprint=True)
 		do HoldPosition() until self.owns_ball
