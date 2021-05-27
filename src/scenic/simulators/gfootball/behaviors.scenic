@@ -34,11 +34,11 @@ def aimPointToShoot(player, angle = 30 deg):
     right_shootingSpace = SectorRegion(center=player.position, radius=right_radius, heading=right_heading, angle= angle)
     right_goalside_is_open = not right_shootingSpace.containsPoint(opponent.position)
 
-    print("left_goalside_is_open: ", left_goalside_is_open)
-    print("right_goalside_is_open: ", right_goalside_is_open)
-    print("left_heading: ", left_heading)
-    print("right_heading: ", right_heading)
-    print("return")
+    #print("left_goalside_is_open: ", left_goalside_is_open)
+    #print("right_goalside_is_open: ", right_goalside_is_open)
+    #print("left_heading: ", left_heading)
+    #print("right_heading: ", right_heading)
+    #print("return")
 
     if left_goalside_is_open and right_goalside_is_open:
         return Uniform(goal_leftside_aimPoint, goal_rightside_aimPoint)
@@ -215,7 +215,7 @@ def nearestOpponentRelativePositionAhead(player):
 
 behavior dribble_evasive_zigzag(destination_point):
     angleToOpponent = nearestOpponentRelativePositionAhead(self)
-    print("dribble_evasive_zigzag angleToOpponent: ", angleToOpponent)
+    #print("dribble_evasive_zigzag angleToOpponent: ", angleToOpponent)
     current_heading = self.heading
     # print("dribble_evasive_zigzag's angleToOpponent: ", angleToOpponent)
 
@@ -229,14 +229,14 @@ behavior dribble_evasive_zigzag(destination_point):
         # if there is no opponent in front, move straight to the destination point
         point_to_evadeTo = destination_point
 
-    print("point_to_evadeTo: ", point_to_evadeTo)
+    #print("point_to_evadeTo: ", point_to_evadeTo)
     if point_to_evadeTo != destination_point:
-        print("Move to point_to_evadeTo")
+        #print("Move to point_to_evadeTo")
         do MoveToPosition(point_to_evadeTo) # zig behavior
         take ReleaseDirection()
-    print("Move to destination_point")
+    #print("Move to destination_point")
     do MoveToPosition(destination_point, sprint =True) # zag behavior
-    print("release")
+    #print("release")
     take ReleaseSprint()
     take ReleaseDirection()
 
@@ -245,12 +245,12 @@ behavior AimGoalCornerAndShoot():
     Only takes a shot if there is available left/right goalside region to shoot,
     otherwise, just hold position with the ball and exit this behavior
     '''
-    print("AimGoalCornerAndShoot")
+    #print("AimGoalCornerAndShoot")
     take ReleaseSprint()
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
     is_player_rightTeam = self.team == "right"
-    print("aimPoint: ", aimPoint)
+    #print("aimPoint: ", aimPoint)
 
     if is_player_rightTeam:
         goal_leftside_aimPoint = left_goal_left_corner
@@ -260,7 +260,7 @@ behavior AimGoalCornerAndShoot():
         goal_rightside_aimPoint = right_goal_right_corner
 
     if aimPoint is None:
-        print("aimPoint is None")
+        #print("aimPoint is None")
         # if there is no aimpoint to shoot, by default then shoot towards 
         # the goal corner further away from the player
         left_corner_distance = distance from self to goal_leftside_aimPoint
@@ -270,12 +270,12 @@ behavior AimGoalCornerAndShoot():
         else:
             aimPoint = goal_rightside_aimPoint
 
-    print("aimPoint: ", aimPoint)
+    #print("aimPoint: ", aimPoint)
     take MoveTowardsPoint(aimPoint, self.position, is_player_rightTeam)
     take Shoot()
     take ReleaseSprint()
     take ReleaseDirection()
-    print("exit AimGoalCornerAndShoot")
+    #print("exit AimGoalCornerAndShoot")
 
 
 behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
@@ -318,10 +318,10 @@ behavior dribbleToAndShoot(destination_point, sprint=False, reactionDistance=Non
     try:
         do MoveToPosition(destination_point)
     interrupt when opponentInRunway(self, reactionDistance=reactionDistance):
-        print("opponentInRunway")
+        #print("opponentInRunway")
         do dribble_evasive_zigzag(destination_point)
     interrupt when left_penaltyBox.containsPoint(self.position):
-        print("in penalty box")
+        #print("in penalty box")
         do AimGoalCornerAndShoot()
 
 
@@ -337,7 +337,8 @@ behavior PassToPoint(x, y, pass_type="long"):
     '''
     assert pass_type in ("long", "short", "high", "shoot")
     if (not self.owns_ball):
-        print("Warning: Player don't have ball for passing!")
+        #print("Warning: Player don't have ball for passing!")
+        pass
 
     self_x = self.position.x
     self_y = self.position.y

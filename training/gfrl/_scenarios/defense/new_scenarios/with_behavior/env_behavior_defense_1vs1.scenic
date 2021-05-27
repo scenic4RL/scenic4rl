@@ -4,7 +4,7 @@ from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.core.geometry import normalizeAngle
 import pdb
 
-param game_duration = 600
+param game_duration = 400
 param deterministic = False
 param offsides = False
 param right_team_difficulty = 1
@@ -17,7 +17,7 @@ behavior egoBehavior(destination_point):
 	try:
 		do dribbleToAndShoot(destination_point, reactionDistance=Range(1,5))
 	interrupt when (distance from self to ball) > 2:
-		print("last interrupt")
+		#print("last interrupt")
 		do FollowObject(ball, sprint=True)
 	do IdleBehavior()
 
