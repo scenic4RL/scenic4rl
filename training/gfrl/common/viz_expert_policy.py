@@ -52,7 +52,8 @@ for _ in range(1):
     done = False
     tr = 0
     while not done:
-        _,r,done,_ = env.step(env.action_space.sample())
+        action = env.simulation.get_scenic_designated_player_action()
+        _,r,done,_ = env.step(action)
         tr += r
         print(r)
         #input("Press Any Key to Continue")

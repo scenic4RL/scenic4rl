@@ -2,13 +2,14 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.simulators.gfootball.behaviors import *
 
-param game_duration = 400
+param game_duration = 200
 param deterministic = False
 param offsides = False
 param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
+verbose = False
 behavior IdleBehavior():
     '''
     Always takes NoAction. Note it will not release direction.
@@ -51,7 +52,7 @@ behavior GreedyRS():
             #print("Close Enough, shoot")
             msg = "close enough"
 
-        if self.is_controlled:
+        if self.is_controlled and verbose:
 
             print(msg)
             print("Picked Action: ", action)
@@ -62,20 +63,16 @@ behavior GreedyRS():
 
 ego = Ball at 0 @ 0
 
-MyGK at -98 @ 0, with behavior GreedyRS()
+LeftGK at -98 @ 0, with behavior GreedyRS()
+LeftLB at -60 @  30, with behavior GreedyRS()
+LeftCB at -70 @  12, with behavior GreedyRS()
+LeftCB at -70 @ -12, with behavior GreedyRS()
+LeftRB at -60 @ -30, with behavior GreedyRS()
+LeftLM at -25 @  15, with behavior GreedyRS()
+LeftCM at -50 @  10, with behavior GreedyRS()
+LeftCM at -50 @ -10, with behavior GreedyRS()
+LeftRM at -25 @ -15, with behavior GreedyRS()
+LeftAM at -15 @ -2, with behavior GreedyRS()
+LeftCF at  -2 @ -1, with behavior GreedyRS()
 
-MyLB at -60 @  30, with behavior GreedyRS()
-MyCB at -70 @  12, with behavior GreedyRS()
-MyCB at -70 @ -12, with behavior GreedyRS()
-MyRB at -60 @ -30, with behavior GreedyRS()
-
-MyLM at -25 @  15, with behavior GreedyRS()
-MyCM at -50 @  10, with behavior GreedyRS()
-MyCM at -50 @ -10, with behavior GreedyRS()
-MyRM at -25 @ -15, with behavior GreedyRS()
-
-MyAM at -15 @ -2, with behavior GreedyRS()
-
-MyCF at  -2 @ -1, with behavior GreedyRS()
-
-opgk = OpGK
+opgk = RightGK
