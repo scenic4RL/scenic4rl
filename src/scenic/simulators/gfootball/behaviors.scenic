@@ -16,12 +16,12 @@ def aimPointToShoot(player, angle = 30 deg):
     this point is either left or right corner point of the other team's goal
     This aim point is computed with respect to only the nearest opponent
     '''
-    if player.team == 'blue':
-        goal_leftside_aimPoint = yellow_goal_left_corner
-        goal_rightside_aimPoint = yellow_goal_right_corner
+    if player.team == 'right':
+        goal_leftside_aimPoint = left_goal_left_corner
+        goal_rightside_aimPoint = left_goal_right_corner
     else:
-        goal_leftside_aimPoint = blue_goal_left_corner
-        goal_rightside_aimPoint = blue_goal_right_corner
+        goal_leftside_aimPoint = right_goal_left_corner
+        goal_rightside_aimPoint = right_goal_right_corner
 
     opponent = nearestOpponent(player)
     left_radius = distance from player to goal_leftside_aimPoint
@@ -133,7 +133,7 @@ behavior MoveToPosition(dest_point, sprint=False):
     withinDistanceFromDestPt = 10 if sprint else 2
 
     while distance > withinDistanceFromDestPt:
-        if self.team == 'blue':
+        if self.team == 'right':
             corresponding_dir = lookup_direction(self_x - x, self_y - y)
         else:
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
@@ -155,8 +155,8 @@ behavior ShortPassTo(player):
     '''
     Always try to pass. If not owned ball, will move to the ball.
     '''
-    is_player_blueTeam = self.team == "blue"
-    take MoveTowardsPoint(player.position, self.position, is_player_blueTeam)
+    is_player_rightTeam = self.team == "right"
+    take MoveTowardsPoint(player.position, self.position, is_player_rightTeam)
     take Pass("short")
     take ReleaseSprint()
     take ReleaseDirection()
@@ -166,8 +166,8 @@ behavior HighPassTo(player):
     '''
     Always try to pass. If not owned ball, will move to the ball.
     '''
-    is_player_blueTeam = self.team == "blue"
-    take MoveTowardsPoint(player.position, self.position, is_player_blueTeam)
+    is_player_rightTeam = self.team == "right"
+    take MoveTowardsPoint(player.position, self.position, is_player_rightTeam)
     take Pass("high")
     take ReleaseSprint()
     take ReleaseDirection()
@@ -176,8 +176,8 @@ behavior LongPassTo(player):
     '''
     Always try to pass. If not owned ball, will move to the ball.
     '''
-    is_player_blueTeam = self.team == "blue"
-    take MoveTowardsPoint(player.position, self.position, is_player_blueTeam)
+    is_player_rightTeam = self.team == "right"
+    take MoveTowardsPoint(player.position, self.position, is_player_rightTeam)
     take Pass("long")
     take ReleaseSprint()
     take ReleaseDirection()
@@ -229,10 +229,14 @@ behavior dribble_evasive_zigzag(destination_point):
         # if there is no opponent in front, move straight to the destination point
         point_to_evadeTo = destination_point
 
+    print("point_to_evadeTo: ", point_to_evadeTo)
     if point_to_evadeTo != destination_point:
+        print("Move to point_to_evadeTo")
         do MoveToPosition(point_to_evadeTo) # zig behavior
         take ReleaseDirection()
+    print("Move to destination_point")
     do MoveToPosition(destination_point, sprint =True) # zag behavior
+    print("release")
     take ReleaseSprint()
     take ReleaseDirection()
 
@@ -245,15 +249,15 @@ behavior AimGoalCornerAndShoot():
     take ReleaseSprint()
     take ReleaseDirection()
     aimPoint = aimPointToShoot(self)
-    is_player_blueTeam = self.team == "blue"
+    is_player_rightTeam = self.team == "right"
     print("aimPoint: ", aimPoint)
 
-    if is_player_blueTeam:
-        goal_leftside_aimPoint = yellow_goal_left_corner
-        goal_rightside_aimPoint = yellow_goal_right_corner
+    if is_player_rightTeam:
+        goal_leftside_aimPoint = left_goal_left_corner
+        goal_rightside_aimPoint = left_goal_right_corner
     else:
-        goal_leftside_aimPoint = blue_goal_left_corner
-        goal_rightside_aimPoint = blue_goal_right_corner
+        goal_leftside_aimPoint = right_goal_left_corner
+        goal_rightside_aimPoint = right_goal_right_corner
 
     if aimPoint is None:
         print("aimPoint is None")
@@ -267,7 +271,7 @@ behavior AimGoalCornerAndShoot():
             aimPoint = goal_rightside_aimPoint
 
     print("aimPoint: ", aimPoint)
-    take MoveTowardsPoint(aimPoint, self.position, is_player_blueTeam)
+    take MoveTowardsPoint(aimPoint, self.position, is_player_rightTeam)
     take Shoot()
     take ReleaseSprint()
     take ReleaseDirection()
@@ -279,7 +283,7 @@ behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
     Let a player follow the object (e.g. Ball)'s position
     this behavior exits once the player is within "terminate_distance" from the "object_to_follow"
     '''
-    is_player_blueTeam = self.team == "blue"
+    is_player_rightTeam = self.team == "right"
     while True:
         #ball = simulation().game_ds.ball
         x = object_to_follow.position.x
@@ -291,7 +295,7 @@ behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
 
         distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
 
-        if is_player_blueTeam:
+        if is_player_rightTeam:
             corresponding_dir = lookup_direction(self_x-x, self_y-y)
         else:
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
@@ -306,13 +310,18 @@ behavior FollowObject(object_to_follow, terminate_distance=1, sprint=False):
             if sprint:
                 take Sprint()
 
-behavior dribbleToAndShoot(destination_point, sprint=False):
-    reactionDistance = Range(10,15) if not sprint else Range(15, 20)
+behavior dribbleToAndShoot(destination_point, sprint=False, reactionDistance=None):
+    if reactionDistance == None:
+        reactionDistance = Range(10,15) if not sprint else Range(15, 20)
+    else:
+        reactionDistance = reactionDistance
     try:
         do MoveToPosition(destination_point)
     interrupt when opponentInRunway(self, reactionDistance=reactionDistance):
+        print("opponentInRunway")
         do dribble_evasive_zigzag(destination_point)
-    interrupt when yellow_penaltyBox.containsPoint(self.position):
+    interrupt when left_penaltyBox.containsPoint(self.position):
+        print("in penalty box")
         do AimGoalCornerAndShoot()
 
 
