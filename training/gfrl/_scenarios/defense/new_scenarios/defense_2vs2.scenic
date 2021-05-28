@@ -6,17 +6,22 @@ param game_duration = 600
 param deterministic = False
 param offsides = False
 param right_team_difficulty = 1
+param end_episode_on_score = True
+param end_episode_on_out_of_play = True
+param end_episode_on_possession_change = True
 
-MyGK at 90 @ 40, with behavior IdleBehavior()
-yellow_defender1 = MyCB 
-yellow_defender2 = MyCB 
+LeftGK at 90 @ 40, with behavior HoldPosition()
+# LeftGK with behavior HoldPosition()
+left_defender1 = LeftCB 
+left_defender2 = LeftCB 
 
 
-OpGK at 95 @ 40, with behavior IdleBehavior()
-ego = OpCM on LeftReg_CM
-blue_attacking_midfielder = OpAM on LeftReg_CM
+RightGK at 95 @ 40, with behavior HoldPosition()
+# RightGK with behavior HoldPosition()
+ego = RightCM on LeftReg_CM
+right_attacking_midfielder = RightAM on LeftReg_CM
 
 Ball ahead of ego by 0.5
 
-require (distance from yellow_defender1 to yellow_defender2) > 3
-require (distance from ego to blue_attacking_midfielder) > 4
+require (distance from left_defender1 to left_defender2) > 3
+require (distance from ego to right_attacking_midfielder) > 4
