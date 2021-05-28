@@ -268,7 +268,7 @@ LeftReg_CF = get_reg_from_edges(-5, -1, 2, -2)
 class LeftGK(LeftPlayer):
     position[dynamic]: Point on LeftReg_GK
     role[dynamic]: "GK"
-    team: 'yellow'
+    team: 'left'
 
 class LeftLB(LeftPlayer):
     position[dynamic]: Point on LeftReg_LB

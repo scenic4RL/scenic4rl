@@ -27,7 +27,7 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/offense/wb/ps_3v2_0_wb_0.scenic"
+scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/defense_goalkeeper_vs_attacker.scenic"
 
 #scenario_file = f"../_scenarios/academy/11v1.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
