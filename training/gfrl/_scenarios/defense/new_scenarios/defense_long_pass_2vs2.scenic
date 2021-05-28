@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
-param game_duration = 600
+param game_duration = 400
 param deterministic = False
 param offsides = False
 param right_team_difficulty = 1
@@ -29,4 +29,4 @@ rightRM_destinationPoint = Point on rightRMAttackRegion
 rightRM = RightRM
 ego = RightAM on egoInitialRegion
 
-ball = Ball ahead of rightRM by 0.1
+ball = Ball ahead of rightRM by 2

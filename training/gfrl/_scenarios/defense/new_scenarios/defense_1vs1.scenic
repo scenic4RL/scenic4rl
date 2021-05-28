@@ -21,7 +21,7 @@ left_defender = LeftRB
 RightGK
 ego = RightAM on LeftReg_CM
 
-Ball ahead of ego by 0.5
+Ball ahead of ego by 2
 
 
 def yellowTakesPossession():

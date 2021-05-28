@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
-param game_duration = 600
+param game_duration = 400
 param deterministic = False
 param offsides = False
 param right_team_difficulty = 1
@@ -28,4 +28,4 @@ RightGK with behavior HoldPosition()
 ego = RightCM on rightCenterMidRegion
 opCM = RightLM on rightLeftMidRegion
 
-Ball ahead of ego by 0.5
+Ball ahead of ego by 2
