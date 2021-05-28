@@ -62,7 +62,7 @@ flags.DEFINE_integer('nminibatches', 8,
                      'Number of minibatches to split one epoch to.')
 flags.DEFINE_integer('save_interval', 100,
                      'How frequently checkpoints are saved.')
-flags.DEFINE_integer('seed', 0, 'Random seed.')
+flags.DEFINE_integer('seed', -1, 'Random seed.')
 flags.DEFINE_float('lr', 0.00008, 'Learning rate')
 flags.DEFINE_float('ent_coef', 0.01, 'Entropy coeficient')
 flags.DEFINE_float('gamma', 0.993, 'Discount factor')
@@ -122,7 +122,7 @@ def create_single_scenic_environment(iprocess, level):
     elif FLAGS.env_mode == "v2":
         env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
     else:
-        print("ENVIRONMENT MODE MUST BE SELECTED!")
+        assert False, "ENVIRONMENT MODE MUST BE SELECTED!"
 
     #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, rank=iprocess)
     env = monitor.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(iprocess)), info_keywords=("score_reward",))
@@ -156,7 +156,7 @@ def configure_logger(log_path, **kwargs):
 
 def train(_):
     """Trains a PPO2 policy."""
-
+    assert FLAGS.env_mode is not None, "ENVIRONMENT MODE MUST BE SELECTED!"
     if FLAGS.seed == -1:
         import random
         import time

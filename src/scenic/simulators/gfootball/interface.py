@@ -29,7 +29,7 @@ def is_player(obj):
 
 def is_my_player(obj):
     if not is_player(obj): return False
-    strs = ["YellowPlayer", "YellowCB", "YellowGK", "YellowLB", "YellowRB", "YellowCM", "YellowCML", "YellowCMR", "YellowCMM", "YellowCF", "YellowAM", "YellowLM", "YellowRM", "YellowDM"]
+    strs = ["LeftPlayer", "LeftCB", "LeftGK", "LeftLB", "LeftRB", "LeftCM", "LeftCML", "LeftCMR", "LeftCMM", "LeftCF", "LeftAM", "LeftLM", "LeftRM", "LeftDM"]
     obj_type_str = str(type(obj))
     for s in strs:
         if s in obj_type_str:
@@ -38,7 +38,7 @@ def is_my_player(obj):
 
 def is_op_player(obj):
     if not is_player(obj): return False
-    op_strs = ["BluePlayer", "Blue"]
+    op_strs = ["RightPlayer", "Right"]
     for s in op_strs:
         if s in str(type(obj)):
             return True
