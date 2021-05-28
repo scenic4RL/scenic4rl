@@ -44,7 +44,7 @@ behavior CloseInAndShoot():
         # print("danger. Pass.")
         do SafePass(20, 0.5)
         # take Pass()
-    interrupt when blue_penaltyBox.containsPoint(self.position):
+    interrupt when right_penaltyBox.containsPoint(self.position):
         # take ReleaseDirection()
         do AimGoalCornerAndShoot()
 
@@ -55,33 +55,33 @@ behavior CloseInAndShoot():
 ball = Ball at 26 @ 11
 
 # Left Team
-ego = YellowGK at -99 @ 0, with behavior IdleBehavior()
-YellowLB at -67.2 @ 19.576, with behavior CloseInAndShoot()
-YellowCB at -75 @ 6.356, with behavior CloseInAndShoot()
-YellowCB at -75 @ -6.3559, with behavior CloseInAndShoot()
-YellowRB at -67.2 @ -19.576, with behavior CloseInAndShoot()
-YellowCM at -43.4 @ 10.568, with behavior CloseInAndShoot()
-YellowCM at -43.4 @ -10.568, with behavior CloseInAndShoot()
-p4 = YellowCM at 50 @ 31.61, with behavior CloseInAndShoot()
+ego = LeftGK at -99 @ 0, with behavior IdleBehavior()
+LeftLB at -67.2 @ 19.576, with behavior CloseInAndShoot()
+LeftCB at -75 @ 6.356, with behavior CloseInAndShoot()
+LeftCB at -75 @ -6.3559, with behavior CloseInAndShoot()
+LeftRB at -67.2 @ -19.576, with behavior CloseInAndShoot()
+LeftCM at -43.4 @ 10.568, with behavior CloseInAndShoot()
+LeftCM at -43.4 @ -10.568, with behavior CloseInAndShoot()
+p4 = LeftCM at 50 @ 31.61, with behavior CloseInAndShoot()
 # Player with ball at the beginning
-p1 = YellowLM at 25 @ 10, with behavior P1Behavior()
+p1 = LeftLM at 25 @ 10, with behavior P1Behavior()
 # good candidate down
-p2 = YellowRM at 25 @ -10, with behavior CloseInAndShoot()
+p2 = LeftRM at 25 @ -10, with behavior CloseInAndShoot()
 # good candidate top
-p3 = YellowCF at 35 @ -31.61, with behavior CloseInAndShoot()
+p3 = LeftCF at 35 @ -31.61, with behavior CloseInAndShoot()
 
 
 # Right Team
-opgk = BlueGK at 99 @ 0
-BlueLB at -12.8 @ -19.576
-BlueCB at -40 @ -6.356
-BlueCB at 40 @ 6.3559
-BlueRB at -12.8 @ -19.576
-BlueCM at -36.5 @ -10.568
-BlueCM at -28.2 @ 0
-BlueCM at -36.5 @ 10.568
-BlueLM at -54 @ -31.61
-BlueRM at -51 @ 0
-BlueCF at -54 @ 31.6102
+opgk = RightGK at 99 @ 0
+RightLB at -12.8 @ -19.576
+RightCB at -40 @ -6.356
+RightCB at 40 @ 6.3559
+RightRB at -12.8 @ -19.576
+RightCM at -36.5 @ -10.568
+RightCM at -28.2 @ 0
+RightCM at -36.5 @ 10.568
+RightLM at -54 @ -31.61
+RightRM at -51 @ 0
+RightCF at -54 @ 31.6102
 
 

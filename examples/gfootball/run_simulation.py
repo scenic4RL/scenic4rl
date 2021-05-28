@@ -3,7 +3,7 @@ from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
 from tqdm import tqdm
 
-num_trials = 100
+num_trials = 500
 VISUAL = False
 VIDEO = False
 
@@ -47,15 +47,15 @@ gf_env_settings = {
 
 if VIDEO:
     gf_env_settings["dump_full_episodes"] = True
-    gf_env_settings["tracesdir"] = "/Users/markwu/Works/football/ScenicGFootBall/examples/rl/videos"
+    gf_env_settings["tracesdir"] = "/home/ubuntu/ScenicGFootBall/examples/rl/videos"
     gf_env_settings["write_full_episode_dumps"] = True
     gf_env_settings["write_video"] = True
 
 
 # scenario_file = f"{cwd}/../../examples/gfootball/mark/rl_3v1.scenic"
-# scenario_file = f"{cwd}/../../examples/gfootball/mark/counterattack_easy.scenic"
+scenario_file = f"/home/ubuntu/ScenicGFootBall/examples/gfootball/mark/rl_pass_shoot_all.scenic"
 # scenario_file = f"/home/ubuntu/ScenicGFootBall/examples/gfootball/mark/run_to_score_with_keeper.scenic"
-scenario_file = f"/home/ubuntu/ScenicGFootBall/examples/gfootball/mark/counterattack_easy.scenic"
+# scenario_file = f"/home/ubuntu/ScenicGFootBall/examples/gfootball/mark/counterattack_easy.scenic"
 scenario = buildScenario(scenario_file)
 env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, compute_scenic_behavior=True, allow_render=VISUAL)
 #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=VISUAL,
