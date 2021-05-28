@@ -126,14 +126,14 @@ class MoveTowardsPoint(Action):
     '''
     Move Towards given point. Will calculate correct heading for you.
     '''
-    def __init__(self, destination_point, player_position, blueTeam = False):
-
+    def __init__(self, destination_point, player_position, rightTeam = False):
+        self.rightTeam = rightTeam
         self_x = player_position.x
         self_y = player_position.y
         x = destination_point.x
         y = destination_point.y
 
-        if blueTeam:
+        if rightTeam:
             corresponding_dir = lookup_direction(self_x - x, self_y - y)
         else:
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
@@ -144,7 +144,7 @@ class MoveTowardsPoint(Action):
         pass
 
     def __str__(self):
-        return "MoveTowardsPoint {}, {}, op={}".format(self.x, self.y, self.opponent)
+        return "MoveTowardsPoint {}, {}, op={}".format(self.x, self.y, self.rightTeam)
 
 # ------Helper Functions------
 def lookup_direction(dx, dy):

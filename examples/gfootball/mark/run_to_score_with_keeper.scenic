@@ -33,7 +33,7 @@ behavior P1Behavior():
     evaded = False
     try:
         do MoveToPosition(destination_point, sprint=True)
-    interrupt when blue_penaltyBox.containsPoint(ball.position):
+    interrupt when right_penaltyBox.containsPoint(ball.position):
         # print("Normal Shoot!")
         do AimGoalCornerAndShoot()
     interrupt when (not evaded) and (distance from self to opgk) < 40:
@@ -43,12 +43,12 @@ behavior P1Behavior():
 # -----SET UP-----
 ball = Ball at 2 @ 0
 # Left Team
-ego = YellowGK at -99 @ 0, with behavior IdleBehavior()
-p1 = YellowCB at 0 @ 0, with behavior P1Behavior()
+ego = LeftGK at -99 @ 0, with behavior IdleBehavior()
+p1 = LeftCB at 0 @ 0, with behavior P1Behavior()
 # Right Team
-opgk = BlueGK at 99 @ 0
-BlueLB at -12 @ 20
-BlueCB at -12 @ 10
-BlueCM at -12 @ 0
-BlueCB at -12 @ -10
-BlueRB at -12 @ -20
+opgk = RightGK at 99 @ 0
+RightLB at -12 @ 20
+RightCB at -12 @ 10
+RightCM at -12 @ 0
+RightCB at -12 @ -10
+RightRB at -12 @ -20
