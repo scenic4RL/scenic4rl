@@ -212,6 +212,7 @@ def update_control_index(last_obs, gameds:GameDS):
         ctrl_idx_to_player[ctrl_idx] = matching_player
         player_to_ctrl_idx[matching_player] = ctrl_idx
 
+    assert len(player_to_ctrl_idx) == len(ctrl_idx_to_player), "Error in matching scenic players to simulator players!"
     gameds.initialize_ctrl_idx_map(ctrl_idx_to_player, player_to_ctrl_idx)
 
 

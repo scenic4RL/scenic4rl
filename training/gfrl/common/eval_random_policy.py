@@ -35,6 +35,7 @@ gf_env_settings = {
 
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
 scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_defense_1vs1.scenic"
+# scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 

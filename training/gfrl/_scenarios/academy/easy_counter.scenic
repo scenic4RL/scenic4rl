@@ -11,27 +11,27 @@ param end_episode_on_possession_change = True
 
 ego = Ball at 26 @ 11
 
-MyGK at -99 @ 0
-MyLB at -67.2 @  19.576
-MyCB at -75  @    6.356
-MyCB at -75  @  -6.3559
-MyRB at -67.2 @ -19.576
-MyCM at -43.4 @  10.568
-MyCM at -43.4 @ -10.568
-MyCM at  50 @ 31.61
-MyLM at  25 @ 10
-MyRM at  25 @ -10
-MyCF at  35 @ -31.6102
+LeftGK at -99 @ 0
+LeftLB at -67.2 @  19.576
+LeftCB at -75  @    6.356
+LeftCB at -75  @  -6.3559
+LeftRB at -67.2 @ -19.576
+LeftCM at -43.4 @  10.568
+LeftCM at -43.4 @ -10.568
+LeftCM at  50 @ 31.61
+LeftLM at  25 @ 10
+LeftRM at  25 @ -10
+LeftCF at  35 @ -31.6102
 
 
-OpGK at 99 @ 0
-OpLB at -12.8 @ -19.576
-OpCB at  -40 @ -6.356
-OpCB at   40 @ 6.3559
-OpRB at -12.8 @ -19.576
-OpCM at -36.5 @ -10.568
-OpCM at -28.2 @ 0
-OpCM at -36.5 @ 10.568
-OpLM at -54 @ -31.61
-OpRM at -51 @ 0.0
-OpCF at -54 @ 31.6102
+RightGK at 99 @ 0
+RightLB at -12.8 @ -19.576
+RightCB at  -40 @ -6.356
+RightCB at   40 @ 6.3559
+RightRB at -12.8 @ -19.576
+RightCM at -36.5 @ -10.568
+RightCM at -28.2 @ 0
+RightCM at -36.5 @ 10.568
+RightLM at -54 @ -31.61
+RightRM at -51 @ 0.0
+RightCF at -54 @ 31.6102
