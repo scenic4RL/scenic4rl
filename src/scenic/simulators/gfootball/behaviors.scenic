@@ -149,6 +149,7 @@ behavior MoveToPosition(dest_point, sprint=False):
     if sprint:
         take ReleaseSprint()
     take ReleaseDirection()
+    print("MoveToPosition completed")
 
 
 behavior ShortPassTo(player):
@@ -166,11 +167,15 @@ behavior HighPassTo(player):
     '''
     Always try to pass. If not owned ball, will move to the ball.
     '''
+    print("high pass")
     is_player_rightTeam = self.team == "right"
     take MoveTowardsPoint(player.position, self.position, is_player_rightTeam)
+    print("MoveTowardsPoint")
     take Pass("high")
+    print("pass high")
     take ReleaseSprint()
     take ReleaseDirection()
+    print("high pass completed")
 
 behavior LongPassTo(player):
     '''

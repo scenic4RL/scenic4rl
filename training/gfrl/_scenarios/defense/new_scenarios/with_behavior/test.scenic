@@ -10,12 +10,23 @@ param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
-LeftGK at 90 @ 40, with behavior HoldPosition()
+rightRM_AttackRegion = get_reg_from_edges(-80, -70, 10, 5)
+
+# LeftGK at 90 @ 40, with behavior HoldPosition()
+LeftGK with behavior HoldPosition()
 left_defender1 = LeftCB 
 left_defender2 = LeftCB 
 
+behavior GiveAndGo():
+	try:
+		do ShortPassTo(right_attacking_midfielder)
+		do MoveToPosition(-80 @ 0)
+	interrupt when self.owns_ball and left_penaltyBox.containsPoint(self.position):
+		do AimGoalCornerAndShoot()
+	interrupt when self.owns_ball 
 
-RightGK at 95 @ 40, with behavior HoldPosition()
+# RightGK at 95 @ 40, with behavior HoldPosition()
+RightGK with behavior HoldPosition()
 ego = RightCM on LeftReg_CM
 right_attacking_midfielder = RightAM on LeftReg_CM
 

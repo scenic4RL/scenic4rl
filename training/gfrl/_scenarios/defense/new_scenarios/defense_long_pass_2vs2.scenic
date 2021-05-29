@@ -16,12 +16,10 @@ egoAttackRegion = get_reg_from_edges(-80, -75, 5, 0)
 rightRMAttackRegion = get_reg_from_edges(-80, -75, 5, -5)
 fallBackRegion = get_reg_from_edges(-70, -60, 5, -5)
 
-# LeftGK with behavior HoldPosition()
 LeftGK at 95 @ 40, with behavior HoldPosition()
 left_defender1 = LeftRB
 left_defender2 = LeftLM on MyLeftMidRegion
 
-# RightGK
 RightGK at 98 @ 40, with behavior HoldPosition()
 ego_destinationPoint = Point on egoAttackRegion
 rightRM_destinationPoint = Point on rightRMAttackRegion

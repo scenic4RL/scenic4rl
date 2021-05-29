@@ -61,4 +61,4 @@ rightRM_destinationPoint = Point on rightRMAttackRegion
 rightRM = RightRM with behavior rightRMBehavior(rightRM_destinationPoint)
 ego = RightAM on egoInitialRegion, with behavior egoBehavior(ego_destinationPoint)
 
-ball = Ball ahead of rightRM by 0.1
+ball = Ball ahead of rightRM by 2

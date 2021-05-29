@@ -24,7 +24,8 @@ behavior egoBehavior(destination_point):
 defender_region = get_reg_from_edges(-52, -48, 5, -5)
 attacker_region = get_reg_from_edges(-26, -22, 5, -5)
 
-LeftGK with behavior HoldPosition()
+# LeftGK with behavior HoldPosition()
+LeftGK
 left_defender = LeftCB
 
 RightGK
