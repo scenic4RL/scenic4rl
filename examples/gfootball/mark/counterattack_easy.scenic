@@ -73,10 +73,10 @@ p3 = LeftCF at 35 @ -31.61, with behavior CloseInAndShoot()
 
 # Right Team
 opgk = RightGK at 99 @ 0
-RightLB at -12.8 @ -19.576
+RightLB at -12.8 @ -19
 RightCB at -40 @ -6.356
 RightCB at 40 @ 6.3559
-RightRB at -12.8 @ -19.576
+RightRB at -12.8 @ -20
 RightCM at -36.5 @ -10.568
 RightCM at -28.2 @ 0
 RightCM at -36.5 @ 10.568
