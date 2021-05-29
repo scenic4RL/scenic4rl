@@ -95,7 +95,6 @@ goal_width = 0.1
 #regions
 
 workspace = Workspace(RectangularRegion(0 @ 0, 0, field_width, field_height))
-
 right_goalRegion = RectangularRegion( (field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 my_goalRegion = RectangularRegion( -1*(field_width-goal_width)/2 @ 0, 0, goal_width, 0.044*2*100)
 
@@ -145,7 +144,7 @@ class Ball:
     #constant scenic properties
     width: 0.2
     length: 0.2
-    allowCollisions: True
+    allowCollisions: False
     requireVisible: False
 
     """
@@ -198,7 +197,7 @@ class Player:
     heading: 0 deg
     width: 0.5
     length: 0.5
-    allowCollisions: True
+    allowCollisions: False
     requireVisible: False
 
     viewAngle: 360 deg
@@ -243,7 +242,9 @@ def get_reg_from_edges(left, right, top, bottom):
 
     return RectangularRegion(cx @ cy, 0, w, h)
 
-
+field = workspace
+right_half_field = get_reg_from_edges(0, 100, 42, -42)
+left_half_field  = get_reg_from_edges(-100, 0, 42, -42)
 
 LeftReg_GK = get_reg_from_edges(-100, -98, 2, -2)
 

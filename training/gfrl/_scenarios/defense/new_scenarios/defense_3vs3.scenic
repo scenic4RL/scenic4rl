@@ -18,14 +18,12 @@ rightRightMidRegion  = get_reg_from_edges(-55, -50, 20, 15)
 rightCenterMidRegion = get_reg_from_edges(-55, -50, -10, -20)
 rightLeftMidRegion   = get_reg_from_edges(-55, -50, -30, -40)
 
-# LeftGK at 95 @ 40, with behavior HoldPosition()
-LeftGK with behavior HoldPosition()
+LeftGK at 95 @ 40, with behavior HoldPosition()
 leftLB = LeftLB on leftLeftBackRegion
 leftCB = LeftCB on leftCenterBackRegion
 leftRB = LeftRM on leftRightBackRegion
 
-# RightGK at 98 @ 40, with behavior HoldPosition()
-RightGK with behavior HoldPosition()
+RightGK at 98 @ 40, with behavior HoldPosition()
 opRM = RightRM on rightRightMidRegion
 opAM = RightAM on rightCenterMidRegion
 ego = RightLM on rightLeftMidRegion

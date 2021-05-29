@@ -27,13 +27,15 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/defense_goalkeeper_vs_attacker.scenic"
+scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
+# scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
+
 
 #scenario_file = f"../_scenarios/academy/11v1.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
-from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+# from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
 #env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=False)
 
 from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
@@ -54,7 +56,7 @@ for _ in range(1):
     while not done:
         _,r,done,_ = env.step(env.action_space.sample())
         tr += r
-        print(r)
+        # print(r)
         #input("Press Any Key to Continue")
         #input("Press Any Key to Continue")
     print(tr)
