@@ -149,7 +149,7 @@ behavior MoveToPosition(dest_point, sprint=False):
     if sprint:
         take ReleaseSprint()
     take ReleaseDirection()
-    print("MoveToPosition completed")
+    #print("MoveToPosition completed")
 
 
 behavior ShortPassTo(player):
