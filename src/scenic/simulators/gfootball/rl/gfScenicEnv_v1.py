@@ -74,7 +74,7 @@ class GFScenicEnv_v1(gym.Env):
 
 		if self.compute_scenic_behavior:
 			self.simulation.post_step()
-			self.simulation.pre_step() #For computing the actions before step is called
+			if not done: self.simulation.pre_step() #For computing the actions before step is called
 
 		return obs, rew, done, info
 

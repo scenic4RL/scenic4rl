@@ -186,7 +186,7 @@ class GFootBallSimulation(Simulation):
 
 		self.env = self.create_gfootball_environment()
 
-		if not for_gym_env:
+		if env_type is None:
 			self.reset()
 
 
@@ -467,7 +467,8 @@ class GFootBallSimulation(Simulation):
 
 		#self.game_ds.print_mini()
 
-
+		if self.env_type is not None and self.done:
+			self.post_run()
 
 		if self.for_gym_env:
 			return obs, total_rew, self.done, info
