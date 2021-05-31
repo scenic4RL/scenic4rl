@@ -5,6 +5,10 @@ class GameDS:
 	def __init__(self, my_players=None, op_players=None, ball=None, game_state=None, scene=None):
 		self.my_players = my_players
 		self.op_players = op_players
+
+		self.left_players = my_players
+		self.right_players = op_players
+
 		self.game_state = game_state
 		self.ball = ball
 		self.scene = scene

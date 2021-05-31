@@ -59,21 +59,30 @@ def currentDirectionIndex(player):
     return corresponding_dir
 
 def nearestOpponent(player):
+
+    opponent_team = "left" if player.team == "right" else "right"
+    ds = simulation().game_ds
+    player_list = ds.right_players if opponent_team == "right" else ds.left_players
+
     closest_dist = math.inf
     nearestOpponent = None
-    for p in simulation().objects:
+    for p in player_list:
         distance = distance from player to p
-        if not isinstance(p, Ball) and p.team != player.team and distance < closest_dist:
+        if distance != 0 and distance < closest_dist:
             nearestOpponent = p
             closest_dist = distance
     return nearestOpponent
 
 def nearestTeammate(player):
+    player_team = player.team
+    ds = simulation().game_ds
+    player_list = ds.right_players if player_team == "right" else ds.left_players
+
     closest_dist = math.inf
     nearestTeammate = None
-    for p in simulation().objects:
+    for p in player_list:
         distance = distance from player to p
-        if not isinstance(p, Ball) and p.team == player.team and distance < closest_dist:
+        if distance != 0 and distance < closest_dist:
             nearestTeammate = p
             closest_dist = distance
     return nearestTeammate
@@ -105,12 +114,15 @@ def opponentInRunway(player, reactionDistance=5):
     this runway region is modelled as a half circle centered at the player's position, 
     with radius of 4 meters, in the direction of the player's heading
     '''
+    opponent_team = "left" if player.team == "right" else "right"
+    ds = simulation().game_ds
+    player_list = ds.right_players if opponent_team == "right" else ds.left_players
+
     radius = reactionDistance
     runwayRegion = SectorRegion(center=player.position, radius=radius, heading=player.heading, angle=math.pi/2)
-    for p in simulation().objects:
-        if isinstance(p, Ball):
-            continue
-        if player.team is not p.team and runwayRegion.containsPoint(p.position):
+
+    for p in player_list:
+        if runwayRegion.containsPoint(p.position):
             return True
     return False
 

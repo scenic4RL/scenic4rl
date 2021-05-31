@@ -10,9 +10,9 @@ param end_episode_on_possession_change = True
 max_shoot_distance = 30 # if empty goal
 shoot_distance = 25 # normal
 # -----Behavior-----
-behavior dribble_evasive_zigzag(destination_point):
+behavior dribble_evasive_zigzag(destination_point, opponent_gk):
     # opponent = nearestOpponent(self)
-    blueGK = opgk
+    blueGK = opponent_gk
     angleToblueGK = angle from self.position to blueGK.position
     current_heading = self.heading
     evade_direction = Uniform("left", "right")
@@ -27,26 +27,33 @@ behavior dribble_evasive_zigzag(destination_point):
 behavior P1Behavior():
     # destination_point = Point in blue_penaltyBox
     ds = simulation().game_ds
-    # print(player_with_ball(ds, ball))
+    opponent_gk = None
+    for p in ds.right_players:
+        if p.role=="GK":
+            opponent_gk = p
+
     # destination_point = Point at 70 @ (Uniform(1) * Range(-28,-22))
     destination_point = Point at 99 @ 0
     evaded = False
+    # print("Initial gk:", opponent_gk.position)
     try:
         do MoveToPosition(destination_point, sprint=True)
-    interrupt when right_penaltyBox.containsPoint(ball.position):
-        # print("Normal Shoot!")
-        do AimGoalCornerAndShoot()
-    interrupt when (not evaded) and (distance from self to opgk) < 40:
+    interrupt when (not evaded) and (distance from self.position to opponent_gk) < 40:
         evaded = True
-        do dribble_evasive_zigzag(destination_point)
+        # print("Evade, evaded:", evaded, opponent_gk.position)
+        do dribble_evasive_zigzag(destination_point, opponent_gk)
+    interrupt when right_penaltyBox.containsPoint(ds.ball.position):
+        # print("Normal Shoot!, opgk pos: ", opponent_gk.position)
+        do AimGoalCornerAndShoot()
     do IdleBehavior()
+
 # -----SET UP-----
-ball = Ball at 2 @ 0
+Ball at 2 @ 0
 # Left Team
 ego = LeftGK at -99 @ 0, with behavior IdleBehavior()
 p1 = LeftCB at 0 @ 0, with behavior P1Behavior()
 # Right Team
-opgk = RightGK at 99 @ 0
+RightGK at 99 @ 0
 RightLB at -12 @ 20
 RightCB at -12 @ 10
 RightCM at -12 @ 0
