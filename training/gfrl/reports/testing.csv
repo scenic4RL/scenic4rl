@@ -1,0 +1,11 @@
+Scenario Type,Scenario,Evaluation Script,Average Goal Difference
+academy,Pass and Shoot,Training,0.8
+academy,Pass and Shoot,Testing,0.5
+,"Run, Pass, and Shoot",Training,0.54
+,"Run, Pass, and Shoot",Testing,0.45
+academy,3vs1 ,Training,0.7
+academy,3vs1 ,Testing,0.5
+,Run To Score,Training,0.9
+,Run To Score,Testing,0.2
+,Counterattack Easy,Training,0.6
+,Counterattack Easy,Testing,0.2

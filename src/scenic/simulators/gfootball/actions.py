@@ -146,15 +146,13 @@ class MoveTowardsPoint(Action):
     def __str__(self):
         return "MoveTowardsPoint {}, {}, op={}".format(self.x, self.y, self.rightTeam)
 
-# ------Helper Functions------
+
+# ----- Helper Functions -----
 def lookup_direction(dx, dy):
     # direction is [0,360] with 0/360 = North clockwise
     direction = math.atan2(dx, dy) * 180 / math.pi
     if direction < 0:
         direction += 360
-
-    # print("direction: ", direction)
-
     # lookup action based on direction
     action_lookup = [3, 4, 5, 6, 7, 8, 1, 2, 3]
     corresponding_dir = action_lookup[round(direction / 40) % 9]
@@ -163,10 +161,10 @@ def lookup_direction(dx, dy):
 
 def player_with_ball(ds, ball, team=None):
     """
-    Return the player with ball. Use team=0,1 to specify team
-    @param ds:
-    @param ball:
-    @param team: 0 or 1
+    Return the player with ball. Optional: Use team=0,1 to specify a team.
+    @param ds: get it from simulation().game_ds
+    @param ball: ball instance
+    @param team: 0(yellow) or 1(blue)
     @return:
     """
     assert (team is None) or (team in (0,1))
@@ -191,7 +189,3 @@ def get_closest_player_info(position, players):
             closest_player = p
             min_distance = dist
     return closest_player, min_distance
-
-def get_closest_player_dis(position, players):
-    print("Warning: get_closest_player_dis has changed. Use get_closest_player_info() instead.")
-    return get_closest_player_info(position, players)

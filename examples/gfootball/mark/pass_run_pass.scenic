@@ -66,6 +66,6 @@ require (teammate_pt in workspace)
 ball = Ball ahead of p1_pos by 3
 p1 = MyPlayer with role "CM", at p1_pos, with behavior PassRunReceive(target_pos)
 p2 = MyPlayer with role "CM", at teammate_pt, with behavior WaitThenPass()
-o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(ball, opponent=True)
+o1 = OpPlayer with role "CM", at o1_pos, with behavior FollowObject(bal)
 
 

@@ -70,6 +70,12 @@ def update_index_ds(last_obs, gameds:GameDS):
     right_idx_to_player={}
     right_player_to_idx={}
 
+    """
+    s = ""
+    for pl in gameds.left_players + gameds.right_players:
+        s += f"{pl.position}, {pl}\n"
+    """
+
     for tp in team_prefixes:
 
         if tp == "left_team":
@@ -192,6 +198,12 @@ def update_control_index(last_obs, gameds:GameDS):
 
     ctrl_idx_to_player = {}
     player_to_ctrl_idx = {}
+    """
+    s = ""
+    for pl in gameds.left_players + gameds.right_players:
+        s += f"{pl.position}, {pl}\n"
+    """
+
     for ctrl_idx in range(len(last_obs)):
         obs = last_obs[ctrl_idx]
         m = obs["active"]
@@ -203,7 +215,7 @@ def update_control_index(last_obs, gameds:GameDS):
             pos_scenic = translator.pos_sim_to_scenic(pos_sim)
         else:
             player_list = gameds.op_players
-            pos_scenic = translator.pos_sim_to_scenic(pos_sim, mirrorx=True)
+            pos_scenic = translator.pos_sim_to_scenic(pos_sim, mirrorx=True, mirrory=True)
 
         matching_player = get_closest_player(pos_scenic, player_list)
 
@@ -351,13 +363,13 @@ def get_scenario_python_str(scene_attrs, own_players, opo_players, ball):
         code_str += "\n"
         code_str += "\n"
 
-    # addOponentPlayers:
+    # add blue Team Players:
     if len(opo_players ) >0:
         code_str += f"\tbuilder.SetTeam(Team.e_Right)\n"
         opo_players.sort(key=lambda x: 0 if x.role == 'GK' else 1)
         for player in opo_players:
             player_pos_sim = translator.pos_scenic_to_sim(player.position, mirrorx=True, mirrory=True)
-            #MIRRORING the position of the opponent player, as it seems the simulator mirrors it automatically
+            #MIRRORING the position of the blueTeam player, as it seems the simulator mirrors it automatically
             code_str += f"\tbuilder.AddPlayer({player_pos_sim.x}, {player_pos_sim.y}, e_PlayerRole_{player.role})\n"
 
         code_str += "\n"

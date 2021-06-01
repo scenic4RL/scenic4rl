@@ -77,7 +77,7 @@ class GFScenicEnv_v2(gym.Env):
 		obs, rew, done, info = self.simulation.step(actions)
 
 		self.simulation.post_step()
-		self.simulation.pre_step() #For computing the actions before step is called
+		if not done: self.simulation.pre_step() #For computing the actions before step is called
 		return obs[player_idx], rew[player_idx], done, info
 
 	def render(self, mode='human', close=False):

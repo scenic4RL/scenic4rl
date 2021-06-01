@@ -11,7 +11,13 @@ param end_episode_on_possession_change = True
 
 # -----Behavior-----
 behavior P1Behavior():
-    target_player = p2
+    # target_player = p2
+    ds = simulation().game_ds
+    target_player = None
+    for p in ds.left_players:
+        if p.role == "RM":
+            target_player = p
+
     # make sure we turn
     take SetDirection(6)
     take SetDirection(6)
@@ -26,7 +32,7 @@ behavior SafePass(danger_cone_radius, danger_cone_angle):
 
     else:
         danger_cone = SectorRegion(self, danger_cone_radius, self.heading, danger_cone_angle)
-        safe_players = [p for p in simulation().game_ds.my_players if p not in danger_cone]
+        safe_players = [p for p in simulation().game_ds.left_players if p not in danger_cone]
         # safe_players = simulation().game_ds.my_players
         selected_p = get_closest_player_info(self.position, safe_players)[0]
         # print(get_direction(*self.position, *selected_p.position))
@@ -73,10 +79,10 @@ p3 = LeftCF at 35 @ -31.61, with behavior CloseInAndShoot()
 
 # Right Team
 opgk = RightGK at 99 @ 0
-RightLB at -12.8 @ -19.576
+RightLB at -12.8 @ -19
 RightCB at -40 @ -6.356
 RightCB at 40 @ 6.3559
-RightRB at -12.8 @ -19.576
+RightRB at -12.8 @ -20
 RightCM at -36.5 @ -10.568
 RightCM at -28.2 @ 0
 RightCM at -36.5 @ 10.568
