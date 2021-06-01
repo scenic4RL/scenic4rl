@@ -11,7 +11,13 @@ param end_episode_on_possession_change = True
 
 # -----Behavior-----
 behavior P1Behavior():
-    target_player = p2
+    # target_player = p2
+    ds = simulation().game_ds
+    target_player = None
+    for p in ds.left_players:
+        if p.role == "RM":
+            target_player = p
+
     # make sure we turn
     take SetDirection(6)
     take SetDirection(6)
@@ -26,7 +32,7 @@ behavior SafePass(danger_cone_radius, danger_cone_angle):
 
     else:
         danger_cone = SectorRegion(self, danger_cone_radius, self.heading, danger_cone_angle)
-        safe_players = [p for p in simulation().game_ds.my_players if p not in danger_cone]
+        safe_players = [p for p in simulation().game_ds.left_players if p not in danger_cone]
         # safe_players = simulation().game_ds.my_players
         selected_p = get_closest_player_info(self.position, safe_players)[0]
         # print(get_direction(*self.position, *selected_p.position))
