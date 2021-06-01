@@ -1,0 +1,22 @@
+Type,Scenario,Average Goal Difference
+Offensive,cross_easy,0.71
+Offensive,cross_easy,0.64
+Offensive,cross_easy,0.78
+Offensive,cross_hard,0.06
+Offensive,cross_hard,0.02
+Offensive,cross_hard,0.27
+Offensive,11_vs_gk,0.06
+Offensive,11_vs_gk,0.002
+Offensive,11_vs_gk,0.004
+Offensive,avoid_pass_shoot,0.65
+Offensive,avoid_pass_shoot,0.45
+Offensive,avoid_pass_shoot,0.91
+Defensive,1v1,-0.18
+Defensive,1v1,-0.01
+Defensive,1v1,-0.16
+Defensive,2v2,-0.18
+Defensive,2v2,-0.18
+Defensive,2v2,-0.23
+Defensive,gk_vs_attacker,-0.04
+Defensive,gk_vs_attacker,-0.08
+Defensive,gk_vs_attacker,-0.1
