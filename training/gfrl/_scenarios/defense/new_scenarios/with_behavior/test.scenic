@@ -12,8 +12,8 @@ param end_episode_on_possession_change = True
 
 rightRM_AttackRegion = get_reg_from_edges(-80, -70, 10, 5)
 
-# LeftGK at 90 @ 40, with behavior HoldPosition()
-LeftGK with behavior HoldPosition()
+LeftGK at 95 @ 40, with behavior HoldPosition()
+# LeftGK with behavior HoldPosition()
 left_defender1 = LeftCB 
 left_defender2 = LeftCB 
 
@@ -25,8 +25,8 @@ behavior GiveAndGo():
 		do AimGoalCornerAndShoot()
 	interrupt when self.owns_ball 
 
-# RightGK at 95 @ 40, with behavior HoldPosition()
-RightGK with behavior HoldPosition()
+RightGK at 95 @ 40, with behavior HoldPosition()
+# RightGK with behavior HoldPosition()
 ego = RightCM on LeftReg_CM
 right_attacking_midfielder = RightAM on LeftReg_CM
 

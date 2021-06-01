@@ -71,7 +71,7 @@ rightRM_AttackRegion = get_reg_from_edges(-80, -70, 10, 5)
 rightAM_AttackRegion = get_reg_from_edges(-80, -70, 5, 0)
 
 behavior rightRMBehavior():
-	destinationPoint = -80 @ -30
+	destinationPoint = -80 @ 30
 	do MoveToPosition(destinationPoint)
 	do IdleBehavior()
 
@@ -81,15 +81,15 @@ behavior rightAMBehavior():
 	do IdleBehavior()
 
 behavior rightLMBehavior():
-	destinationPoint = -80 @ 30
+	destinationPoint = -80 @ -30
 	do MoveToPosition(destinationPoint)
 	do HighPassTo(ego)
 	do IdleBehavior()
 
 RightGK
-right_LeftMid = RightLM on rightLeftMidRegion, with behavior rightLMBehavior()
 right_RightMid = RightRM on rightRightMidRegion, with behavior rightRMBehavior()
 ego = RightAM on rightCenterMidRegion, with behavior rightAMBehavior()
+right_LeftMid = RightLM on rightLeftMidRegion, with behavior rightLMBehavior()
 ball = Ball ahead of right_LeftMid by 2
 
 LeftGK with behavior HoldPosition()
