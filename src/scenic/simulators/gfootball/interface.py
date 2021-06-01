@@ -70,6 +70,12 @@ def update_index_ds(last_obs, gameds:GameDS):
     right_idx_to_player={}
     right_player_to_idx={}
 
+    """
+    s = ""
+    for pl in gameds.left_players + gameds.right_players:
+        s += f"{pl.position}, {pl}\n"
+    """
+
     for tp in team_prefixes:
 
         if tp == "left_team":
@@ -192,6 +198,12 @@ def update_control_index(last_obs, gameds:GameDS):
 
     ctrl_idx_to_player = {}
     player_to_ctrl_idx = {}
+    """
+    s = ""
+    for pl in gameds.left_players + gameds.right_players:
+        s += f"{pl.position}, {pl}\n"
+    """
+
     for ctrl_idx in range(len(last_obs)):
         obs = last_obs[ctrl_idx]
         m = obs["active"]
@@ -203,7 +215,7 @@ def update_control_index(last_obs, gameds:GameDS):
             pos_scenic = translator.pos_sim_to_scenic(pos_sim)
         else:
             player_list = gameds.op_players
-            pos_scenic = translator.pos_sim_to_scenic(pos_sim, mirrorx=True)
+            pos_scenic = translator.pos_sim_to_scenic(pos_sim, mirrorx=True, mirrory=True)
 
         matching_player = get_closest_player(pos_scenic, player_list)
 
