@@ -27,7 +27,7 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/empty_goal_close.scenic"
 # scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
 
