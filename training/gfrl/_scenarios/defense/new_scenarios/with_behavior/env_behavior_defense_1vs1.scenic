@@ -17,15 +17,13 @@ behavior egoBehavior(destination_point):
 	try:
 		do dribbleToAndShoot(destination_point, reactionDistance=Range(1,5))
 	interrupt when (distance from self to ball) > 2:
-		#print("last interrupt")
 		do FollowObject(ball, sprint=True)
 	do IdleBehavior()
 
 defender_region = get_reg_from_edges(-52, -48, 5, -5)
 attacker_region = get_reg_from_edges(-26, -22, 5, -5)
 
-# LeftGK with behavior HoldPosition()
-LeftGK
+LeftGK with behavior HoldPosition()
 left_defender = LeftCB
 
 RightGK

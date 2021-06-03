@@ -7,7 +7,6 @@ param offsides = False
 param right_team_difficulty = 1
 param end_episode_on_score = True
 param end_episode_on_out_of_play = True
-# param end_episode_on_possession_change = True
 
 leftLeftBackRegion = get_reg_from_edges(-70, -60, 20, 15)
 leftCenterBackRegion = get_reg_from_edges(-70, -65, 10, -10)
