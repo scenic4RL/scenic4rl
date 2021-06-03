@@ -179,15 +179,15 @@ behavior HighPassTo(player):
     '''
     Always try to pass. If not owned ball, will move to the ball.
     '''
-    print("high pass test")
+    # print("high pass test")
     is_player_rightTeam = self.team == "right"
     take MoveTowardsPoint(player.position, self.position, is_player_rightTeam)
-    print("MoveTowardsPoint")
+    # print("MoveTowardsPoint")
     take Pass("high")
-    print("pass high")
+    # print("pass high")
     take ReleaseSprint()
     take ReleaseDirection()
-    print("high pass completed")
+    # print("high pass completed")
 
 behavior LongPassTo(player):
     '''
