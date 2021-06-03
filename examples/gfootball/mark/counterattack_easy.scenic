@@ -56,14 +56,15 @@ behavior CloseInAndShoot():
 
     try:
         do MoveToPosition(destination_point, sprint=False)
-    interrupt when right_penaltyBox.containsPoint(self.position):
-        # take ReleaseDirection()
-        do AimGoalCornerAndShoot()
+
     interrupt when opponentInRunway(self, reactionDistance=8):
         # do dribble_evasive_zigzag(destination_point)
         # print("danger. Pass.")
         do SafePass(20, 0.5)
         # take Pass()
+    interrupt when right_penaltyBox.containsPoint(self.position):
+        # take ReleaseDirection()
+        do AimGoalCornerAndShoot()
 
     do IdleBehavior()
 
