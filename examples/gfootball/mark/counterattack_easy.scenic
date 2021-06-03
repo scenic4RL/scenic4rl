@@ -10,6 +10,16 @@ param end_episode_on_possession_change = True
 
 
 # -----Behavior-----
+behavior ShortPassTo(player):
+    '''
+    Always try to pass. If not owned ball, will move to the ball.
+    '''
+    is_player_rightTeam = self.team == "right"
+    #take MoveTowardsPoint(player.position, self.position, is_player_rightTeam)
+    take Pass("short")
+    take ReleaseSprint()
+    take ReleaseDirection()
+
 behavior P1Behavior():
     # target_player = p2
     ds = simulation().game_ds
@@ -35,7 +45,8 @@ behavior SafePass(danger_cone_radius, danger_cone_angle):
         safe_players = [p for p in simulation().game_ds.left_players if p not in danger_cone]
         # safe_players = simulation().game_ds.my_players
         selected_p = get_closest_player_info(self.position, safe_players)[0]
-        # print(get_direction(*self.position, *selected_p.position))
+        # selected_p = get_closest_player_info(right_goal_midpoint, safe_players)[0]
+
         do ShortPassTo(selected_p)
 
 
@@ -45,14 +56,14 @@ behavior CloseInAndShoot():
 
     try:
         do MoveToPosition(destination_point, sprint=False)
+    interrupt when right_penaltyBox.containsPoint(self.position):
+        # take ReleaseDirection()
+        do AimGoalCornerAndShoot()
     interrupt when opponentInRunway(self, reactionDistance=8):
         # do dribble_evasive_zigzag(destination_point)
         # print("danger. Pass.")
         do SafePass(20, 0.5)
         # take Pass()
-    interrupt when right_penaltyBox.containsPoint(self.position):
-        # take ReleaseDirection()
-        do AimGoalCornerAndShoot()
 
     do IdleBehavior()
 
