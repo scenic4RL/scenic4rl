@@ -20,15 +20,12 @@ behavior egoBehavior(destination_point):
 	passedToTeammate = False
 
 	try:
-		#print("starting dribbleToAndShoot")
 		do dribbleToAndShoot(destination_point)
 
 	interrupt when left_penaltyBox.containsPoint(self.position):
-		#print("case1")
 		do AimGoalCornerAndShoot()
 
 	interrupt when passedToTeammate and teammateHasBallPossession(self):
-		#print("case2")
 		fallbackpoint = Point on fallBackRegion
 		do MoveToPosition(fallbackpoint, sprint=True)
 		do HoldPosition() until self.owns_ball
@@ -36,7 +33,7 @@ behavior egoBehavior(destination_point):
 	interrupt when opponentTeamHasBallPossession(self):
 		do FollowObject(ball, sprint=True)
 
-	do IdleBehavior()
+	do HoldPosition()
 
 
 behavior rightRMBehavior(destination_point):
@@ -48,7 +45,7 @@ behavior rightRMBehavior(destination_point):
 		do egoBehavior(new_dest_point)
 	interrupt when opponentTeamHasBallPossession(self):
 		do FollowObject(ball, sprint=True)
-	do IdleBehavior()
+	do HoldPosition()
 
 LeftGK with behavior HoldPosition()
 left_defender1 = LeftRB
