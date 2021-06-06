@@ -2,7 +2,6 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 from scenic.core.geometry import normalizeAngle
-import pdb
 
 param game_duration = 400
 param deterministic = False
@@ -12,19 +11,10 @@ param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
+RightGK at 98 @ 40, with HoldPosition()
+ego = RightAM on left_half_field
 
-behavior egoBehavior(destination_point):
-	try:
-		do dribbleToAndShoot(destination_point, reactionDistance=Range(1,5))
-	interrupt when (distance from self to ball) > 2:
-		do FollowObject(ball, sprint=True)
-	do IdleBehavior()
+LeftGK at 95 @ 40, with HoldPosition()
+left_defender = LeftRB left of ego by Range(5,10)
 
-
-RightGK
-ego = RightCM on left_half_field, with behavior egoBehavior(-80 @ 0)
-ball = Ball ahead of ego by 2
-
-LeftGK with behavior HoldPosition()
-left_defender = LeftCB left of ego by Range(5,10)
-
+Ball ahead of ego by 2

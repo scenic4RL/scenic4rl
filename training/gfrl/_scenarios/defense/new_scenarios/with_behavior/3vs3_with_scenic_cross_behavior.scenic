@@ -10,7 +10,7 @@ param end_episode_on_out_of_play = True
 
 leftLeftBackRegion = get_reg_from_edges(-70, -60, 20, 15)
 leftCenterBackRegion = get_reg_from_edges(-70, -65, 10, -10)
-leftRightBackRegion = get_reg_from_edges(-70, -65, -10, -20)
+leftRightMidRegion = get_reg_from_edges(-70, -65, -10, -20)
 
 rightRightMidRegion  = get_reg_from_edges(-55, -50, 20, 15)
 rightCenterMidRegion = get_reg_from_edges(-65, -60, 0, 5)
@@ -41,5 +41,5 @@ ball = Ball ahead of right_LeftMid by 2
 LeftGK with behavior HoldPosition()
 leftLB = LeftLB on leftLeftBackRegion
 leftCB = LeftCB on leftCenterBackRegion
-leftRB = LeftRM on leftRightBackRegion
+leftRB = LeftRM on leftRightMidRegion
 

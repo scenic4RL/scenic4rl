@@ -34,7 +34,7 @@ gf_env_settings = {
 
 
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
-scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/def.scenic"
+scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/testing_generalization/offense_cross_hard.scenic"
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/defense/new_scenarios/defense_counterattack_3vs2.scenic"
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
@@ -46,7 +46,7 @@ from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
 from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 #env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=True)
 
-env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False)
+env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
 
 import gfootball
 
