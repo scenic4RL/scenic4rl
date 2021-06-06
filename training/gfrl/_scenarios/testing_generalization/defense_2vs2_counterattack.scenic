@@ -10,21 +10,19 @@ param end_episode_on_score = True
 param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
-MyLeftMidRegion = get_reg_from_edges(-1, 5, 35, 30)
+LeftMidRegion = get_reg_from_edges(-1, 5, -30, -35)
 egoInitialRegion  = get_reg_from_edges(-40, -35, 5, -5)
 egoAttackRegion = get_reg_from_edges(-80, -75, 5, 0)
 rightRMAttackRegion = get_reg_from_edges(-80, -75, 5, -5)
-fallBackRegion = get_reg_from_edges(-70, -60, 5, -5)
+rightRMInitialRegion = get_reg_from_edges(20, 16, -22, -18)
 
 LeftGK at 95 @ 40, with behavior HoldPosition()
 left_defender1 = LeftRB
-left_defender2 = LeftLM on MyLeftMidRegion
+left_defender2 = LeftLM on LeftMidRegion
 
 RightGK at 98 @ 40, with behavior HoldPosition()
-ego_destinationPoint = Point on egoAttackRegion
-rightRM_destinationPoint = Point on rightRMAttackRegion
 
-rightRM = RightRM
+rightRM = RightRM on rightRMInitialRegion
 ego = RightAM on egoInitialRegion
 
 ball = Ball ahead of rightRM by 2

@@ -12,16 +12,16 @@ param end_episode_on_possession_change = True
 
 leftLeftBackRegion = get_reg_from_edges(-70, -60, 20, 15)
 leftCenterBackRegion = get_reg_from_edges(-70, -65, 10, -10)
-leftRightBackRegion = get_reg_from_edges(-70, -65, -20, -25)
+leftRightMidRegion = get_reg_from_edges(-70, -65, 25, 20)
 
 rightRightMidRegion  = get_reg_from_edges(-55, -50, 20, 15)
 rightCenterMidRegion = get_reg_from_edges(-55, -50, -10, -20)
-rightLeftMidRegion   = get_reg_from_edges(-55, -50, -30, -40)
+rightLeftMidRegion   = get_reg_from_edges(-55, -50, 40, 30)
 
 LeftGK at 95 @ 40, with behavior HoldPosition()
 leftLB = LeftLB on leftLeftBackRegion
 leftCB = LeftCB on leftCenterBackRegion
-leftRB = LeftRM on leftRightBackRegion
+leftRB = LeftRB on leftRightMidRegion
 
 RightGK at 98 @ 40, with behavior HoldPosition()
 opRM = RightRM on rightRightMidRegion

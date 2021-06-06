@@ -12,8 +12,8 @@ rightTeamInitialRegion = get_reg_from_edges(-15, -10, 40, -40)
 leftCBInitialRegion = get_reg_from_edges(0, 5, 40, -40)
 
 # Goalkeeper needs to be instantiated to avoid an error but we place them at a corner and stay there
-RightGK at -98 @ -41
-LeftGK at -98 @ 0
+RightGK at 99 @ 0
+LeftGK at -99 @ 0
 
 ego = LeftCB on leftCBInitialRegion
 Ball ahead of ego by 2
