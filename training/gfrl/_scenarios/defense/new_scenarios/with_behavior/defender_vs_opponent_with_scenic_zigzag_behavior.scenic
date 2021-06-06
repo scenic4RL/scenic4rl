@@ -20,7 +20,6 @@ behavior egoBehavior(destination_point):
 		do FollowObject(ball, sprint=True)
 	do IdleBehavior()
 
-defender_region = get_reg_from_edges(-52, -48, 5, -5)
 attacker_region = get_reg_from_edges(-26, -22, 5, -5)
 
 LeftGK with behavior HoldPosition()
