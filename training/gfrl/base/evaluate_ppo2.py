@@ -257,8 +257,9 @@ def train(_):
     #print("reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps")
     #print(reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps)
 
-    fstr = "FLAGS.eval_level, FLAGS.load_path, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps\n"
-    fstr += str((FLAGS.eval_level, FLAGS.load_path, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps))[1:-1]
+    #fstr = "name, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps, FLAGS.eval_level, FLAGS.load_path\n"
+    fstr = ""
+    fstr += str((FLAGS.exp_name, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps, FLAGS.eval_level, FLAGS.load_path))[1:-1]
     fstr += "\n"
 
     print(fstr)

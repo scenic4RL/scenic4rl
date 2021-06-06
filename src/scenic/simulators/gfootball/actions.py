@@ -182,7 +182,7 @@ def get_closest_player_info(position, players):
     closest_player = None
 
     for p in players:
-        dist = math.sqrt(math.pow(p.x - position[0], 2) + math.pow(p.y - position[1], 2))
+        dist = math.sqrt(math.pow(p.x - position.x, 2) + math.pow(p.y - position.y, 2))
         if dist == 0:
             continue
         if min_distance is None or dist < min_distance:

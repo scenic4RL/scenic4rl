@@ -1,49 +1,59 @@
 Scenario Type,Scenario,Type,Average Goal Difference
-offense,avoid_pass_shoot,PPO with Pretraining,0.75
-offense,avoid_pass_shoot,PPO with Pretraining,0.58
-offense,avoid_pass_shoot,PPO with Pretraining,0.66
 offense,11vs1,PPO with Pretraining,0.94
 offense,11vs1,PPO with Pretraining,0.95
 offense,11vs1,PPO with Pretraining,1
-academy,Pass and Shoot,PPO with Pretraining,0.83
-academy,Pass and Shoot,PPO with Pretraining,0.78
-academy,Pass and Shoot,PPO with Pretraining,0.8
-academy,Run to Score,PPO with Pretraining,0.4
-academy,Run to Score,PPO with Pretraining,0.56
-academy,Run to Score,PPO with Pretraining,0.65
-offense,avoid_pass_shoot,BC Policy,0.215
-offense,avoid_pass_shoot,BC Policy,0.2
-offense,avoid_pass_shoot,BC Policy,0.3
 offense,11vs1,BC Policy,0.7
 offense,11vs1,BC Policy,0.56
 offense,11vs1,BC Policy,0.75
-academy,Pass and Shoot,BC Policy,0.47
-academy,Pass and Shoot,BC Policy,0.4
-academy,Pass and Shoot,BC Policy,0.47
-academy,Run to Score,BC Policy,0.31
-academy,Run to Score,BC Policy,0.27
-academy,Run to Score,BC Policy,0.25
-offense,avoid_pass_shoot,Scenic Policy,0.176
-offense,avoid_pass_shoot,Scenic Policy,0.176
-offense,avoid_pass_shoot,Scenic Policy,0.176
 offense,11vs1,Scenic Policy,0.64
 offense,11vs1,Scenic Policy,0.64
 offense,11vs1,Scenic Policy,0.64
-academy,Pass and Shoot,Scenic Policy,0.454
-academy,Pass and Shoot,Scenic Policy,0.454
-academy,Pass and Shoot,Scenic Policy,0.454
-academy,Run to Score,Scenic Policy,0.424
-academy,Run to Score,Scenic Policy,0.424
-academy,Run to Score,Scenic Policy,0.424
+offense,11vs1,PPO with No Pretraining,0.02
+offense,11vs1,PPO with No Pretraining,0.03
+offense,11vs1,PPO with No Pretraining,0
+offense,avoid_pass_shoot,PPO with Pretraining,0.75
+offense,avoid_pass_shoot,PPO with Pretraining,0.58
+offense,avoid_pass_shoot,PPO with Pretraining,0.66
+offense,avoid_pass_shoot,BC Policy,0.215
+offense,avoid_pass_shoot,BC Policy,0.2
+offense,avoid_pass_shoot,BC Policy,0.3
+offense,avoid_pass_shoot,Scenic Policy,0.176
+offense,avoid_pass_shoot,Scenic Policy,0.176
+offense,avoid_pass_shoot,Scenic Policy,0.176
 offense,avoid_pass_shoot,PPO with No Pretraining,0.65
 offense,avoid_pass_shoot,PPO with No Pretraining,0.45
 offense,avoid_pass_shoot,PPO with No Pretraining,0.91
-offense,11vs1,PPO with No Pretraining,0.02
-offense,11vs1,PPO with No Pretraining,0.03
-offense,11vs1,PPO with No Pretraining,0.04
+academy,Easy Counter Attack,PPO with No Pretraining,0.01
+academy,Easy Counter Attack,PPO with No Pretraining,0.02
+academy,Easy Counter Attack,PPO with No Pretraining,0.04
+academy,Easy Counter Attack,PPO with Pretraining,0.56
+academy,Easy Counter Attack,PPO with Pretraining,0.54
+academy,Easy Counter Attack,PPO with Pretraining,0.54
+academy,Easy Counter Attack,BC Policy,0.12
+academy,Easy Counter Attack,BC Policy,0.17
+academy,Easy Counter Attack,BC Policy,0.16
+academy,Easy Counter Attack,Scenic Policy,0.21
+academy,Pass and Shoot,PPO with Pretraining,0.83
+academy,Pass and Shoot,PPO with Pretraining,0.78
+academy,Pass and Shoot,PPO with Pretraining,0.8
+academy,Pass and Shoot,BC Policy,0.47
+academy,Pass and Shoot,BC Policy,0.4
+academy,Pass and Shoot,BC Policy,0.47
+academy,Pass and Shoot,Scenic Policy,0.454
+academy,Pass and Shoot,Scenic Policy,0.454
+academy,Pass and Shoot,Scenic Policy,0.454
 academy,Pass and Shoot,PPO with No Pretraining,0.82
 academy,Pass and Shoot,PPO with No Pretraining,0.81
 academy,Pass and Shoot,PPO with No Pretraining,
-academy,Run to Score,PPO with No Pretraining,0
-academy,Run to Score,PPO with No Pretraining,0.01
-academy,Run to Score,PPO with No Pretraining,0.02
+academy,Run to Score with Keeper,BC Policy,0.31
+academy,Run to Score with Keeper,BC Policy,0.27
+academy,Run to Score with Keeper,BC Policy,0.25
+academy,Run to Score with Keeper,PPO with Pretraining,0.4
+academy,Run to Score with Keeper,PPO with Pretraining,0.56
+academy,Run to Score with Keeper,PPO with Pretraining,0.65
+academy,Run to Score with Keeper,Scenic Policy,0.424
+academy,Run to Score with Keeper,Scenic Policy,0.424
+academy,Run to Score with Keeper,Scenic Policy,0.424
+academy,Run to Score with Keeper,PPO with No Pretraining,0
+academy,Run to Score with Keeper,PPO with No Pretraining,0.01
+academy,Run to Score with Keeper,PPO with No Pretraining,0.02

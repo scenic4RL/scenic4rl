@@ -36,25 +36,32 @@ class GFScenicEnv_v2(gym.Env):
 
 
 	def reset(self):
-		self.scene, _ = scenic_helper.generateScene(self.scenario)
 
-		if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
+		for _ in range(100):
+			try:
+				self.scene, _ = scenic_helper.generateScene(self.scenario)
 
-		from scenic.simulators.gfootball.simulator import GFootBallSimulation
-		self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
-											  render=self.allow_render, verbosity=1,
-											  env_type="v2",
-											  gf_env_settings=self.gf_env_settings,
-											  tag=str(self.rank))
+				if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
 
-		self.gf_gym_env = self.simulation.get_underlying_gym_env()
+				from scenic.simulators.gfootball.simulator import GFootBallSimulation
+				self.simulation = GFootBallSimulation(scene=self.scene, settings={}, for_gym_env=True,
+													  render=self.allow_render, verbosity=1,
+													  env_type="v2",
+													  gf_env_settings=self.gf_env_settings,
+													  tag=str(self.rank))
 
-		obs = self.simulation.reset()
-		player_idx = self.simulation.get_controlled_player_idx()[0]
+				self.gf_gym_env = self.simulation.get_underlying_gym_env()
 
-		self.simulation.pre_step()
+				obs = self.simulation.reset()
+				player_idx = self.simulation.get_controlled_player_idx()[0]
 
-		return obs[player_idx]
+				self.simulation.pre_step()
+
+				return obs[player_idx]
+
+			except Exception as e:
+				print("Resample Script. Cause Error: ", e)
+				pass
 
 	#def filter_obs(self, obs):
 
