@@ -1,36 +1,45 @@
 from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
-
-param game_duration = 400
+param game_duration = 12
 param deterministic = False
 param offsides = False
 param right_team_difficulty = 1
 param end_episode_on_score = True
 param end_episode_on_out_of_play = True
-param end_episode_on_possession_change = True
 
-rightRM_AttackRegion = get_reg_from_edges(-80, -70, 10, 5)
+leftLeftBackRegion = get_reg_from_edges(-70, -65, 5, -5)
+leftCenterBackRegion = get_reg_from_edges(-70, -65, 5, -5)
+leftRightBackRegion = get_reg_from_edges(-70, -65, 5, -5)
 
-LeftGK at 95 @ 40, with behavior HoldPosition()
-# LeftGK with behavior HoldPosition()
-left_defender1 = LeftCB 
-left_defender2 = LeftCB 
+rightRightMidRegion  = get_reg_from_edges(-70, -65, 5, -5)
+rightCenterMidRegion = get_reg_from_edges(-70, -65, 5, -5)
+rightLeftMidRegion   = get_reg_from_edges(-70, -65, 5, -5)
 
-behavior GiveAndGo():
-	try:
-		do ShortPassTo(right_attacking_midfielder)
-		do MoveToPosition(-80 @ 0)
-	interrupt when self.owns_ball and left_penaltyBox.containsPoint(self.position):
-		do AimGoalCornerAndShoot()
-	interrupt when self.owns_ball 
+rightRM_AttackRegion = get_reg_from_edges(-70, -65, 5, -5)
+rightAM_AttackRegion = get_reg_from_edges(-70, -65, 5, -5)
+rightLM_AttackRegion = get_reg_from_edges(-70, -65, 5, -5)
 
-RightGK at 95 @ 40, with behavior HoldPosition()
-# RightGK with behavior HoldPosition()
-ego = RightCM on LeftReg_CM
-right_attacking_midfielder = RightAM on LeftReg_CM
+behavior runToReceiveCrossAndShoot(destinationPoint):
+	do MoveToPosition(destinationPoint)
+	do HoldPosition() until self.owns_ball
+	do dribbleToAndShoot(-80 @ 0)
+	do HoldPosition()
 
-Ball ahead of ego by 2
+behavior rightLMBehavior():
+	destinationPoint = Point on rightLM_AttackRegion
+	do MoveToPosition(destinationPoint)
+	do HighPassTo(Uniform(ego, right_RightMid))
+	do HoldPosition()
 
-require (distance from left_defender1 to left_defender2) > 3
-require (distance from ego to right_attacking_midfielder) > 4
+RightGK
+right_RightMid = RightRM on rightRightMidRegion, with behavior runToReceiveCrossAndShoot(Point on rightRM_AttackRegion)
+ego = RightAM on rightCenterMidRegion, with behavior runToReceiveCrossAndShoot(Point on rightAM_AttackRegion)
+right_LeftMid = RightLM on rightLeftMidRegion, with behavior rightLMBehavior()
+ball = Ball ahead of right_LeftMid by 2
+
+LeftGK with behavior HoldPosition()
+leftLB = LeftLB on leftLeftBackRegion
+leftCB = LeftCB on leftCenterBackRegion
+leftRB = LeftRM on leftRightBackRegion
+

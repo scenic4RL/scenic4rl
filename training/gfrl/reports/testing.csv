@@ -1,11 +1,31 @@
 Scenario Type,Scenario,Evaluation Script,Average Goal Difference
-academy,Pass and Shoot,Training,0.8
-academy,Pass and Shoot,Testing,0.5
-,"Run, Pass, and Shoot",Training,0.54
-,"Run, Pass, and Shoot",Testing,0.45
-academy,3vs1 ,Training,0.7
-academy,3vs1 ,Testing,0.5
-,Run To Score,Training,0.9
-,Run To Score,Testing,0.2
-,Counterattack Easy,Training,0.6
-,Counterattack Easy,Testing,0.2
+,Empty Goal,Training,0.95
+,Empty Goal,Training,0.93
+,Empty Goal,Training,0.92
+,Empty Goal Close,Training,1
+,Empty Goal Close,Training,1
+,Empty Goal Close,Training,1
+,Pass and Shoot with Keeper,Training,0.8
+,Pass and Shoot with Keeper,Training,0.85
+,Pass and Shoot with Keeper,Training,0.8
+,Run to Score,Training,0.95
+,Run to Score,Training,0.92
+,Run to Score,Training,0.9
+,"Run, Pass and Shoot with Keeper",Training,0.7
+,"Run, Pass and Shoot with Keeper",Training,0.71
+,"Run, Pass and Shoot with Keeper",Training,0.51
+,Empty Goal,Testing,0.55
+,Empty Goal,Testing,0.57
+,Empty Goal,Testing,0.57
+academy,Empty Goal Close,Testing,0.42
+,Empty Goal Close,Testing,0.09
+,Empty Goal Close,Testing,0.41
+,Pass and Shoot with Keeper,Testing,-0.022727273
+,Pass and Shoot with Keeper,Testing,0
+,Pass and Shoot with Keeper,Testing,0.045977011
+,Run to Score,Testing,0.5
+,Run to Score,Testing,0.329545455
+,Run to Score,Testing,0.455555556
+,"Run, Pass and Shoot with Keeper",Testing,0
+,"Run, Pass and Shoot with Keeper",Testing,0
+,"Run, Pass and Shoot with Keeper",Testing,0

@@ -1,40 +1,40 @@
 Scenario Type,Scenario,Average Goal Difference
-Offensive,cross_easy,0.67
-Offensive,cross_easy,0.75
-Offensive,cross_easy,0.75
-Offensive,cross_hard,0.08
-Offensive,cross_hard,0.02
-Offensive,cross_hard,0.01
-Offensive,11_vs_gk,0.02
-Offensive,11_vs_gk,0
-Offensive,11_vs_gk,0.93
-Offensive,avoid_pass_shoot,0.6
-Offensive,avoid_pass_shoot,0.38
-Offensive,avoid_pass_shoot,0.89
-Defensive,1vs1,-0.62
-Defensive,1vs1,-0.59
-Defensive,1vs1,-0.61
-Defensive,behavior_defense_1vs1,-0.19
-Defensive,behavior_defense_1vs1,-0.12
-Defensive,behavior_defense_1vs1,-0.14
-Defensive,2vs2,-0.38
-Defensive,2vs2,-0.11
-Defensive,2vs2,-0.16
-Defensive,long_pass_2vs2,-0.5
-Defensive,long_pass_2vs2,-0.46
-Defensive,long_pass_2vs2,-0.33
-Defensive,behavior_long_pass_2vs2,-0.18
-Defensive,behavior_long_pass_2vs2,-0.1
-Defensive,behavior_long_pass_2vs2,-0.2
-Defensive,3vs3,-0.15
-Defensive,3vs3,-0.29
-Defensive,3vs3,-0.26
-Defensive,behavior_3vs3_cross,-0.27
-Defensive,behavior_3vs3_cross,-0.09
-Defensive,behavior_3vs3_cross,-0.25
-Defensive,goalkeeper_vs_attacker,-0.08
-Defensive,goalkeeper_vs_attacker,-0.02
-Defensive,goalkeeper_vs_attacker,-0.09
-Defensive,counterattack_3vs2,-0.44
-Defensive,counterattack_3vs2,-0.36
-Defensive,counterattack_3vs2,-0.34
+Offense,Easy Crossing,0.67
+Offense,Easy Crossing,0.75
+Offense,Easy Crossing,0.75
+Offense,Hard Crossing,0.08
+Offense,Hard Crossing,0.02
+Offense,Hard Crossing,0.01
+Offense,11 vs GK,0.02
+Offense,11 vs GK,0
+Offense,11 vs GK,0.93
+Offense,"Avoid, Pass, and Shoot",0.6
+Offense,"Avoid, Pass, and Shoot",0.38
+Offense,"Avoid, Pass, and Shoot",0.89
+Defense,1vs1,-0.62
+Defense,1vs1,-0.59
+Defense,1vs1,-0.61
+Defense,Behavior Defense 1vs1,-0.19
+Defense,Behavior Defense 1vs1,-0.12
+Defense,Behavior Defense 1vs1,-0.14
+Defense,2vs2,-0.38
+Defense,2vs2,-0.11
+Defense,2vs2,-0.16
+Defense,Long Pass 2vs2,-0.5
+Defense,Long Pass 2vs2,-0.46
+Defense,Long Pass 2vs2,-0.33
+Defense,Behavior Long Pass 2vs2,-0.18
+Defense,Behavior Long Pass 2vs2,-0.1
+Defense,Behavior Long Pass 2vs2,-0.2
+Defense,3vs3,-0.15
+Defense,3vs3,-0.29
+Defense,3vs3,-0.26
+Defense,Behavior 3vs3 Cross,-0.27
+Defense,Behavior 3vs3 Cross,-0.09
+Defense,Behavior 3vs3 Cross,-0.25
+Defense,GK vs Attacker,-0.08
+Defense,GK vs Attacker,-0.02
+Defense,GK vs Attacker,-0.09
+Defense,Counterattack 3vs2,-0.44
+Defense,Counterattack 3vs2,-0.36
+Defense,Counterattack 3vs2,-0.34

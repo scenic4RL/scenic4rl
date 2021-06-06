@@ -35,7 +35,7 @@ gf_env_settings = {
 
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
 
-scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_3vs3_cross.scenic"
+scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/test.scenic"
 
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
@@ -55,7 +55,7 @@ import gfootball
 #                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
 rews =  []
 
-for _ in range(100):
+for _ in range(1000):
     env.reset()
     rew = 0
     #input("Press Any Key to Continue")

@@ -203,6 +203,9 @@ def update_control_index(last_obs, gameds:GameDS):
     for pl in gameds.left_players + gameds.right_players:
         s += f"{pl.position}, {pl}\n"
     """
+    #pos_scenic_script = {p: p.position for p in gameds.my_players+gameds.op_players}
+    #pos_scenic_list = {}
+    #pos_sim_list = {}
 
     for ctrl_idx in range(len(last_obs)):
         obs = last_obs[ctrl_idx]
@@ -216,6 +219,9 @@ def update_control_index(last_obs, gameds:GameDS):
         else:
             player_list = gameds.op_players
             pos_scenic = translator.pos_sim_to_scenic(pos_sim, mirrorx=True, mirrory=True)
+
+        #pos_scenic_list[ctrl_idx] = pos_scenic
+        #pos_sim_list[ctrl_idx] = pos_sim
 
         matching_player = get_closest_player(pos_scenic, player_list)
 
