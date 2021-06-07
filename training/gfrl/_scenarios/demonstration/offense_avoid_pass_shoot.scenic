@@ -55,30 +55,18 @@ behavior GreedyPlay():
 
         elif not self.owns_ball:
 
-            #if (distance from self to ball) < 5 and ball.speed<0.01:
-
-            """
-            if self.x > 75 and abs(self.y) < 15:
-                action = Shoot()
-                if self.is_controlled and verbose: print(f"{action} doesnt own ball")
-                take action
-            else:
-            """
             passed = False
             dir = lookup_direction(ball.x - self.x, ball.y - self.y)
             current_dir = dir
             action = SetDirection(dir)
             if self.is_controlled and verbose: print(f"{action} doesnt own ball")
             take action
-            #else:
-            #    action = NoAction()
-            #    msg += " no action - wait for ball"
+
 
         else:
 
             if self.x > x_lim and abs(self.y) < 10:
 
-
                 for _ in range(1):
                     sel_dest = (99 @ -5)
                     dir = lookup_direction(sel_dest.x - self.x, sel_dest.y - self.y)
@@ -86,30 +74,6 @@ behavior GreedyPlay():
                     if verbose: print("take ", action, " ")
                     take action
 
-                """
-                for _ in range(1):
-                    action = NoAction()
-                    if verbose: print("take ", action, " ")
-                    take action
-                
-                
-                for _ in range(1):
-                    sel_dest = (99 @ -5)
-                    dir = lookup_direction(sel_dest.x - self.x, sel_dest.y - self.y)
-                    msg += f" move to {sel_dest.x}, {sel_dest.y}"
-
-                    action = SetDirection(dir)
-                    if verbose: print("take ", action, " ")
-                    take action
-                
-                    #sel_dest = (99 @ -5)
-                    #dir = lookup_direction(sel_dest.x - self.x, sel_dest.y - self.y)
-                    #msg += f" move to {sel_dest.x}, {sel_dest.y}"
-
-                    #action = SetDirection(dir)
-                    #if verbose: print("take ", action, " ")
-                    #take action
-                """
                 if self.is_controlled and verbose: print("shoot")
                 action = Shoot()
                 take action
