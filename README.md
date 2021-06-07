@@ -41,7 +41,7 @@ In order to reproduce PPO results from the paper, please refer to:
 ### Trained checkpoints
 
 
-##Contact Us!!
+##Contact Us
 Useful links:
 
 * [Mailing List](https://google.com) - please use it for communication with us (comments / suggestions / feature ideas)
@@ -49,6 +49,6 @@ Useful links:
 To discuss non-public matters directly to the Scenic4RL team, please use scenic4rl@gmail.com.
 
 
-###Acknowledgement
+##Acknowledgement
 We'd like to thank the Scenic and GRF Team for open sourcing their projects.
 
