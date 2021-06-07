@@ -33,13 +33,13 @@ In order to reproduce PPO results from the paper, please refer to:
 
 
 ### Train agents from demonstration data using Behavior Cloning
-
+...
 ### Pretraining... 
-
+...
 ### Testing for Generalization 
-
+...
 ### Trained checkpoints
-
+...
 
 ##Contact Us
 
