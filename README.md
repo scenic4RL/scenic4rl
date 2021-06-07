@@ -42,9 +42,9 @@ In order to reproduce PPO results from the paper, please refer to:
 
 
 ##Contact Us
-Useful links:
 
-* [Mailing List](https://google.com) - please use it for communication with us (comments / suggestions / feature ideas)
+
+Please use our [Mailing List](https://google.com) for communication (comments / suggestions / feature ideas)
 
 To discuss non-public matters directly to the Scenic4RL team, please use scenic4rl@gmail.com.
 
