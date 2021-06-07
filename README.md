@@ -7,11 +7,21 @@ Introduction to SC4RL
 
 
 ## Installation
-
-### 1. Install Google Soccer Environment
-### 2. Install Scenic4RL
-#### a. Install Scenic
-#### b. Install RL interface
+### 1. Set up Python3.7 and Poetry
+1. Install Python 3.7 
+2. Install Poetry. Please refer to:
+	https://python-poetry.org/docs/#installation
+### 2. Install Scenic4RL and Google Research Football
+3. Clone this repo.
+4. Create a virtual environment in `ScenicGFootBall` using `poetry env use python3.7`. Activate it using `poetry shell`.
+5. In `ScenicGFootBall` run `poetry install`
+	This will install Scenic in editable mode.
+6. Install Google Research Football. Please refer to:
+	https://github.com/google-research/football#on-your-computer
+7. Install RL Training dependencies including Tensorflow 1.15, Sonnet, and OpenAI Baselines. Please refer to:
+	https://github.com/google-research/football#run-training
+### 3. Test the installation by running:
+	[TODO]
 
 
 ## Dataset
