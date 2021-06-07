@@ -16,6 +16,12 @@ Introduction to SC4RL
 
 ## Dataset
 
+### Scenarios 
+All of our proposed scenarios can be found in the `training/gfrl/_scenarios` directory, categorized according to their type. Proposed Offensive and Defensive Scenarios are placed in `training/gfrl/_scenarios/defense` and `training/gfrl/_scenarios/offense` directories, respectively. 
+Scenic scenario scripts corresponding to select GRF academy scenarios can be found in `training/gfrl/_scenarios/academy`. `training/gfrl/_scenarios/testing_generalization` contains testing scripts corresponding to all the above mentioned scenarios. 
+
+###Scenic Policy and Demonstration Data
+Scenic semi-expert policy scripts for select scenarios can be found in `training/gfrl/_scenarios/demonstration`. Data generated from these policies are placed in `training/gfrl/_demonstration_data`.
 
 ## Interface
 ### Create Environment
@@ -43,7 +49,6 @@ In order to reproduce PPO results from the paper, please refer to:
 
 
 ## Contact Us
-
 
 Please use our [Mailing List](https://google.com) for communication (comments / suggestions / feature ideas)
 
