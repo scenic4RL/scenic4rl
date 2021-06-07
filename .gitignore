@@ -145,7 +145,7 @@ rl_training/raw_gf_exps/tboard/*
 nohup*.out
 *.out
 src/scenic/simulators/gfootball/rl/tboard/
-*.npz
+#*.npz
 
 */.vscode
 .vscode
