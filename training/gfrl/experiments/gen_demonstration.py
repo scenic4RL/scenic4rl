@@ -3,7 +3,7 @@ from gfrl.base.bc.utils import generate_expert_successful_data
 
 scenario = "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/offense/wb/fg_11v1_wb.scenic"
 num_interactions = 10000
-data_path = "/Users/azadsalam/codebase/scenic/training/gfrl/_data/offense_11_vs_GK_june5"
+data_path = "/training/gfrl/_demonstration_data/offense_11_vs_GK_june5"
 
 expert_observations, acts_oh, expert_rewards = generate_expert_successful_data(scenario_file=scenario, num_interactions=num_interactions, file_name=data_path)
 print("#"*80)
