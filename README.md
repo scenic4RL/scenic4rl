@@ -1,19 +1,54 @@
-# Scenic
+# Scenic4RL
 
-[![Documentation Status](https://readthedocs.org/projects/scenic-lang/badge/?version=latest)](https://scenic-lang.readthedocs.io/en/latest/?badge=latest)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-A compiler and scene generator for the Scenic scenario description language.
-Please see the [documentation](https://scenic-lang.readthedocs.io/) for installation instructions, as well as tutorials and other information about the Scenic language, its implementation, and its interfaces to various simulators.
+Introduction to SC4RL 
 
-For a description of the language and some of its applications, see [our PLDI 2019 paper](https://arxiv.org/abs/1809.09310) (*note:* the syntax of Scenic has changed slightly since then).
-Scenic was designed and implemented by Daniel J. Fremont, Tommaso Dreossi, Shromona Ghosh, Edward Kim, Xiangyu Yue, Alberto L. Sangiovanni-Vincentelli, and Sanjit A. Seshia.
 
-If you have any problems using Scenic, please submit an issue to [our GitHub repository](https://github.com/BerkeleyLearnVerify/Scenic) or contact Daniel at <dfremont@ucsc.edu>.
 
-The repository is organized as follows:
+## Installation
 
-* the _src/scenic_ directory contains the package proper;
-* the _examples_ directory has many examples of Scenic programs;
-* the _docs_ directory contains the sources for the documentation;
-* the _tests_ directory contains tests for the Scenic compiler.
+### 1. Install Google Soccer Environment
+### 2. Install Scenic4RL
+#### a. Install Scenic
+#### b. Install RL interface
+
+
+## Dataset
+
+
+## Interface
+### Create Environment
+### Generate Demonstration Data
+
+
+## Reproducability 
+
+
+### Run training with PPO
+
+In order to reproduce PPO results from the paper, please refer to:
+
+- training/gfrl/experiments/score_scenic.sh
+
+
+### Train agents from demonstration data using Behavior Cloning
+
+### Pretraining... 
+
+### Testing for Generalization 
+
+### Trained checkpoints
+
+
+##Contact Us!!
+Useful links:
+
+* [Mailing List](https://google.com) - please use it for communication with us (comments / suggestions / feature ideas)
+
+To discuss non-public matters directly to the Scenic4RL team, please use scenic4rl@gmail.com.
+
+
+###Acknowledgement
+We'd like to thank the Scenic and GRF Team for open sourcing their projects.
+
