@@ -11,30 +11,30 @@ Offense,11 vs GK,0.93
 Offense,"Avoid, Pass, and Shoot",0.6
 Offense,"Avoid, Pass, and Shoot",0.38
 Offense,"Avoid, Pass, and Shoot",0.89
-Defense,1vs1,-0.62
-Defense,1vs1,-0.59
-Defense,1vs1,-0.61
-Defense,Behavior Defense 1vs1,-0.19
-Defense,Behavior Defense 1vs1,-0.12
-Defense,Behavior Defense 1vs1,-0.14
-Defense,2vs2,-0.38
-Defense,2vs2,-0.11
-Defense,2vs2,-0.16
-Defense,Long Pass 2vs2,-0.5
-Defense,Long Pass 2vs2,-0.46
-Defense,Long Pass 2vs2,-0.33
-Defense,Behavior Long Pass 2vs2,-0.18
-Defense,Behavior Long Pass 2vs2,-0.1
-Defense,Behavior Long Pass 2vs2,-0.2
-Defense,3vs3,-0.15
-Defense,3vs3,-0.29
-Defense,3vs3,-0.26
-Defense,Behavior 3vs3 Cross,-0.27
-Defense,Behavior 3vs3 Cross,-0.09
-Defense,Behavior 3vs3 Cross,-0.25
-Defense,GK vs Attacker,-0.08
-Defense,GK vs Attacker,-0.02
-Defense,GK vs Attacker,-0.09
-Defense,Counterattack 3vs2,-0.44
-Defense,Counterattack 3vs2,-0.36
-Defense,Counterattack 3vs2,-0.34
+Defense,Defender vs Opponent AI bot,-0.62
+Defense,Defender vs Opponent AI bot,-0.59
+Defense,Defender vs Opponent AI bot,-0.61
+Defense,Defender vs Opponent with SCENIC Zigzag Behavior,-0.19
+Defense,Defender vs Opponent with SCENIC Zigzag Behavior,-0.12
+Defense,Defender vs Opponent with SCENIC Zigzag Behavior,-0.14
+Defense,Defense 2vs2,-0.38
+Defense,Defense 2vs2,-0.11
+Defense,Defense 2vs2,-0.16
+Defense,Defense 2vs2 Counter-Attack,-0.5
+Defense,Defense 2vs2 Counter-Attack,-0.46
+Defense,Defense 2vs2 Counter-Attack,-0.33
+Defense,Defense 2vs2 with SCENIC Long Pass Behavior,-0.18
+Defense,Defense 2vs2 with SCENIC Long Pass Behavior,-0.1
+Defense,Defense 2vs2 with SCENIC Long Pass Behavior,-0.2
+Defense,3vs3 Side Buildup Play,-0.15
+Defense,3vs3 Side Buildup Play,-0.29
+Defense,3vs3 Side Buildup Play,-0.26
+Defense,Defense 3vs3 with SCENIC Cross Behavior,-0.27
+Defense,Defense 3vs3 with SCENIC Cross Behavior,-0.09
+Defense,Defense 3vs3 with SCENIC Cross Behavior,-0.25
+Defense,Defense GK vs Attacker,-0.08
+Defense,Defense GK vs Attacker,-0.02
+Defense,Defense GK vs Attacker,-0.09
+Defense,Defense 3vs2 Counter-Attack,-0.44
+Defense,Defense 3vs2 Counter-Attack,-0.36
+Defense,Defense 3vs2 Counter-Attack,-0.34

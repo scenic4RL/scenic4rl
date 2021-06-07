@@ -1,5 +1,5 @@
 print("Loading Data as Dataset for validation")
-path = "/Users/azadsalam/codebase/scenic/training/gfrl/_data/prev/sc4rl_fg11v1_rns_rand1_succ_10000.npz"
+path = "/Users/azadsalam/gdrive_berkeley/sc4rl_data/demonstration_data/offense_11_vs_GK.npz"
 from gfrl.common.mybase.cloning.dataset import get_datasets
 tds, vds = get_datasets(path, validation_ratio=0.0)
 
