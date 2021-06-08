@@ -21,8 +21,29 @@ Introduction to SC4RL
 7. Install RL Training dependencies including Tensorflow 1.15, Sonnet, and OpenAI Baselines. Please refer to:
 	https://github.com/google-research/football#run-training
 ### 3. Test the installation by running:
-	[TODO]
+Run the following program to create an environment with a scenic scenario script and running a random agent.
 
+    
+    from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
+    scenario = buildScenario("..path to a scenic script..") #Find all our scenarios in training/gfrl/_scenarios/
+    
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
+
+    env_settings = {
+        "stacked": True,
+        "rewards": 'scoring',
+        "representation": 'extracted',
+        "players": [f"agent:left_players=1"],
+        "real_time": True
+        }
+	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=env_settings)
+    
+    env.reset()
+    done = False
+
+    while not done:
+        action = env.action_space.sample()
+        _, _, done, _ = env.step(action)
 
 ## Dataset
 
