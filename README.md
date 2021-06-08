@@ -3,7 +3,9 @@
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-Introduction to SC4RL 
+
+Scenic4RL offers a systematic and transparent way of specifying and controlling environment dynamics. We adopt an existing formal scenario specification language, Scenic, to programmatically model and generate scenarios to benchmark RL algorithms. Scenic provides an intuitive abstraction over environment behaviors to easily model interactive scenarios. We interfaced Scenic to Google Research Football, an stochastic environment that requires the agents to learn strategies at multiple levels of abstraction, from learning to pass, to high level tactics, and presents theoretically infinitely many variations of the environment dynamics (e.g., player positions and behaviors). In this repository we provide details of Scenic4RL interace, installation guidelines, links to datasets, instructions to reproduce the experiments.
+
 
 
 
