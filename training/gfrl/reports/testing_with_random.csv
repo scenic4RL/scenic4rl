@@ -107,3 +107,30 @@ Defense,3vs3 Side Buildup Play,Training,-0.26
 Defense,3vs3 Side Buildup Play,Testing,-0.183673469
 Defense,3vs3 Side Buildup Play,Testing,-0.294117647
 Defense,3vs3 Side Buildup Play,Testing,-0.176470588
+Defense,GK vs Opponnent,Random Policy,-0.49
+Defense,GK vs Opponnent,Random Policy,-0.48
+Defense,GK vs Opponnent,Random Policy,-0.44
+Defense,2vs2,Random Policy,-0.65
+Defense,2vs2,Random Policy,-0.61
+Defense,2vs2,Random Policy,-0.6
+Defense,2vs2 Counter-Attack,Random Policy,-0.63
+Defense,2vs2 Counter-Attack,Random Policy,-0.6
+Defense,2vs2 Counter-Attack,Random Policy,-0.59
+Defense,2vs2 with High Pass Forward,Random Policy,-0.72
+Defense,2vs2 with High Pass Forward,Random Policy,-0.57
+Defense,2vs2 with High Pass Forward,Random Policy,-0.57
+Defense,3vs2 Counter-Attack,Random Policy,-0.83
+Defense,3vs2 Counter-Attack,Random Policy,-0.79
+Defense,3vs2 Counter-Attack,Random Policy,-0.75
+Defense,3vs3 Side Buildup Play,Random Policy,-0.7
+Defense,3vs3 Side Buildup Play,Random Policy,-0.66
+Defense,3vs3 Side Buildup Play,Random Policy,-0.64
+Defense,3vs3 with Cross From Side,Random Policy,-0.37
+Defense,3vs3 with Cross From Side,Random Policy,-0.37
+Defense,3vs3 with Cross From Side,Random Policy,-0.36
+Defense,Defender vs Opponent with Hesitant Dribble,Random Policy,-0.83
+Defense,Defender vs Opponent with Hesitant Dribble,Random Policy,-0.78
+Defense,Defender vs Opponent with Hesitant Dribble,Random Policy,-0.7
+Defense,Defender vs Opponent with Zigzag Dribble,Random Policy,-0.45
+Defense,Defender vs Opponent with Zigzag Dribble,Random Policy,-0.43
+Defense,Defender vs Opponent with Zigzag Dribble,Random Policy,-0.38

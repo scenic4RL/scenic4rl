@@ -35,42 +35,61 @@ gf_env_settings = {
 
 # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
 
+n_episode = 100
 
-scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/test.scenic"
+files  = [f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2_counterattack.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2_with_scenic_long_pass_behavior.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_side_buildup_play.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_with_scenic_cross_behavior.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_counterattack_3vs2.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_defender_vs_opponent_AI_bot.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_defender_vs_opponent_with_scenic_zigzag_behavior.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_goalkeeper_vs_attacker.scenic"
+          ]
+res = ""
+for scenario_file in files:
 
-# scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
-from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
-scenario = buildScenario(scenario_file)
+    # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
+    from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
+    scenario = buildScenario(scenario_file)
 
-#env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
+    #env = GFScenicEnv(initial_scenario=scenario, gf_env_settings=gf_env_settings)
 
-from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
-from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
-#env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=True)
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1
+    from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
+    #env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True, compute_scenic_behavior=True)
 
-env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
+    env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=False)
 
-import gfootball
+    import gfootball
 
-#env = gfootball.env.create_environment("academy_pass_and_shoot_with_keeper", number_of_left_players_agent_controls=1, render=False, representation="extracted",
-#                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
-rews =  []
+    #env = gfootball.env.create_environment("academy_pass_and_shoot_with_keeper", number_of_left_players_agent_controls=1, render=False, representation="extracted",
+    #                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
+    rews =  []
 
-for _ in range(1000):
-    env.reset()
-    rew = 0
-    #input("Press Any Key to Continue")
-    done = False
 
-    while not done:
-        action = env.action_space.sample()
-        #action = env.simulation.get_scenic_designated_player_action()
-        _,r,done,_ = env.step(action)
-        #input("")
-        rew+=r
-    print(rew)
-    rews.append(rew)
+    for _ in range(n_episode):
+        env.reset()
+        rew = 0
+        #input("Press Any Key to Continue")
+        done = False
 
-import numpy as np
-rews  = np.array(rews)
-print("Mean, Count: ", np.mean(rews), rews.shape[0])
+        while not done:
+            action = env.action_space.sample()
+            #action = env.simulation.get_scenic_designated_player_action()
+            _,r,done,_ = env.step(action)
+            #input("")
+            rew+=r
+        print(rew)
+        rews.append(rew)
+
+    import numpy as np
+    rews  = np.array(rews)
+
+    s = f"{scenario_file}, {np.mean(rews)}, {rews.shape[0]}\n"
+    print(s)
+    res += s
+
+with open("test_random.csv", "a+") as f:
+    f.write(res)
