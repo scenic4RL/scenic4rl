@@ -53,8 +53,7 @@ behavior CloseInAndAct(op, target_point):
             else:
                 take Dribble()
                 do RunToSafe(op, target_point)
-                # take MoveTowardsPoint(target_point.x, target_point.y, self.x, self.y)
-                #take ReleaseDirection()
+
         else:
             take ReleaseDirection()
 
@@ -68,13 +67,13 @@ behavior RunToSafe(op, target_point):
     target_pt = pt_a
     if (distance from pt_a to target_point) > (distance from pt_b to target_point):
         target_pt = pt_b
-    take MoveTowardsPoint(target_pt.x, target_pt.y, self.x, self.y)
+    take MoveTowardsPoint(target_pt.position, self.position)
 
 
 behavior DynamicRunShoot(op, target_point):
     try:
         do CloseInAndAct(op, target_point)
-    interrupt when (distance from self to blue_goal_midpoint) <= MIN_SHOOT_DIS:
+    interrupt when (distance from self to right_goal_midpoint) <= MIN_SHOOT_DIS:
         take Shoot()
 
 
@@ -82,7 +81,7 @@ behavior DynamicRunShoot(op, target_point):
 behavior JustShoot():
     while True:
         if self.owns_ball:
-            if (distance from self to blue_goal_midpoint) < 30:
+            if (distance from self to right_goal_midpoint) < 30:
                 shoot_option = Uniform("down", "up", "direct")
                 if shoot_option == "down":
                     take SetDirection(6)
@@ -93,7 +92,7 @@ behavior JustShoot():
 
                 take Shoot()
             else:
-                take MoveTowardsPoint(blue_goal_midpoint.x, blue_goal_midpoint.y, self.x, self.y)
+                take MoveTowardsPoint(right_goal_midpoint, self.position)
 
         else:
             take ReleaseDirection()
@@ -112,7 +111,7 @@ behavior JustPass():
                 take SetDirection(5)
                 passed = True
             else:
-                take MoveTowardsPoint(ball.x, ball.y, self.x, self.y)
+                take MoveTowardsPoint(ball.position, self.position)
 
 
 # Selection Behavior
@@ -130,15 +129,15 @@ behavior P2Behavior(selection, op, tp):
 
 
 # target point in goal
-tp = Point in blue_goalRegion
+tp = Point in right_goalRegion
 
 # ball at top
 ball = Ball at 70 @ 28
 
-OpGK at 99 @ 0
-op = OpCB at 75 @ 30
+RightGK at 99 @ 0
+op = RightCB at 75 @ 30
 
-ego = MyGK at -99 @ 0, with behavior IdleBehavior()
+ego = LeftGK at -99 @ 0, with behavior IdleBehavior()
 gk = ego
 
 # select behavior
@@ -146,7 +145,7 @@ sel = Uniform("pass", "shoot")
 # sel = "shoot"
 
 # P2 Turing
-p2 = MyCB at 70 @ 0, with behavior P2Behavior(sel, op, tp)
+p2 = LeftCF at 70 @ 0, with behavior P2Behavior(sel, op, tp)
 # P1 top with ball
-p1 = MyCB at 70 @ 30, with behavior P1Behavior(sel, op, tp)
+p1 = LeftCB at 70 @ 30, with behavior P1Behavior(sel, op, tp)
 
