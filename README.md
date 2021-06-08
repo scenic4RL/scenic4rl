@@ -23,6 +23,7 @@ Scenic4RL offers a systematic and transparent way of specifying and controlling 
 	https://github.com/google-research/football#on-your-computer
 7. Install RL Training dependencies including Tensorflow 1.15, Sonnet, and OpenAI Baselines. Please refer to:
 	https://github.com/google-research/football#run-training
+8. Go to the folder `training` and run `python3 -m pip install -e .` to install our  package `gfrl` which we use to conduct the experiments.
 ### 3. Test the installation by running:
 Run the following program to create an environment with a scenic scenario script and running a random agent.
 
@@ -61,17 +62,19 @@ Scenic semi-expert policy scripts for select scenarios can be found in `training
 ### Create Environment
 Please refer to `training/gfrl/base/bc/utils.py` for detailed usage.
 
-Create Scenic scenario:
+First Create Scenic scenario object:
 
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario  
     scenario = buildScenario(scenario_file)
 
-Create Gym Environment from Scenic scenario:
-*env_type*: Use `v1` for academy scenarios.
+Then, Create Gym Environment from Scenic scenario:
+
+*env_type* : We now offer two different environment classes, i.e., `GFScenicEnv_v1` and `GFScenicEnv_v2`. We recommend to use `GFScenicEnv_v2`, which is our default environment implementing all the features discussed in the paper. `GFScenicEnv_v1` only allows the initial distribution of states, but doesnt allow to use Scenic behaviors for non-RL agents, i.e., it always uses the Default AI behavior provided by GRF for the non-RL agents. 
 
     from scenic.simulators.gfootball.rl.gfScenicEnv_v1 import GFScenicEnv_v1  
     from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2  
-      
+     
+    env_type = "... use appropriate env class according to your need..."
     if env_type=="v1":  
        env = GFScenicEnv_v1(initial_scenario=scenario, gf_env_settings=gf_env_settings, compute_scenic_behavior=True)  
     elif env_type=="v2":  
@@ -81,12 +84,30 @@ Create Gym Environment from Scenic scenario:
 
 
 ### Generate Demonstration Data from Scenic Scenario Scripts
+For generating expert data using Scenic policies, we need to read the action computed by the Scenic policy. At any timestep, one can use the environment method `env.simulation.get_scenic_designated_player_action()` to read the action corresponding to the `active` agent. 
+
+We provide helper scripts to automate the process though. One can simply follow the following steps to generate data:  
+
 1. Open `training/gfrl/experiments/gen_demonstration.py`
 2. Change the following fields:
 	- scenario: Path to the scenic scenario scripts
 	- data_path: The output file path **without** the extension.
 
 3. Run `python3 training/gfrl/experiments/gen_demonstration.py`
+
+To read the saved offline data, run the following: 
+
+
+    from gfrl.common.mybase.cloning.dataset import get_datasets
+    tds, vds = get_datasets("..path to the saved data...", validation_ratio=0.0)
+    
+    print("train")
+    print(tds.summary())
+    print()
+    
+    print("validation")
+    print(vds.summary())
+    print()
 
 ## Reproducability 
 
@@ -108,7 +129,7 @@ In order to reproduce PPO results from the paper, please refer to:
 	- exp_root: where to store the training outputs
 	- exp_name: output directory's name
 3. Run `bash training/gfrl/experiments/bc.sh`
-### Pretraining / Train Agents from Behavior Cloning Agents 
+### Pretraining, i.e., Train Agents from Behavior Cloning Agents 
 With default settings, the script will train the model for 5M timesteps.
 1. Open `training/gfrl/experiments/pretrain.sh`
 2. Change the following fields:
@@ -130,13 +151,14 @@ Please use the following script to evaluate the model's mean score.
 4. The result will be printed in the end in the following format:
 `exp_name, reward_mean, score_mean, ep_len_mean, num_test_epi, test_total_timesteps, eval_level, load_path`.
 
+
 ### Trained checkpoints
-...
+We pubicly share tensorboard log and saved checkpoints for all our experiments [here](https://drive.google.com/open?id=19k0DmPLP_OPokERwW4sc57m-qZ84PaR5).   
 
 
 ## Contact Us
 
-Please use our [Mailing List](https://google.com) for communication (comments / suggestions / feature ideas)
+Please use our [Mailing List](https://groups.google.com/a/lists.berkeley.edu/g/scenic4rl/) for communication (comments / suggestions / feature ideas)
 
 To discuss non-public matters directly to the Scenic4RL team, please use scenic4rl@gmail.com.
 

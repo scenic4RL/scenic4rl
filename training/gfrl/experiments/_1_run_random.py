@@ -1,6 +1,6 @@
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
-scenario = buildScenario("/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/empty_goal.scenic")
+scenario = buildScenario("/training/gfrl/_scenarios/academy/empty_goal.scenic")
 
 from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
