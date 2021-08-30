@@ -2,7 +2,7 @@ from scenic.simulators.gfootball.model import *
 from scenic.simulators.gfootball.behaviors import *
 from scenic.simulators.gfootball.simulator import GFootBallSimulator
 
-param game_duration = 600
+param game_duration = 400
 param deterministic = False
 param offsides = True
 param end_episode_on_score = True
@@ -13,23 +13,42 @@ param end_episode_on_possession_change = True
 
 
 # ----- Behaviors -----
-behavior AIBehavior():
-    do IdleBehavior() until (distance from ball to p1) < 0.8
-    do BuiltinAIBot()
+def offside_x(op_players):
+    all_x = sorted([p.position.x for p in op_players], reverse=True)
+    return all_x[1]
+
+
+behavior avoid_offside():
+    ds = simulation().game_ds
+    while True:
+        if not self.owns_ball:
+            max_x = offside_x(ds.right_players)
+            if self.position.x >= (max_x - 0.5):
+                take SetDirection(1) # our left
+            else:
+                take ReleaseDirection()
+        else:
+            # RL takes control
+            do IdleBehavior()
+
+
+
+
 
 # ----- Regions -----
 
 # for offside rule
-right_back = get_reg_from_edges(80, 85, 40, 20)
+right_back = get_reg_from_edges(80, 85, 30, 40)
 
 # cluster
-cluster_top_left = get_reg_from_edges(30, 75, 30, 10)
+# (0+-100, 0+-42)
+cluster_top_left = get_reg_from_edges(45, 65, 30, 40)
 
 # player with ball
-left_start = get_reg_from_edges(-10, 10, 20, 0)
+left_start = get_reg_from_edges(10, 20, -5, 5)
 
-# we have 2 players here
-left_open_top_right = get_reg_from_edges(40, 60, -10, -35)
+# open: we have 2 players here
+left_open_top_right = get_reg_from_edges(70, 80, 0, 10)
 
 
 # ----- Players -----
@@ -47,15 +66,15 @@ left_open_top_right = get_reg_from_edges(40, 60, -10, -35)
 # print("c")
 
 # Left
-ego = LeftGK with behavior AIBehavior()
+ego = LeftGK
 
-p1 = LeftPlayer with role "LM", in left_start, with behavior AIBehavior()
-p2 = LeftPlayer with role "CF", in left_open_top_right, with behavior AIBehavior()
-p3 = LeftPlayer with role "RM", in left_open_top_right, with behavior AIBehavior()
+p1 = LeftPlayer with role "LM", in left_start
+p2 = LeftPlayer with role "CF", in left_open_top_right, with width 1.5, with length 1.5, with bahavior avoid_offside()
+p3 = LeftPlayer with role "RM", in left_open_top_right, with width 1.5, with length 1.5, with bahavior avoid_offside()
 
 # Right
-o0 = RightGK with behavior AIBehavior()
-o1 = RightPlayer with role "RB", in right_back, with behavior AIBehavior()
+o0 = RightGK
+o1 = RightPlayer with role "RB", in right_back
 
 # Mixed
 left_roles = ("CB", "LB", "RB", "CB", "CB", "CM", "RM")
@@ -63,10 +82,10 @@ right_roles = ("CB", "CB", "LB", "CB", "CM", "CM", "CM", "LM", "CF")
 mixed_left = []
 mixed_right = []
 for lr in left_roles:
-    mixed_left.append(LeftPlayer with role lr, in cluster_top_left, with behavior AIBehavior())
+    mixed_left.append(LeftPlayer with role lr, with width 1.5, with length 1.5, in cluster_top_left)
 
 for rr in right_roles:
-    mixed_right.append(RightPlayer with role rr, in cluster_top_left, with behavior AIBehavior())
+    mixed_right.append(RightPlayer with role rr, with width 1.5, with length 1.5, in cluster_top_left)
 
 # Ball
-ball = Ball ahead of p1 by 2
+ball = Ball right of p1 by 2
