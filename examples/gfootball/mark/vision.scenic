@@ -17,7 +17,6 @@ def offside_x(op_players):
     all_x = sorted([p.position.x for p in op_players], reverse=True)
     return all_x[1]
 
-
 behavior avoid_offside():
     ds = simulation().game_ds
     while True:
@@ -25,6 +24,8 @@ behavior avoid_offside():
             max_x = offside_x(ds.right_players)
             if self.position.x >= (max_x - 0.5):
                 take SetDirection(1) # our left
+            elif self.position.x < (max_x - 15):
+                take SetDirection(5) # our right
             else:
                 take ReleaseDirection()
         else:
@@ -42,10 +43,10 @@ right_back = get_reg_from_edges(80, 85, 30, 40)
 
 # cluster
 # (0+-100, 0+-42)
-cluster_top_left = get_reg_from_edges(45, 65, 30, 40)
+cluster_top_left = get_reg_from_edges(20, 65, 30, 40)
 
 # player with ball
-left_start = get_reg_from_edges(10, 20, -5, 5)
+left_start = get_reg_from_edges(10, 15, -5, 5)
 
 # open: we have 2 players here
 left_open_top_right = get_reg_from_edges(70, 80, 0, 10)
