@@ -14,15 +14,15 @@ param end_episode_on_possession_change = True
 
 # ----- Behaviors -----
 def offside_x(op_players):
-    all_x = sorted([p.position.x for p in op_players], reverse=True)
+    all_x = sorted([p.position.x for p in op_players if p.position.x < 100], reverse=True)
     return all_x[1]
 
-behavior avoid_offside():
+behavior avoidOffside():
     ds = simulation().game_ds
     while True:
         if not self.owns_ball:
             max_x = offside_x(ds.right_players)
-            if self.position.x >= (max_x - 0.5):
+            if self.position.x >= (max_x - 2):
                 take SetDirection(1) # our left
             elif self.position.x < (max_x - 15):
                 take SetDirection(5) # our right
@@ -70,8 +70,8 @@ left_open_top_right = get_reg_from_edges(70, 80, 0, 10)
 ego = LeftGK
 
 p1 = LeftPlayer with role "LM", in left_start
-p2 = LeftPlayer with role "CF", in left_open_top_right, with width 1.5, with length 1.5, with bahavior avoid_offside()
-p3 = LeftPlayer with role "RM", in left_open_top_right, with width 1.5, with length 1.5, with bahavior avoid_offside()
+p2 = LeftPlayer with role "CF", with behavior avoidOffside(), in left_open_top_right, with width 1.5, with length 1.5
+p3 = LeftPlayer with role "RM", with behavior avoidOffside(), in left_open_top_right, with width 1.5, with length 1.5
 
 # Right
 o0 = RightGK
