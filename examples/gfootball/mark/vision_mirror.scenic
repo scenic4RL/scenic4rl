@@ -41,17 +41,17 @@ behavior avoidOffside():
 # ----- Regions -----
 
 # for offside rule
-right_back = get_reg_from_edges(80, 85, 30, 40)
+right_back = get_reg_from_edges(80, 85, -40, -30)
 
 # cluster
 # (0+-100, 0+-42)
-cluster_top_left = get_reg_from_edges(20, 65, 30, 40)
+cluster_top_right = get_reg_from_edges(20, 65, -40, -30)
 
 # player with ball
 left_start = get_reg_from_edges(10, 15, -5, 5)
 
 # open: we have 2 players here
-left_open_top_right = get_reg_from_edges(70, 80, 0, 10)
+left_open_top_left = get_reg_from_edges(70, 80, -10, 0)
 
 
 # ----- Players -----
@@ -59,13 +59,13 @@ left_open_top_right = get_reg_from_edges(70, 80, 0, 10)
 # Left
 ego = LeftGK
 
-p1 = LeftPlayer with role "LM", in left_start
-p2 = LeftPlayer with role "CF", with behavior avoidOffside(), in left_open_top_right, with width 1.5, with length 1.5
-p3 = LeftPlayer with role "RM", with behavior avoidOffside(), in left_open_top_right, with width 1.5, with length 1.5
+p1 = LeftPlayer with role "RM", in left_start
+p2 = LeftPlayer with role "CF", with behavior avoidOffside(), in left_open_top_left, with width 1.5, with length 1.5
+p3 = LeftPlayer with role "LM", with behavior avoidOffside(), in left_open_top_left, with width 1.5, with length 1.5
 
 # Right
 o0 = RightGK
-o1 = RightPlayer with role "RB", in right_back
+o1 = RightPlayer with role "LB", in right_back
 
 # Mixed
 left_roles = ("CB", "LB", "RB", "CB", "CB", "CM", "RM")
@@ -73,10 +73,10 @@ right_roles = ("CB", "CB", "LB", "CB", "CM", "CM", "CM", "LM", "CF")
 mixed_left = []
 mixed_right = []
 for lr in left_roles:
-    mixed_left.append(LeftPlayer with role lr, with width 1.5, with length 1.5, in cluster_top_left)
+    mixed_left.append(LeftPlayer with role lr, with width 1.5, with length 1.5, in cluster_top_right)
 
 for rr in right_roles:
-    mixed_right.append(RightPlayer with role rr, with width 1.5, with length 1.5, in cluster_top_left)
+    mixed_right.append(RightPlayer with role rr, with width 1.5, with length 1.5, in cluster_top_right)
 
 # Ball
 ball = Ball right of p1 by 2
