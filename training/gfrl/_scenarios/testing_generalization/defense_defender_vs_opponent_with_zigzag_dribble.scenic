@@ -22,7 +22,7 @@ behavior egoBehavior(destination_point):
 
 
 RightGK
-ego = RightCM on left_half_field, with behavior egoBehavior(-80 @ 0)
+ego = RightCM on left_bottom_half_field, with behavior egoBehavior(-80 @ 0)
 ball = Ball ahead of ego by 2
 
 LeftGK with behavior HoldPosition()

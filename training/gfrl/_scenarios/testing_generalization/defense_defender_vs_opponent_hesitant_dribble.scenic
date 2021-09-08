@@ -12,7 +12,7 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 RightGK at 98 @ 40, with HoldPosition()
-ego = RightAM on left_half_field
+ego = RightAM on left_bottom_half_field
 
 LeftGK at 95 @ 40, with HoldPosition()
 left_defender = LeftRB left of ego by Range(5,10)

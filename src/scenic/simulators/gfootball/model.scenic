@@ -243,8 +243,11 @@ def get_reg_from_edges(left, right, top, bottom):
     return RectangularRegion(cx @ cy, 0, w, h)
 
 field = workspace
-right_half_field = get_reg_from_edges(0, 100, 42, -42)
-left_half_field  = get_reg_from_edges(-100, 0, 42, -42)
+right_half_field = get_reg_from_edges(0, 95, 38, -38)
+right_bottom_half_field = get_reg_from_edges(0, 50, 38, -38)
+
+left_half_field  = get_reg_from_edges(-95, 0, 38, -38)
+left_bottom_half_field = get_reg_from_edges(-50, 0, 38, -38)
 
 LeftReg_GK = get_reg_from_edges(-100, -98, 2, -2)
 
