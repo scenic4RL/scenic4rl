@@ -11,10 +11,10 @@ param end_episode_on_possession_change = True
 dx = 2
 ego = Ball at 77 @ -13
 
-YellowGK at -98 @  0
-YellowAM in get_reg_from_edges(75+dx, 75-dx, -15+dx, -15-dx)
-YellowCF in get_reg_from_edges(75+dx, 75-dx, 15+dx, 15-dx)
+LeftGK at -98 @  0
+LeftAM in get_reg_from_edges(75+dx, 75-dx, -15+dx, -15-dx)
+LeftCF in get_reg_from_edges(75+dx, 75-dx, 15+dx, 15-dx)
 
-BlueGK at 98 @ 0
-BlueCB in get_reg_from_edges(75+dx, 75-dx, dx, -dx)
+RightGK at 98 @ 0
+RightCB in get_reg_from_edges(75+dx, 75-dx, dx, -dx)
 

@@ -118,7 +118,7 @@ def eval(*, network, env, total_timesteps, eval_env = None, seed=None, nsteps=20
     #runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam)
     #if eval_env is not None:
     eval_runner = Runner(env = eval_env, model = model, nsteps = nsteps, gamma = gamma, lam= lam)
-    eval_epinfobuf = deque(maxlen=100)
+    eval_epinfobuf = deque(maxlen=1000)
 
     if init_fn is not None:
         init_fn()
