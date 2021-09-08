@@ -14,3 +14,5 @@ gfrl/_res_v3/*
 gfrl/_res_offense/*
 gfrl/_saved_models/*
 /home/ubuntu/ScenicGFootBall/.vscode
+gfrl/_res*
+gfrl/_test*
