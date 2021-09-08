@@ -150,3 +150,4 @@ src/scenic/simulators/gfootball/rl/tboard/
 */.vscode
 .vscode
 ~/
+ppo
