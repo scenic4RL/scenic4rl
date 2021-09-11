@@ -1,0 +1,40 @@
+Scenario Type,Scenario,Average Goal Difference
+Offense,11 vs GK,0.02
+Offense,11 vs GK,0
+Offense,11 vs GK,0.93
+Offense,"Avoid, Pass, and Shoot",0.6
+Offense,"Avoid, Pass, and Shoot",0.38
+Offense,"Avoid, Pass, and Shoot",0.89
+Offense,Easy Crossing,0.67
+Offense,Easy Crossing,0.75
+Offense,Easy Crossing,0.75
+Offense,Hard Crossing,0.08
+Offense,Hard Crossing,0.02
+Offense,Hard Crossing,0.01
+Defense,3vs3 Side Buildup Play,-0.15
+Defense,3vs3 Side Buildup Play,-0.29
+Defense,3vs3 Side Buildup Play,-0.26
+Defense,Defender vs Opponent with Hesitant Dribble,-0.62
+Defense,Defender vs Opponent with Hesitant Dribble,-0.59
+Defense,Defender vs Opponent with Hesitant Dribble,-0.61
+Defense,Defender vs Opponent with Zigzag Dribble,-0.19
+Defense,Defender vs Opponent with Zigzag Dribble,-0.12
+Defense,Defender vs Opponent with Zigzag Dribble,-0.14
+Defense,2vs2,-0.38
+Defense,2vs2,-0.11
+Defense,2vs2,-0.16
+Defense,2vs2 Counter-Attack,-0.5
+Defense,2vs2 Counter-Attack,-0.46
+Defense,2vs2 Counter-Attack,-0.33
+Defense,2vs2 with High Pass Forward,-0.18
+Defense,2vs2 with High Pass Forward,-0.1
+Defense,2vs2 with High Pass Forward,-0.2
+Defense,3vs2 Counter-Attack,-0.44
+Defense,3vs2 Counter-Attack,-0.36
+Defense,3vs2 Counter-Attack,-0.34
+Defense,3vs3 with Cross From Side,-0.27
+Defense,3vs3 with Cross From Side,-0.09
+Defense,3vs3 with Cross From Side,-0.25
+Defense,GK vs Opponnent,-0.08
+Defense,GK vs Opponnent,-0.02
+Defense,GK vs Opponnent,-0.09

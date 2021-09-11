@@ -37,7 +37,21 @@ gf_env_settings = {
 
 n_episode = 100
 
-files  = [f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_cross_from_side_new.scenic"]
+n_timesteps = 10000
+
+
+files = ["/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_cross_from_side.scenic"]
+"""
+files  = [f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2.scenic",
+          f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2_counterattack.scenic",
+          f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2_with_high_pass_forward.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs2_counterattack.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_side_buildup_play.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_defender_vs_opponent_hesitant_dribble.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_defender_vs_opponent_with_zigzag_dribble.scenic",
+          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_goalkeeper_vs_opponent.scenic",
+          ]
+"""
 res = ""
 for scenario_file in files:
 
@@ -59,8 +73,8 @@ for scenario_file in files:
     #                                                   rewards=rewards, stacked=True, write_video=True, write_full_episode_dumps=True, logdir=tracedir)
     rews =  []
 
-
-    for _ in range(n_episode):
+    collected = 0
+    while collected < n_timesteps:
         env.reset()
         rew = 0
         #input("Press Any Key to Continue")
@@ -70,17 +84,19 @@ for scenario_file in files:
             action = env.action_space.sample()
             #action = env.simulation.get_scenic_designated_player_action()
             _,r,done,_ = env.step(action)
+            collected += 1
             #input("")
             rew+=r
         print(rew)
         rews.append(rew)
 
+
     import numpy as np
     rews  = np.array(rews)
 
-    s = f"{scenario_file}, {np.mean(rews)}, {rews.shape[0]}\n"
+    s = f"{scenario_file}, {np.mean(rews)}, {rews.shape[0]}, {collected}\n"
     print(s)
     res += s
 
-with open("test_random.csv", "a+") as f:
+with open("test_random_agent_on_defense.csv", "a+") as f:
     f.write(res)

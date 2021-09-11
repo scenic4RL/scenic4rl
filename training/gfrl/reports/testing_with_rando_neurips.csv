@@ -1,0 +1,136 @@
+Scenario Type,Scenario,Evaluation Script,Average Goal Difference
+Academy,Empty Goal,Training,0.95
+Academy,Empty Goal,Training,0.93
+Academy,Empty Goal,Training,0.92
+Academy,Empty Goal,Testing,0.55
+Academy,Empty Goal,Testing,0.57
+Academy,Empty Goal,Testing,0.57
+Academy,Empty Goal Close,Training,1
+Academy,Empty Goal Close,Training,1
+Academy,Empty Goal Close,Training,1
+Academy,Empty Goal Close,Testing,0.42
+Academy,Empty Goal Close,Testing,0.09
+Academy,Empty Goal Close,Testing,0.41
+Academy,Pass and Shoot with Keeper,Training,0.8
+Academy,Pass and Shoot with Keeper,Training,0.85
+Academy,Pass and Shoot with Keeper,Training,0.8
+Academy,Pass and Shoot with Keeper,Testing,-0.022727273
+Academy,Pass and Shoot with Keeper,Testing,0
+Academy,Pass and Shoot with Keeper,Testing,0.045977011
+Academy,Run to Score,Training,0.95
+Academy,Run to Score,Training,0.92
+Academy,Run to Score,Training,0.9
+Academy,Run to Score,Testing,0.5
+Academy,Run to Score,Testing,0.329545455
+Academy,Run to Score,Testing,0.455555556
+Academy,"Run, Pass and Shoot with Keeper",Training,0.7
+Academy,"Run, Pass and Shoot with Keeper",Training,0.71
+Academy,"Run, Pass and Shoot with Keeper",Training,0.51
+Academy,"Run, Pass and Shoot with Keeper",Testing,0
+Academy,"Run, Pass and Shoot with Keeper",Testing,0
+Academy,"Run, Pass and Shoot with Keeper",Testing,0
+Offense,11 vs GK,Training,0.02
+Offense,11 vs GK,Training,0
+Offense,11 vs GK,Training,0.93
+Offense,11 vs GK,Testing,0
+Offense,11 vs GK,Testing,0.02
+Offense,11 vs GK,Testing,0.860759494
+Offense,"Avoid, Pass, and Shoot",Training,0.6
+Offense,"Avoid, Pass, and Shoot",Training,0.38
+Offense,"Avoid, Pass, and Shoot",Training,0.89
+Offense,"Avoid, Pass, and Shoot",Testing,0.04
+Offense,"Avoid, Pass, and Shoot",Testing,0.03
+Offense,"Avoid, Pass, and Shoot",Testing,0.01
+Offense,Easy Crossing,Training,0.67
+Offense,Easy Crossing,Training,0.75
+Offense,Easy Crossing,Training,0.75
+Offense,Easy Crossing,Testing,0.05
+Offense,Easy Crossing,Testing,0.04
+Offense,Easy Crossing,Testing,0.04
+Offense,Hard Crossing,Training,0.08
+Offense,Hard Crossing,Training,0.02
+Offense,Hard Crossing,Training,0.01
+Offense,Hard Crossing,Testing,0
+Offense,Hard Crossing,Testing,0
+Offense,Hard Crossing,Testing,-0.01
+Defense,GK vs Opponnent,Training,-0.08
+Defense,GK vs Opponnent,Training,-0.02
+Defense,GK vs Opponnent,Training,-0.09
+Defense,GK vs Opponnent,Testing,-0.082352941
+Defense,GK vs Opponnent,Testing,-0.078651685
+Defense,GK vs Opponnent,Testing,-0.05
+Defense,Defender vs Opponent with Zigzag Dribble,Training,-0.19
+Defense,Defender vs Opponent with Zigzag Dribble,Training,-0.12
+Defense,Defender vs Opponent with Zigzag Dribble,Training,-0.14
+Defense,Defender vs Opponent with Zigzag Dribble,Testing,-0.109756098
+Defense,Defender vs Opponent with Zigzag Dribble,Testing,-0.162790698
+Defense,Defender vs Opponent with Zigzag Dribble,Testing,-0.226666667
+Defense,Defender vs Opponent with Hesitant Dribble,Training,-0.62
+Defense,Defender vs Opponent with Hesitant Dribble,Training,-0.59
+Defense,Defender vs Opponent with Hesitant Dribble,Training,-0.61
+Defense,Defender vs Opponent with Hesitant Dribble,Testing,-0.582089552
+Defense,Defender vs Opponent with Hesitant Dribble,Testing,-0.558823529
+Defense,Defender vs Opponent with Hesitant Dribble,Testing,-0.527027027
+Defense,2vs2,Training,-0.38
+Defense,2vs2,Training,-0.11
+Defense,2vs2,Training,-0.16
+Defense,2vs2,Testing,-0.196969697
+Defense,2vs2,Testing,-0.088235294
+Defense,2vs2,Testing,-0.121212121
+Defense,2vs2 Counter-Attack,Training,-0.5
+Defense,2vs2 Counter-Attack,Training,-0.46
+Defense,2vs2 Counter-Attack,Training,-0.33
+Defense,2vs2 Counter-Attack,Testing,-0.403846154
+Defense,2vs2 Counter-Attack,Testing,-0.431372549
+Defense,2vs2 Counter-Attack,Testing,-0.325581395
+Defense,2vs2 with High Pass Forward,Training,-0.18
+Defense,2vs2 with High Pass Forward,Training,-0.1
+Defense,2vs2 with High Pass Forward,Training,-0.2
+Defense,2vs2 with High Pass Forward,Testing,-0.202531646
+Defense,2vs2 with High Pass Forward,Testing,-0.19047619
+Defense,2vs2 with High Pass Forward,Testing,-0.123595506
+Defense,3vs2 Counter-Attack,Training,-0.44
+Defense,3vs2 Counter-Attack,Training,-0.36
+Defense,3vs2 Counter-Attack,Training,-0.34
+Defense,3vs2 Counter-Attack,Testing,-0.407407407
+Defense,3vs2 Counter-Attack,Testing,-0.370786517
+Defense,3vs2 Counter-Attack,Testing,-0.387096774
+Defense,3vs3 with Cross From Side,Training,-0.27
+Defense,3vs3 with Cross From Side,Training,-0.09
+Defense,3vs3 with Cross From Side,Training,-0.25
+Defense,3vs3 with Cross From Side,Testing,-0.351351351
+Defense,3vs3 with Cross From Side,Testing,-0.096774194
+Defense,3vs3 with Cross From Side,Testing,0.035714286
+Defense,3vs3 Side Buildup Play,Training,-0.15
+Defense,3vs3 Side Buildup Play,Training,-0.29
+Defense,3vs3 Side Buildup Play,Training,-0.26
+Defense,3vs3 Side Buildup Play,Testing,-0.183673469
+Defense,3vs3 Side Buildup Play,Testing,-0.294117647
+Defense,3vs3 Side Buildup Play,Testing,-0.176470588
+Defense,GK vs Opponnent,Random Policy,-0.49
+Defense,GK vs Opponnent,Random Policy,-0.48
+Defense,GK vs Opponnent,Random Policy,-0.44
+Defense,2vs2,Random Policy,-0.65
+Defense,2vs2,Random Policy,-0.61
+Defense,2vs2,Random Policy,-0.6
+Defense,2vs2 Counter-Attack,Random Policy,-0.63
+Defense,2vs2 Counter-Attack,Random Policy,-0.6
+Defense,2vs2 Counter-Attack,Random Policy,-0.59
+Defense,2vs2 with High Pass Forward,Random Policy,-0.72
+Defense,2vs2 with High Pass Forward,Random Policy,-0.57
+Defense,2vs2 with High Pass Forward,Random Policy,-0.57
+Defense,3vs2 Counter-Attack,Random Policy,-0.83
+Defense,3vs2 Counter-Attack,Random Policy,-0.79
+Defense,3vs2 Counter-Attack,Random Policy,-0.75
+Defense,3vs3 Side Buildup Play,Random Policy,-0.7
+Defense,3vs3 Side Buildup Play,Random Policy,-0.66
+Defense,3vs3 Side Buildup Play,Random Policy,-0.64
+Defense,3vs3 with Cross From Side,Random Policy,-0.37
+Defense,3vs3 with Cross From Side,Random Policy,-0.37
+Defense,3vs3 with Cross From Side,Random Policy,-0.36
+Defense,Defender vs Opponent with Hesitant Dribble,Random Policy,-0.83
+Defense,Defender vs Opponent with Hesitant Dribble,Random Policy,-0.78
+Defense,Defender vs Opponent with Hesitant Dribble,Random Policy,-0.7
+Defense,Defender vs Opponent with Zigzag Dribble,Random Policy,-0.45
+Defense,Defender vs Opponent with Zigzag Dribble,Random Policy,-0.43
+Defense,Defender vs Opponent with Zigzag Dribble,Random Policy,-0.38

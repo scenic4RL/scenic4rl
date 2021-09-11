@@ -1,0 +1,81 @@
+Scenario Type,Scenario,Evaluation Script,Average Goal Difference
+Offense,"Avoid, Pass, and Shoot",Training,0.632911392
+Offense,"Avoid, Pass, and Shoot",Training,0.586614173
+Offense,"Avoid, Pass, and Shoot",Training,0.88590604
+Offense,"Avoid, Pass, and Shoot",Training,0.618421053
+Offense,"Avoid, Pass, and Shoot",Training,0.910891089
+Offense,"Avoid, Pass, and Shoot",Training,0.914191419
+Offense,"Avoid, Pass, and Shoot",Training,0.588
+Offense,"Avoid, Pass, and Shoot",Training,0.833333333
+Offense,"Avoid, Pass, and Shoot",Training,0.405882353
+Offense,"Avoid, Pass, and Shoot",Training,0.909090909
+Offense,Easy Crossing,Training,0.666666667
+Offense,Easy Crossing,Training,0.626436782
+Offense,Easy Crossing,Training,0.704301075
+Offense,Easy Crossing,Training,0.384955752
+Offense,Easy Crossing,Training,0.386178862
+Offense,Easy Crossing,Training,0.29047619
+Offense,Easy Crossing,Training,0.68957346
+Offense,Easy Crossing,Training,0.714285714
+Offense,Easy Crossing,Training,0.4
+Offense,Easy Crossing,Training,0.386046512
+Offense,Hard Crossing,Training,0.022988506
+Offense,Hard Crossing,Training,-0.137566138
+Offense,Hard Crossing,Training,-0.013043478
+Offense,Hard Crossing,Training,0.195876289
+Offense,Hard Crossing,Training,0.224299065
+Offense,Hard Crossing,Training,0.047169811
+Offense,Hard Crossing,Training,0.199095023
+Offense,Hard Crossing,Training,0.220512821
+Offense,Hard Crossing,Training,0.227091633
+Offense,Hard Crossing,Training,0.194029851
+Offense,11 vs GK,Training,0.005376344
+Offense,11 vs GK,Training,0.011494253
+Offense,11 vs GK,Training,0.903508772
+Offense,11 vs GK,Training,0.00462963
+Offense,11 vs GK,Training,0
+Offense,11 vs GK,Training,0.005952381
+Offense,11 vs GK,Training,0.29787234
+Offense,11 vs GK,Training,0
+Offense,11 vs GK,Training,0.020408163
+Offense,11 vs GK,Training,0.011363636
+Offense,11 vs GK,Testing,0.005555556
+Offense,11 vs GK,Testing,0.006451613
+Offense,11 vs GK,Testing,0.85840708
+Offense,11 vs GK,Testing,0
+Offense,11 vs GK,Testing,0
+Offense,11 vs GK,Testing,0.019736842
+Offense,11 vs GK,Testing,0.307692308
+Offense,11 vs GK,Testing,0.013157895
+Offense,11 vs GK,Testing,0.006993007
+Offense,11 vs GK,Testing,0
+Offense,"Avoid, Pass, and Shoot",Testing,0.076923077
+Offense,"Avoid, Pass, and Shoot",Testing,-0.01754386
+Offense,"Avoid, Pass, and Shoot",Testing,0
+Offense,"Avoid, Pass, and Shoot",Testing,0.083916084
+Offense,"Avoid, Pass, and Shoot",Testing,0.033557047
+Offense,"Avoid, Pass, and Shoot",Testing,0.03525641
+Offense,"Avoid, Pass, and Shoot",Testing,-0.004048583
+Offense,"Avoid, Pass, and Shoot",Testing,0.035598706
+Offense,"Avoid, Pass, and Shoot",Testing,0.026143791
+Offense,"Avoid, Pass, and Shoot",Testing,0.032258065
+Offense,Easy Crossing,Testing,0.071618037
+Offense,Easy Crossing,Testing,-0.017777778
+Offense,Easy Crossing,Testing,0.041436464
+Offense,Easy Crossing,Testing,-0.052631579
+Offense,Easy Crossing,Testing,0.008
+Offense,Easy Crossing,Testing,-0.064220183
+Offense,Easy Crossing,Testing,0
+Offense,Easy Crossing,Testing,0.003861004
+Offense,Easy Crossing,Testing,0.042168675
+Offense,Easy Crossing,Testing,0.06557377
+Offense,Hard Crossing,Testing,0
+Offense,Hard Crossing,Testing,-0.036423841
+Offense,Hard Crossing,Testing,-0.040650407
+Offense,Hard Crossing,Testing,0
+Offense,Hard Crossing,Testing,0.006535948
+Offense,Hard Crossing,Testing,0.023972603
+Offense,Hard Crossing,Testing,0
+Offense,Hard Crossing,Testing,0.016129032
+Offense,Hard Crossing,Testing,0
+Offense,Hard Crossing,Testing,0
