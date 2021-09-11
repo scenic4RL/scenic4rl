@@ -26,12 +26,7 @@ gf_env_settings = {
     "render": gen_video
 }
 
-
-# scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_3vs3_cross.scenic"
-scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/offense_avoid_pass_shoot.scenic"
-#scenario_file = "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/3v1.scenic"
-# scenario_file = f"/Users/edwardkim/gfootball/ScenicGFootBall/training/gfrl/_scenarios/defense/new_scenarios/with_behavior/env_behavior_long_pass_2vs2.scenic"
-# scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
+scenario_file = f"/Users//codebase/scenic/training/gfrl/_scenarios/testing_generalization/offense_avoid_pass_shoot.scenic"
 
 #scenario_file = f"../_scenarios/academy/11v1.scenic"
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario

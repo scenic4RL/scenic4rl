@@ -33,29 +33,18 @@ gf_env_settings = {
 }
 
 
-# scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
+# scenario_file = f"/Users//codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
 
 n_episode = 100
 
 n_timesteps = 10000
 
 
-files = ["/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_cross_from_side.scenic"]
-"""
-files  = [f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2.scenic",
-          f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2_counterattack.scenic",
-          f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_2vs2_with_high_pass_forward.scenic",
-          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs2_counterattack.scenic",
-          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_side_buildup_play.scenic",
-          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_defender_vs_opponent_hesitant_dribble.scenic",
-          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_defender_vs_opponent_with_zigzag_dribble.scenic",
-          "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_goalkeeper_vs_opponent.scenic",
-          ]
-"""
+files = ["/Users/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_cross_from_side.scenic"]
+
 res = ""
 for scenario_file in files:
 
-    # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
     scenario = buildScenario(scenario_file)
 

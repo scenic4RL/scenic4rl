@@ -14,8 +14,8 @@ env_settings = {
 }
 
 n_interaction = 100
-scenarios_scenic = ["/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/pass_n_shoot.scenic",
-					"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/academy/run_pass_shoot.scenic"]
+scenarios_scenic = ["/Users/codebase/scenic/training/gfrl/_scenarios/academy/pass_n_shoot.scenic",
+					"/Users/codebase/scenic/training/gfrl/_scenarios/academy/run_pass_shoot.scenic"]
 scenarios_gf = ["academy_empty_goal", "academy_empty_goal_close", "academy_pass_and_shoot_with_keeper", "academy_run_pass_and_shoot_with_keeper", "academy_run_to_score_with_keeper"]
 
 info = {}

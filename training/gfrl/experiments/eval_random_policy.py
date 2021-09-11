@@ -33,15 +33,15 @@ gf_env_settings = {
 }
 
 
-# scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
+# scenario_file = f"/Users//codebase/scenic/training/gfrl/_scenarios/attack/cross_hard_no_gk.scenic"
 
 n_episode = 100
 
-files  = [f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_cross_from_side_new.scenic"]
+files  = [f"/Users//codebase/scenic/training/gfrl/_scenarios/testing_generalization/defense_3vs3_cross_from_side_new.scenic"]
 res = ""
 for scenario_file in files:
 
-    # scenario_file = f"/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
+    # scenario_file = f"/Users//codebase/scenic/training/gfrl/_scenarios/dev/test.scenic"
     from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
     scenario = buildScenario(scenario_file)
 

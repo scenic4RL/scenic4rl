@@ -1,7 +1,7 @@
 from gfrl.base.bc.utils import generate_expert_successful_data
 
 
-scenario = "/Users/azadsalam/codebase/scenic/training/gfrl/_scenarios/offense/wb/fg_11v1_wb.scenic"
+scenario = "/Users//codebase/scenic/training/gfrl/_scenarios/offense/wb/fg_11v1_wb.scenic"
 num_interactions = 10000
 data_path = "/training/gfrl/_demonstration_data/offense_11_vs_GK_june5"
 
