@@ -9,7 +9,7 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 
-ego = Ball at 0 @ 0
+ego = Ball at 0 @ 0 #center of the field
 
 LeftGK
 LeftLB 
