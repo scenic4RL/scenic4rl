@@ -153,7 +153,7 @@ Please use the following script to evaluate the model's mean score.
 
 
 ### Trained checkpoints
-We pubicly share tensorboard log and saved checkpoints for all our experiments [here](https://drive.google.com/drive/folders/1U7ZW-6uazk6pYtoD-es96O-PBwi5sXsZ).   
+We pubicly share tensorboard log and saved checkpoints for all our experiments [here](https://drive.google.com/drive/folders/11E1odAtLGh6mjoI2q3bkha3ZautX8XOo?usp=sharing).   
 
 ## Acknowledgement
 We'd like to thank the Scenic and GRF Team for open sourcing their projects.
