@@ -26,9 +26,10 @@ gf_env_settings = {
     "render": gen_video
 }
 
-scenario_file = f"/Users//codebase/scenic/training/gfrl/_scenarios/testing_generalization/offense_avoid_pass_shoot.scenic"
 
-#scenario_file = f"../_scenarios/academy/11v1.scenic"
+scenario_file = f"path_to_scenic_script"
+
+
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 scenario = buildScenario(scenario_file)
 
