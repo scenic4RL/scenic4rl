@@ -219,7 +219,6 @@ class Player:
             # require position in StrikerZone
     """
 
-#AskEddie: should we specify a boolean field in player? instead of My/Op Player
 
 class LeftPlayer(Player):
     pass

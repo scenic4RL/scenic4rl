@@ -18,26 +18,24 @@ rightLeftMidRegion   = get_reg_from_edges(-55, -50, 35, 30)
 
 rightRM_AttackRegion = get_reg_from_edges(-80, -70, 5, -5)
 rightAM_AttackRegion = get_reg_from_edges(-90, -85, -5, -10)
-attack_region_in_penaltyBox = get_reg_from_edges(-80, -75, -25, -30)
+rightLM_AttackRegion = get_reg_from_edges(-80, -75, -25, -30)
 
-centerPoint_LeftPenaltyBox = -80 @ 0
-
-behavior receiveCrossAndShoot(destinationPoint):
+behavior runToReceiveCrossAndShoot(destinationPoint):
 	do MoveToPosition(destinationPoint)
 	do HoldPosition() until self.owns_ball
-	do dribbleToAndShoot(centerPoint_LeftPenaltyBox)
-	do BuiltinAIBot() # switch to AI Bot control
+	do dribbleToAndShoot(-80 @ 0)
+	do HoldPosition()
 
-behavior crossToPlayers(list_of_players):
-	destinationPoint = Point on attack_region_in_penaltyBox
+behavior rightLMBehavior():
+	destinationPoint = Point on rightLM_AttackRegion
 	do MoveToPosition(destinationPoint)
-	do HighPassTo(Uniform(*list_of_players))
-	do BuiltinAIBot() # switch to AI Bot control
+	do HighPassTo(Uniform(ego, right_RightMid))
+	do HoldPosition()
 
-RightGK
-right_RightMid = RightRM on rightRightMidRegion, with behavior receiveCrossAndShoot(Point on rightRM_AttackRegion)
-ego = RightAM on rightCenterMidRegion, with behavior receiveCrossAndShoot(Point on rightAM_AttackRegion)
-right_LeftMid = RightLM on rightLeftMidRegion, with behavior crossToPlayers([ego, right_RightMid])
+RightGK with behavior HoldPosition()
+right_RightMid = RightRM on rightRightMidRegion, with behavior runToReceiveCrossAndShoot(Point on rightRM_AttackRegion)
+ego = RightAM on rightCenterMidRegion, with behavior runToReceiveCrossAndShoot(Point on rightAM_AttackRegion)
+right_LeftMid = RightLM on rightLeftMidRegion, with behavior rightLMBehavior()
 ball = Ball ahead of right_LeftMid by 2
 
 LeftGK with behavior HoldPosition()

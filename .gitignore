@@ -122,7 +122,6 @@ dmypy.json
 
 *.cproject
 
-# Azad's
 .idea/
 scvenv
 dumps/
