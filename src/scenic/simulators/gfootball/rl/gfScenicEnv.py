@@ -172,7 +172,7 @@ def test_observation():
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
 	num_trials = 1
-	scenario_file = f"/Users/azadsalam/codebase/scenic/examples/gfootball/monologue.scenic"
+	scenario_file = f"/Users//codebase/scenic/examples/gfootball/monologue.scenic"
 	scenario = buildScenario(scenario_file)
 
 	compute_scenic_behavior = True
@@ -242,7 +242,7 @@ def test_shape():
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
 	num_trials = 1
-	scenario_file = f"/Users/azadsalam/codebase/scenic/examples/gfootball/monologue.scenic"
+	scenario_file = f"/Users//codebase/scenic/examples/gfootball/monologue.scenic"
 	scenario = buildScenario(scenario_file)
 
 	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)

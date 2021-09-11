@@ -59,7 +59,7 @@ def create_single_football_env(scenic_file_path, verbosity=0, iprocess=0, repres
 
 
 if __name__=="__main__":
-    env = create_single_football_env("/Users/azadsalam/codebase/scenic/examples/gfootball/try.scenic", 0)
+    env = create_single_football_env("", 0)
 
     #obs = env.reset()
 

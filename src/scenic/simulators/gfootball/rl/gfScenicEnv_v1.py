@@ -152,7 +152,7 @@ def test_observation():
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
 	num_trials = 1
-	scenario_file = f"/Users/azadsalam/codebase/scenic/examples/gfootball/monologue.scenic"
+	scenario_file = f"/Users//codebase/scenic/examples/gfootball/monologue.scenic"
 	scenario = buildScenario(scenario_file)
 
 	compute_scenic_behavior = True
