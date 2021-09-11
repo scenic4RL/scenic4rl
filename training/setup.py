@@ -5,8 +5,8 @@ from setuptools import setup
 setup(
     name = "RL Training for Scenic-GFootball",
     version = "0.0.4",
-    author = "Azad Salam",
-    author_email = "salam_azad@berkeley.edu",
+    author = "X",
+    author_email = "x@y.edu",
     description = ("An demonstration of how to create, document, and publish "
                                    "to the cheese shop a5 pypi.org."),
     license = "BSD",

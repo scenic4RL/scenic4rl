@@ -408,7 +408,6 @@ class GFootBallSimulation(Simulation):
 			return 0
 
 			#signal scenic backend to stop simulation
-			#askEddie: Signal end of simulation
 
 
 		if action==None:
