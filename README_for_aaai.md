@@ -49,7 +49,10 @@ Run the following program to create an environment with a scenic scenario script
         action = env.action_space.sample()
         _, _, done, _ = env.step(action)
 
-## Dataset of scenarios and probabilistic scenic policies
+## Libraries and dataset of scenarios and probabilistic scenic policies
+
+### Libraries 
+Our model, action, and behavior libraries can be found in the directory `src/scenic/simulators/gfootball/` in `model.scenic`, `actions.py` , and `behaviors.scenic` respectively.   
 
 ### Scenarios 
 All of our proposed scenarios can be found in the `training/gfrl/_scenarios` directory, categorized according to their type. Proposed Defense and Offense Scenarios are placed in `training/gfrl/_scenarios/defense` and `training/gfrl/_scenarios/offense` directories, respectively. 
