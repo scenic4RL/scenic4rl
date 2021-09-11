@@ -1,8 +1,0 @@
-Scenario, Interactions, Time
-scenic_/Users//codebase/scenic/training/gfrl/_scenarios/academy/pass_n_shoot.scenic, 500,  4.178401962
-scenic_/Users//codebase/scenic/training/gfrl/_scenarios/academy/run_pass_shoot.scenic, 500,  3.523495780000001
-raw_gf_academy_empty_goal, 500,  1.3245527810000013
-raw_gf_academy_empty_goal_close, 500,  1.3406645909999995
-raw_gf_academy_pass_and_shoot_with_keeper, 500,  1.550594234
-raw_gf_academy_run_pass_and_shoot_with_keeper, 500,  1.6583874250000008
-raw_gf_academy_run_to_score_with_keeper, 500,  1.8619305350000008

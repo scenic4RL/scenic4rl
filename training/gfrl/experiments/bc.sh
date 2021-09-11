@@ -16,5 +16,3 @@ python3 -u -m gfrl.base.run_bc \
   --exp_root ../_res_bc \
   --exp_name offense_avoid_pass_shoot \
   "$@"
-
-
