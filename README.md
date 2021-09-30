@@ -1,5 +1,5 @@
 
-# Installation and Usage Guide for: Programmatic Modeling and Generation of Real-time Strategic Soccer Environments for Reinforcement Learning
+# Installation and Usage Guide:
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
