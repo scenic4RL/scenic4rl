@@ -66,7 +66,7 @@ class Scenario:
 				 monitors, behaviorNamespaces,
 				 dynamicScenario):
 		if workspace is None:
-			workspace = Workspace()		# default empty workspace
+			workspace = Workspace()	# default empty workspace
 		self.workspace = workspace
 		self.simulator = simulator		# simulator for dynamic scenarios
 		# make ego the first object, while otherwise preserving order

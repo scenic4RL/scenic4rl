@@ -22,7 +22,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 dotmap = "^1.3.13"
 shapely = "^1.7.0"
 mapbox_earcut = "^0.12.10"
@@ -43,6 +43,12 @@ tox = {version = "^3.14.0", optional = true}
 sphinx_rtd_theme = {version = "^0.4.3", optional = true}
 astor = {version = "^0.8.1", optional = true}
 tqdm = "^4.59.0"
+gfootball = "^2.10.1"
+#tensorflow = "^1.15"
+dm-sonnet = "^1"
+verifai = { path = "/home/ek65/Desktop/VerifAI", develop = false}
+psutil = "^5.8.0"
+#baselines = {git = "https://github.com/openai/baselines.git", rev = "master"}
 
 
 
