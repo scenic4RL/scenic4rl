@@ -1,63 +1,64 @@
 import verifai
 import scenic
 from functions import *
-from scenic.core.distributions import Samplable, Range
+from scenic.core.distributions import Samplable, Range, Constant
 from scenic.core.regions import RectangularRegion, PointInRegionDistribution
 from scenic.core.vectors import Vector
 from verifai.samplers.scenic_sampler import *
 from scenic.core.utils import DefaultIdentityDict
 import random
 
-def isInCheckedVar(var, checked_var):
-	for v in checked_var:
+def issamplableVar(var, samplableVars):
+	for v in samplableVars:
 		if var is v:
 			return True
 	return False
 
-def randObjParser(obj, subsamples=None, checked_var=[]):
+def randObjParser(obj, subsamples=None, samplableVars=[]):
 	if subsamples is None:
 		subsamples = DefaultIdentityDict()
 	for child in obj._conditioned._dependencies:
 		if child not in subsamples:
-			subsamples[child] = randObjParser(child, subsamples, checked_var)
+			subsamples[child] = randObjParser(child, subsamples, samplableVars)
 
-	print("obj: ", obj)
-	if isinstance(obj, (Range, PointInRegionDistribution)) and not isInCheckedVar(obj, checked_var):
-		print("obj.position: ", obj.region.position)
-		print("obj.region.hw: ", obj.region.hw)
-		print("obj.region.hl: ", obj.region.hl)
-		checked_var.append(obj)
+	# print("obj: ", obj)
+	if isinstance(obj, (Range, PointInRegionDistribution)) and not issamplableVar(obj, samplableVars):
+		# print("obj.position: ", obj.region.position)
+		# print("obj.region.hw: ", obj.region.hw)
+		# print("obj.region.hl: ", obj.region.hl)
+		samplableVars.append(obj)
 	return obj._conditioned.sampleGiven(subsamples)
 
-# checked_var = []
-# sampled_obj = randObjParser(objects[0], checked_var=checked_var)
-# print(sampled_obj.position)
-# print("checked_var: ", checked_var)
-# print(checked_var[0].)
-
-def parseVar(checked_var):
-	samplableVars = []
-	for var in checked_var:
+def parseVar(samplableVars):
+	low_high_ranges = []
+	for var in samplableVars:
 		if isinstance(var, Range):
-			samplableVars.append(tuple([var.low, var.high]))
+			low_high_ranges.append(tuple([var.low, var.high]))
 		elif isinstance(var, PointInRegionDistribution):
 			if isinstance(var.region, RectangularRegion):
 				region = var.region
-				samplableVars.append(tuple([-region.hw, region.hw]))
-				samplableVars.append(tuple([-region.hl, region.hl]))
+				low_high_ranges.append(tuple([-region.hw, region.hw]))
+				low_high_ranges.append(tuple([-region.hl, region.hl]))
 			else:
 				raise NotImplementedError
 		else:
 			raise NotImplementedError
-	print("length of samplableVars: ", len(samplableVars))
-	return samplableVars
+	# print("length of samplableVars: ", len(low_high_ranges))
+	return low_high_ranges
+
+def low_high_ranges(ranges):
+	low, high = [], []
+	for elem in ranges:
+		low.append(elem[0])
+		high.append(elem[1])
+	return low, high
 
 def parseSamplableVars(scenario):
-	checked_var = []
+	samplableVars = []
 	for obj in scenario.objects:
-		randObjParser(obj, checked_var=checked_var)
-	print("len of checked_var: ", len(checked_var))
-	return checked_var
+		randObjParser(obj, samplableVars=samplableVars)
+	# print("len of checked_var: ", len(checked_var))
+	return samplableVars
 
 def randomSampleVars(samplableVars):
 	sampledVars = []
@@ -65,13 +66,14 @@ def randomSampleVars(samplableVars):
 		sampledVars.append(random.uniform(r[0],r[1]))
 	return sampledVars
 
-def createInputDictionary(checked_var, sampledVars):
+def createInputDictionary(samplableVars, sampledVars):
 	inputDict = {}
 	index = 0
-	for var in checked_var:
+	for var in samplableVars:
 		if isinstance(var, Range):
-			inputDict[var] = sampledVars[index]
-			print("sample: ", sampledVars[index])
+			inputDict[var] = Constant(sampledVars[index])
+			print("sample: ", inputDict[var])
+			print("sample._dependencies: ", inputDict[var]._dependencies)
 			index += 1
 		elif isinstance(var, PointInRegionDistribution):
 			if isinstance(var.region, RectangularRegion):
@@ -101,7 +103,11 @@ def conditionInputVar(obj, inputDict, subsamples=None):
 		# print("obj.position: ", obj.region.position)
 		# print("obj.region.hw: ", obj.region.hw)
 		# print("obj.region.hl: ", obj.region.hl)
+		if isinstance(obj._conditioned, Range):
+			print("Range inputDict[obj]: ", inputDict[obj])
+			print("inputDict[obj]._dependencies: ", inputDict[obj]._dependencies)
 		obj._conditioned = inputDict[obj]
+
 	return 0
 
 def uncondition(obj, subsamples=None):
@@ -126,7 +132,6 @@ def inputVarToScenario(scenario, inputDict):
 
 scenic_file = '/home/ek65/Desktop/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic'
 scenario = scenic.scenarioFromFile(scenic_file)
-objects = scenario.objects
 
 samplableVars = parseSamplableVars(scenario)
 varRanges = parseVar(samplableVars)

@@ -122,6 +122,16 @@ class Samplable(LazilyEvaluable):
 				l.append('  ' + line)
 		return l
 
+class Constant(Samplable):
+	def __init__(self, value):
+		self._conditioned = value
+		self._dependencies = tuple()
+		self.value = value
+
+	def sampleGiven(self, value):
+		return self.value
+
+
 class Distribution(Samplable):
 	"""Abstract class for distributions."""
 
