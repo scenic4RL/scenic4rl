@@ -16,7 +16,7 @@ egoAttackRegion = get_reg_from_edges(-80, -75, 5, 0)
 rightRMAttackRegion = get_reg_from_edges(-80, -75, 5, -5)
 fallBackRegion = get_reg_from_edges(-70, -60, 5, -5)
 
-behavior egoBehavior(destination_point):
+behavior egoBehavior(destination_point, fallbackpoint):
 	passedToTeammate = False
 
 	try:
@@ -26,7 +26,6 @@ behavior egoBehavior(destination_point):
 		do AimGoalCornerAndShoot()
 
 	interrupt when passedToTeammate and teammateHasBallPossession(self):
-		fallbackpoint = Point on fallBackRegion
 		do MoveToPosition(fallbackpoint, sprint=True)
 		do HoldPosition() until self.owns_ball
 
@@ -36,12 +35,10 @@ behavior egoBehavior(destination_point):
 	do HoldPosition()
 
 
-behavior rightRMBehavior(destination_point):
-
+behavior rightRMBehavior(destination_point, new_dest_point):
 	try:
 		do HighPassTo(ego)
 		do MoveToPosition(destination_point, sprint=True)
-		new_dest_point = Point on rightRMAttackRegion
 		do egoBehavior(new_dest_point)
 	interrupt when opponentTeamHasBallPossession(self):
 		do FollowObject(ball, sprint=True)
@@ -54,8 +51,10 @@ left_defender2 = LeftLM on MyLeftMidRegion
 RightGK
 ego_destinationPoint = Point on egoAttackRegion
 rightRM_destinationPoint = Point on rightRMAttackRegion
+fallbackpoint = Point on fallBackRegion
+new_dest_point = Point on rightRMAttackRegion
 
-rightRM = RightRM with behavior rightRMBehavior(rightRM_destinationPoint)
-ego = RightAM on egoInitialRegion, with behavior egoBehavior(ego_destinationPoint)
+rightRM = RightRM with behavior rightRMBehavior(rightRM_destinationPoint, new_dest_point)
+ego = RightAM on egoInitialRegion, with behavior egoBehavior(ego_destinationPoint, fallbackpoint)
 
 ball = Ball ahead of rightRM by 2

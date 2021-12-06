@@ -131,7 +131,7 @@ class Ball:
     #Ball State: https://github.com/google-research/football/blob/master/gfootball/doc/observation.md
     #5 properties in GFootball: position, direction, rotation, owned_team, owned_player
     position[dynamic]: Point on workspace
-    direction[dynamic]: Range(0, 360) deg
+    direction[dynamic]: 0 deg
     rotation[dynamic]: tuple
     owned_team[dynamic]: int
     owned_player_idx[dynamic]: int
@@ -171,7 +171,7 @@ class Player:
     team: str
     #position_sim[dynamic]: Vector
 
-    direction[dynamic]: Range(0, 360) deg
+    direction[dynamic]: 0 deg
     #direction_vec[dynamic]: Vector
 
     tired_factor[dynamic]: (0,1)#float

@@ -26,8 +26,7 @@ behavior runToReceiveCrossAndShoot(destinationPoint):
 	do dribbleToAndShoot(-80 @ 0)
 	do HoldPosition()
 
-behavior rightLMBehavior():
-	destinationPoint = Point on rightLM_AttackRegion
+behavior rightLMBehavior(destinationPoint):
 	do MoveToPosition(destinationPoint)
 	do HighPassTo(Uniform(ego, right_RightMid))
 	do HoldPosition()
@@ -35,7 +34,7 @@ behavior rightLMBehavior():
 RightGK
 right_RightMid = RightRM on rightRightMidRegion, with behavior runToReceiveCrossAndShoot(Point on rightRM_AttackRegion)
 ego = RightAM on rightCenterMidRegion, with behavior runToReceiveCrossAndShoot(Point on rightAM_AttackRegion)
-right_LeftMid = RightLM on rightLeftMidRegion, with behavior rightLMBehavior()
+right_LeftMid = RightLM on rightLeftMidRegion, with behavior rightLMBehavior(Point on rightLM_AttackRegion)
 ball = Ball ahead of right_LeftMid by 2
 
 LeftGK with behavior HoldPosition()

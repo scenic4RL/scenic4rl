@@ -13,9 +13,9 @@ param end_episode_on_out_of_play = True
 param end_episode_on_possession_change = True
 
 
-behavior egoBehavior(destination_point):
+behavior egoBehavior(destination_point, reactionDistance):
 	try:
-		do dribbleToAndShoot(destination_point, reactionDistance=Range(1,5))
+		do dribbleToAndShoot(destination_point, reactionDistance)
 	interrupt when (distance from self to ball) > 2:
 		do FollowObject(ball, sprint=True)
 	do IdleBehavior()
@@ -26,6 +26,6 @@ LeftGK with behavior HoldPosition()
 left_defender = LeftCB
 
 RightGK
-ego = RightCM on attacker_region, with behavior egoBehavior(-80 @ 0)
+ego = RightCM on attacker_region, with behavior egoBehavior(-80 @ 0, Range(1,5))
 ball = Ball ahead of ego by 2
 
