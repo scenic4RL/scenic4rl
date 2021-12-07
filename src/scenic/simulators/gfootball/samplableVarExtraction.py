@@ -1,6 +1,6 @@
 import verifai
 import scenic
-from functions import *
+from scenic.simulators.gfootball.functions import *
 from scenic.core.distributions import Samplable, Range, Constant
 from scenic.core.regions import RectangularRegion, PointInRegionDistribution
 from scenic.core.vectors import Vector
