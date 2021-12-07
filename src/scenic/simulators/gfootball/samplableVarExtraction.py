@@ -72,8 +72,8 @@ def createInputDictionary(samplableVars, sampledVars):
 	for var in samplableVars:
 		if isinstance(var, Range):
 			inputDict[var] = Constant(sampledVars[index])
-			print("sample: ", inputDict[var])
-			print("sample._dependencies: ", inputDict[var]._dependencies)
+			# print("sample: ", inputDict[var])
+			# print("sample._dependencies: ", inputDict[var]._dependencies)
 			index += 1
 		elif isinstance(var, PointInRegionDistribution):
 			if isinstance(var.region, RectangularRegion):
@@ -82,7 +82,7 @@ def createInputDictionary(samplableVars, sampledVars):
 				ry = sampledVars[index+1]
 				pt = region.position.offsetRotated(region.heading, Vector(rx, ry))
 				inputDict[var] = region.orient(pt)
-				print("sample: ", inputDict[var])
+				# print("sample: ", inputDict[var])
 				index += 2
 			else: 
 				raise NotImplementedError
@@ -103,9 +103,9 @@ def conditionInputVar(obj, inputDict, subsamples=None):
 		# print("obj.position: ", obj.region.position)
 		# print("obj.region.hw: ", obj.region.hw)
 		# print("obj.region.hl: ", obj.region.hl)
-		if isinstance(obj._conditioned, Range):
-			print("Range inputDict[obj]: ", inputDict[obj])
-			print("inputDict[obj]._dependencies: ", inputDict[obj]._dependencies)
+		# if isinstance(obj._conditioned, Range):
+		# 	print("Range inputDict[obj]: ", inputDict[obj])
+		# 	print("inputDict[obj]._dependencies: ", inputDict[obj]._dependencies)
 		obj._conditioned = inputDict[obj]
 
 	return 0
@@ -130,28 +130,28 @@ def inputVarToScenario(scenario, inputDict):
 		conditionInputVar(obj, inputDict)
 	return None
 
-scenic_file = '/home/ek65/Desktop/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic'
-scenario = scenic.scenarioFromFile(scenic_file)
+# scenic_file = '/home/ek65/Desktop/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic'
+# scenario = scenic.scenarioFromFile(scenic_file)
 
-samplableVars = parseSamplableVars(scenario)
-varRanges = parseVar(samplableVars)
-print("varRanges: ", varRanges)
+# samplableVars = parseSamplableVars(scenario)
+# varRanges = parseVar(samplableVars)
+# print("varRanges: ", varRanges)
 
-sampledVars = randomSampleVars(varRanges)
-print("sampledVars: ", sampledVars)
-inputDict = createInputDictionary(samplableVars, sampledVars)
+# sampledVars = randomSampleVars(varRanges)
+# print("sampledVars: ", sampledVars)
+# inputDict = createInputDictionary(samplableVars, sampledVars)
 
-inputVarToScenario(scenario, inputDict)
-scene = scenario.generate()
+# inputVarToScenario(scenario, inputDict)
+# scene = scenario.generate()
 
-print("scene: ", scene)
-for obj in scene[0].objects:
-	print("scene position: ", obj.position)
+# print("scene: ", scene)
+# for obj in scene[0].objects:
+# 	print("scene position: ", obj.position)
 
-unconditionScenario(scenario)
-print("unconditioned")
-for obj in scenario.objects:
-	print("position: ", obj.position.sample())
-print("resample")
-for obj in scenario.objects:
-	print("position: ", obj.position.sample())
+# unconditionScenario(scenario)
+# print("unconditioned")
+# for obj in scenario.objects:
+# 	print("position: ", obj.position.sample())
+# print("resample")
+# for obj in scenario.objects:
+# 	print("position: ", obj.position.sample())

@@ -40,6 +40,8 @@ class GFScenicEnv_v2(gym.Env):
 		for _ in range(100):
 			try:
 				self.scene, _ = scenic_helper.generateScene(self.scenario)
+				if self.scene is None:
+					return None
 
 				if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
 
