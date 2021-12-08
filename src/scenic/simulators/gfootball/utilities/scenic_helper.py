@@ -4,10 +4,10 @@ import scenic.syntax.translator as translator
 from scenic.syntax import veneer
 
 """Copied from __main__.py"""
-def generateScene(scenario, verbosity=0, show_params=False):
+def generateScene(scenario, maxIterations=2000, verbosity=0, show_params=False):
     startTime = time.time()
     scene, iterations = errors.callBeginningScenicTrace(
-        lambda: scenario.generate(verbosity=verbosity)
+        lambda: scenario.generate(maxIterations=maxIterations, verbosity=verbosity)
     )
     if verbosity >= 1:
         totalTime = time.time() - startTime

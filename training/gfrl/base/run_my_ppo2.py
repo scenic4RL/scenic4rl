@@ -206,8 +206,6 @@ def train(_):
         else:
             eval_env = None
         
-        
-                         
     
     # Import tensorflow after we create environments. TF is not fork sake, and
     # we could be using TF as part of environment if one of the players is
