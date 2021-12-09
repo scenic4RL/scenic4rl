@@ -189,7 +189,7 @@ class Scenario:
 					feedback = self.externalSampler.rejectionFeedback
 			if iterations >= maxIterations:
 				# raise RejectionException(f'failed to generate scenario in {iterations} iterations')
-				return None
+				return None, None
 			iterations += 1
 			try:
 				if self.externalSampler is not None:
