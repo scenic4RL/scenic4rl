@@ -1,10 +1,10 @@
-import verifai
+# import verifai
 import scenic
-from scenic.simulators.gfootball.functions import *
+# from scenic.simulators.gfootball.functions import *
 from scenic.core.distributions import Samplable, Range, Constant
 from scenic.core.regions import RectangularRegion, PointInRegionDistribution
 from scenic.core.vectors import Vector
-from verifai.samplers.scenic_sampler import *
+# from verifai.samplers.scenic_sampler import *
 from scenic.core.utils import DefaultIdentityDict
 import random
 
