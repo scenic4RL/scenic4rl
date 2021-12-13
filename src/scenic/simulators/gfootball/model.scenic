@@ -195,8 +195,8 @@ class Player:
 
     #scenic properties
     heading: 0 deg
-    width: 0.5
-    length: 0.5
+    width: 1.0
+    length: 1.0
     allowCollisions: False
     requireVisible: False
 
