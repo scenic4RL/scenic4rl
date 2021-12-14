@@ -126,7 +126,7 @@ behavior IdleBehavior():
     while True:
         take NoAction()
 
-behavior MoveToPosition(dest_point, sprint=False):
+behavior MoveToPosition(dest_point, reaction_dist=2, sprint=False):
     '''
     Move a player to position x,y. Will Stop if within 2 meter 
     '''
@@ -135,7 +135,7 @@ behavior MoveToPosition(dest_point, sprint=False):
     self_x = self.position.x
     self_y = self.position.y
     distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
-    withinDistanceFromDestPt = 10 if sprint else 2
+    withinDistanceFromDestPt = 10 if sprint else reaction_dist
 
     while distance > withinDistanceFromDestPt:
         if self.team == 'right':
@@ -144,12 +144,17 @@ behavior MoveToPosition(dest_point, sprint=False):
             corresponding_dir = lookup_direction(x - self_x, y - self_y)
 
         take SetDirection(corresponding_dir)
+
         if sprint:
             take Sprint()
 
         self_x = self.position.x
         self_y = self.position.y
         distance = math.sqrt(((x-self_x)*(x-self_x)) + (y-self_y)*(y-self_y))
+
+        # if chasePlayer is not None:
+        #     point = Point ahead of chasePlayer by 0.5
+        #     x, y = point.position.x, point.position.y
 
     if sprint:
         take ReleaseSprint()

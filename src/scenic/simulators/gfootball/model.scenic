@@ -69,7 +69,7 @@ param dump_frequency = 0 # In runPPO2 dump_frequency = 50 was used
 # Set up geometric attributes
 field_width  = 200
 field_height =  84
-field_width_su = 2           #fieldWidth in terms of Simulator unit
+field_width_su = 2 #fieldWidth in terms of Simulator unit
 field_height_su = 0.42*2
 
 pbox_height = 48

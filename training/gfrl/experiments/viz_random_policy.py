@@ -27,7 +27,7 @@ gf_env_settings = {
 }
 
 
-scenario_file = f"path_to_scenic_script"
+scenario_file = "/home/ek65/Desktop/scenic4rl/training/gfrl/_scenarios/offense/3vs1_offense.scenic"
 
 
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
