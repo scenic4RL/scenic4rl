@@ -65,7 +65,7 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag=""):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag="", num_left_controlled=1):
 
 		"""
 		def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
@@ -87,7 +87,8 @@ class GFootBallSimulation(Simulation):
 		self.last_raw_obs = None
 		self.done = None
 		self.for_gym_env = for_gym_env
-		self.multi_player_rl = False
+		self.num_left_controlled = num_left_controlled
+		self.multi_player_rl = (self.num_left_controlled > 1)  # not used
 
 		self.settings = self.scene.params.copy()
 		self.settings.update(settings)
@@ -372,16 +373,10 @@ class GFootBallSimulation(Simulation):
 		if self.env_type == "v1":
 			pass
 		else:
-			self.game_ds.compute_designated_as_closest_idx()
+			self.game_ds.compute_designated_as_closest_idx(num_player=self.num_left_controlled)
 
 	def get_controlled_player_idx(self):
-
-		#if self.env_type == "v1":
-		#	idx = self.game_ds.controlled_player
-
 		idx = self.game_ds.get_designated_player_idx()
-		#idx = self.game_ds.compute_designated_player_idx()
-
 		return idx
 
 

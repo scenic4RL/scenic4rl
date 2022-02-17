@@ -39,23 +39,36 @@ class GameDS:
 			return self.get_num_my_players()+self.get_num_op_players()
 
 	def get_designated_player_idx(self):
+		'''
+		This returns a list of designated players' indexes
+		'''
+		if isinstance(self.designated_player_idx, list):
+			return self.designated_player_idx
 		return [self.designated_player_idx]
 
 
 	def compute_designated_from_obs(self):
 		pass
 
-	def compute_designated_as_closest_idx(self):
+	def compute_designated_as_closest_idx(self, num_player=1):
 		import numpy as np
 		df = lambda p1,p2: np.sqrt((p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]))
 
-		dists= {p: df(p.position, self.ball.position) for p in self.my_players}
+		dists = {p: df(p.position, self.ball.position) for p in self.my_players}
 
-		player = min(dists, key=dists.get)
-		#print("player in control: ", player)
-		self.designated_player = player
-		self.designated_player_idx = self.player_to_ctrl_idx[player]
-		return [self.designated_player_idx]
+		if num_player > 1:
+			# TODO verify
+			players = sorted(dists, key=dists.get)[:num_player]
+			self.designated_player = players
+			self.designated_player_idx = [self.player_to_ctrl_idx[player] for player in players]
+			return self.designated_player_idx
+
+		else:
+			player = min(dists, key=dists.get)
+			#print("player in control: ", player)
+			self.designated_player = player
+			self.designated_player_idx = self.player_to_ctrl_idx[player]
+			return [self.designated_player_idx]
 
 	@staticmethod
 	def player_str(player):
