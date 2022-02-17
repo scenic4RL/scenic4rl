@@ -1,10 +1,10 @@
-import verifai
+# import verifai
 import scenic
-from scenic.simulators.gfootball.functions import *
+# from scenic.simulators.gfootball.functions import *
 from scenic.core.distributions import Samplable, Range, Constant
 from scenic.core.regions import RectangularRegion, PointInRegionDistribution
 from scenic.core.vectors import Vector
-from verifai.samplers.scenic_sampler import *
+# from verifai.samplers.scenic_sampler import *
 from scenic.core.utils import DefaultIdentityDict
 import random
 
@@ -130,19 +130,22 @@ def inputVarToScenario(scenario, inputDict):
 		conditionInputVar(obj, inputDict)
 	return None
 
-# scenic_file = '/home/ek65/Desktop/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic'
-# scenario = scenic.scenarioFromFile(scenic_file)
+scenic_file = '/home/ek65/Desktop/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic'
+scenario = scenic.scenarioFromFile(scenic_file)
 
-# samplableVars = parseSamplableVars(scenario)
-# varRanges = parseVar(samplableVars)
-# print("varRanges: ", varRanges)
+samplableVars = parseSamplableVars(scenario)
+varRanges = parseVar(samplableVars)
+print("varRanges: ", varRanges)
 
-# sampledVars = randomSampleVars(varRanges)
-# print("sampledVars: ", sampledVars)
-# inputDict = createInputDictionary(samplableVars, sampledVars)
+sampledVars = randomSampleVars(varRanges)
+print("sampledVars: ", sampledVars)
+inputDict = createInputDictionary(samplableVars, sampledVars)
 
-# inputVarToScenario(scenario, inputDict)
-# scene = scenario.generate()
+inputVarToScenario(scenario, inputDict)
+scene = scenario.generate()
+
+print("scene")
+print(scene.objects[0])
 
 # print("scene: ", scene)
 # for obj in scene[0].objects:

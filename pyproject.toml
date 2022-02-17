@@ -46,6 +46,7 @@ tqdm = "^4.59.0"
 # tensorflow = "^1.15.0"
 
 gfootball = "^2.10.1"
+importlib = "^1.0.4"
 dm-sonnet = "^1"
 psutil = "^5.8.0"
 # baselines = {git = "https://github.com/openai/baselines.git", rev = "master"}

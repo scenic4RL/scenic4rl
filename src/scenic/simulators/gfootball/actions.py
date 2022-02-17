@@ -177,12 +177,12 @@ def player_with_ball(ds, ball, team=None):
         return ds.op_players[ball.owned_player_idx]
     return None
 
-def get_closest_player_info(position, players):
+def get_closest_player_info(player, players):
     min_distance = None
     closest_player = None
 
     for p in players:
-        dist = math.sqrt(math.pow(p.x - position.x, 2) + math.pow(p.y - position.y, 2))
+        dist = math.sqrt(math.pow(p.position.x - player.position.x, 2) + math.pow(p.position.y - player.position.y, 2))
         if dist == 0:
             continue
         if min_distance is None or dist < min_distance:

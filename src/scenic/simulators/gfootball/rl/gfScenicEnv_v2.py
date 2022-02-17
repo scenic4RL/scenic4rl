@@ -63,6 +63,7 @@ class GFScenicEnv_v2(gym.Env):
 
 			except Exception as e:
 				print("Resample Script. Cause Error: ", e)
+				assert False
 				pass
 
 	#def filter_obs(self, obs):
