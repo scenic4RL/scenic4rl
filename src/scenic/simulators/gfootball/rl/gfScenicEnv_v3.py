@@ -5,6 +5,7 @@ import gym
 # from scenic.simulators.gfootball.rl import pfrl_training
 
 from gfootball.env import football_action_set
+from tqdm import tqdm
 
 # Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
 from scenic.simulators.gfootball.utilities import scenic_helper
@@ -132,22 +133,26 @@ def test_obs():
 		"representation": 'extracted',
 		"real_time": True,
 		# "channel_dimensions": (42, 42)
+		"dump_full_episodes": True,
+		"dump_scores": True,
+		"tracesdir": "/home/mark/workplace/gf/scenic4rl/replays",
+		"write_video": True,
 	}
 
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v3 import GFScenicEnv_v3
 
-	num_trials = 10
+	num_trials = 1
 	num_left_to_be_controlled = 2
 	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
 	scenario = buildScenario(scenario_file)
 
-	env = GFScenicEnv_v3(initial_scenario=scenario, num_left_controlled=num_left_to_be_controlled, gf_env_settings=gf_env_settings, allow_render=False)
+	env = GFScenicEnv_v3(initial_scenario=scenario, num_left_controlled=num_left_to_be_controlled, gf_env_settings=gf_env_settings, allow_render=True)
 
 	# from scenic.simulators.gfootball.rl import utils
 
 	num_epi = 0
 	total_r = 0
-	from tqdm import tqdm
+
 	for i in tqdm(range(0, num_trials)):
 		obs = env.reset()
 		assert obs.shape == (num_left_to_be_controlled,72,96,16), obs.shape
@@ -155,6 +160,7 @@ def test_obs():
 		# input("Enter")
 		while not done:
 			action = env.action_space.sample()
+			action = [1,3] # 1 left 3 top 5 right 7 down
 			obs, reward, done, info = env.step(action)
 			assert obs.shape == (num_left_to_be_controlled,72,96,16), obs.shape
 			total_r += reward

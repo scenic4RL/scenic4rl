@@ -5,28 +5,22 @@ import os
 import tempfile
 
 import argparse
-import gfootball.env as football_env
+# import gfootball.env as football_env
 import gym
 import ray
 from ray import tune
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 from ray.tune.registry import register_env
+from ray.rllib.models import ModelCatalog
 
+from gfrl.common.nature_cnn import NatureCNN
 from scenic.simulators.gfootball.rl.gfScenicEnv_v3 import GFScenicEnv_v3
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--num-agents', type=int, default=2)
-parser.add_argument('--num-policies', type=int, default=2)
-parser.add_argument('--num-steps', type=int, default=5000000)
-parser.add_argument('--simple', action='store_true')
-
 
 class RllibGFootball(MultiAgentEnv):
     """An example of a wrapper for GFootball to make it compatible with rllib."""
 
-    def __init__(self, num_agents):
+    def __init__(self, scenario_file, num_left_to_be_controlled):
         # self.env = football_env.create_environment(
         #     env_name='academy_pass_and_shoot_with_keeper', stacked=True,
         #     representation='extracted',
@@ -44,8 +38,6 @@ class RllibGFootball(MultiAgentEnv):
             "dump_frequency": 0,
             # "channel_dimensions": (42, 42)
         }
-        num_left_to_be_controlled = 2
-        scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
         scenario = buildScenario(scenario_file)
 
         self.env = GFScenicEnv_v3(initial_scenario=scenario, num_left_controlled=num_left_to_be_controlled,
@@ -56,7 +48,7 @@ class RllibGFootball(MultiAgentEnv):
             low=self.env.observation_space.low[0],
             high=self.env.observation_space.high[0],
             dtype=self.env.observation_space.dtype)
-        self.num_agents = num_agents
+        self.num_agents = num_left_to_be_controlled
         print(self.num_agents)
 
     def reset(self):
@@ -89,13 +81,24 @@ class RllibGFootball(MultiAgentEnv):
         return obs, rewards, dones, infos
 
 
+
+# running exps
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--scenario-file', type=str, default="/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic")
+parser.add_argument('--num-agents', type=int, default=2)
+parser.add_argument('--num-policies', type=int, default=2)
+parser.add_argument('--num-steps', type=int, default=5000000)
+
+parser.add_argument('--simple', action='store_true')
+
 if __name__ == '__main__':
     args = parser.parse_args()
     ray.init(num_gpus=1)
 
     # Simple environment with `num_agents` independent players
-    register_env('gfootball', lambda _: RllibGFootball(args.num_agents))
-    single_env = RllibGFootball(args.num_agents)
+    register_env('gfootball', lambda _: RllibGFootball(args.scenario_file, args.num_agents))
+    single_env = RllibGFootball(args.scenario_file, args.num_agents)
     obs_space = single_env.observation_space
     act_space = single_env.action_space
 
@@ -109,6 +112,9 @@ if __name__ == '__main__':
         'policy_{}'.format(i): gen_policy(i) for i in range(args.num_policies)
     }
     policy_ids = list(policies.keys())
+
+    # set up model
+    ModelCatalog.register_custom_model("nature_cnn", NatureCNN)
 
     # set up config
     rl_trainer_config = {
@@ -134,13 +140,14 @@ if __name__ == '__main__':
         'simple_optimizer': args.simple,
         # All model-related settings go into this sub-dict.
         "model": {
-            # By default, the MODEL_DEFAULTS dict above will be used.
-            # Change individual keys in that dict by overriding them, e.g.
-            "conv_filters": [[32, [8, 8], 4],
-                             [64, [4, 4], 2],
-                             [32, [3, 3], 1],
-                             [1, [7, 10], 10],
-                             ],
+            "custom_model": "nature_cnn",
+            "custom_model_config": {},
+            # params for default network
+            # "conv_filters": [[32, [8, 8], 4],
+            #                  [64, [4, 4], 2],
+            #                  [32, [3, 3], 1],
+            #                  [1, [7, 10], 10],
+            #                  ],
             # "post_fcnet_hiddens": [512],
         },
         'multiagent': {
