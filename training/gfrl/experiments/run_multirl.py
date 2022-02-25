@@ -20,7 +20,7 @@ from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 class RllibGFootball(MultiAgentEnv):
     """An example of a wrapper for GFootball to make it compatible with rllib."""
 
-    def __init__(self, scenario_file, num_left_to_be_controlled):
+    def __init__(self, scenario_file, num_left_to_be_controlled, env_config=None):
         # self.env = football_env.create_environment(
         #     env_name='academy_pass_and_shoot_with_keeper', stacked=True,
         #     representation='extracted',
@@ -40,8 +40,12 @@ class RllibGFootball(MultiAgentEnv):
         }
         scenario = buildScenario(scenario_file)
 
+        # rank is used to discern env across workers
+        # Notice env_config may appear empty {} but always contains worker_index
+        rank = env_config.worker_index if env_config is not None else 100
+
         self.env = GFScenicEnv_v3(initial_scenario=scenario, num_left_controlled=num_left_to_be_controlled,
-                                  gf_env_settings=gf_env_settings, allow_render=False)
+                                  gf_env_settings=gf_env_settings, allow_render=False, rank=rank)
 
         self.action_space = gym.spaces.Discrete(self.env.action_space.nvec[1])
         self.observation_space = gym.spaces.Box(
@@ -97,7 +101,7 @@ if __name__ == '__main__':
     ray.init(num_gpus=1)
 
     # Simple environment with `num_agents` independent players
-    register_env('gfootball', lambda _: RllibGFootball(args.scenario_file, args.num_agents))
+    register_env('gfootball', lambda config: RllibGFootball(args.scenario_file, args.num_agents, config))
     single_env = RllibGFootball(args.scenario_file, args.num_agents)
     obs_space = single_env.observation_space
     act_space = single_env.action_space
@@ -129,7 +133,7 @@ if __name__ == '__main__':
         # 'sample_batch_size': 100,
         'sgd_minibatch_size': 500,
         'num_sgd_iter': 10,
-        'num_workers': 1,
+        'num_workers': 2,
         'num_envs_per_worker': 1,
         'batch_mode': 'truncate_episodes',
         'observation_filter': 'NoFilter',
