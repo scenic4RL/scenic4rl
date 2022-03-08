@@ -20,7 +20,7 @@ from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 class RllibGFootball(MultiAgentEnv):
     """An example of a wrapper for GFootball to make it compatible with rllib."""
 
-    def __init__(self, scenario_file, num_left_to_be_controlled, env_config=None):
+    def __init__(self, scenario_file, player_control_mode, env_config=None):
         # self.env = football_env.create_environment(
         #     env_name='academy_pass_and_shoot_with_keeper', stacked=True,
         #     representation='extracted',
@@ -34,7 +34,7 @@ class RllibGFootball(MultiAgentEnv):
             "stacked": True,
             "rewards": 'scoring',
             "representation": 'extracted',
-            "real_time": True,
+            # "real_time": True,
             "dump_frequency": 0,
             # "channel_dimensions": (42, 42)
         }
@@ -44,7 +44,7 @@ class RllibGFootball(MultiAgentEnv):
         # Notice env_config may appear empty {} but always contains worker_index
         rank = env_config.worker_index if env_config is not None else 100
 
-        self.env = GFScenicEnv_v3(initial_scenario=scenario, num_left_controlled=num_left_to_be_controlled,
+        self.env = GFScenicEnv_v3(initial_scenario=scenario, player_control_mode=player_control_mode,
                                   gf_env_settings=gf_env_settings, allow_render=False, rank=rank)
 
         self.action_space = gym.spaces.Discrete(self.env.action_space.nvec[1])
@@ -52,8 +52,8 @@ class RllibGFootball(MultiAgentEnv):
             low=self.env.observation_space.low[0],
             high=self.env.observation_space.high[0],
             dtype=self.env.observation_space.dtype)
-        self.num_agents = num_left_to_be_controlled
-        print(self.num_agents)
+        
+        self.num_agents = self.env.num_left_controlled
 
     def reset(self):
         original_obs = self.env.reset()
@@ -89,9 +89,9 @@ class RllibGFootball(MultiAgentEnv):
 # running exps
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--scenario-file', type=str, default="/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic")
-parser.add_argument('--num-agents', type=int, default=2)
-parser.add_argument('--num-policies', type=int, default=2)
+parser.add_argument('--scenario-file', type=str, default="/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/3v1.scenic")
+parser.add_argument('--num-agents', type=int, default=3)
+parser.add_argument('--num-policies', type=int, default=3)
 parser.add_argument('--num-steps', type=int, default=5000000)
 
 parser.add_argument('--simple', action='store_true')
@@ -101,8 +101,8 @@ if __name__ == '__main__':
     ray.init(num_gpus=1)
 
     # Simple environment with `num_agents` independent players
-    register_env('gfootball', lambda config: RllibGFootball(args.scenario_file, args.num_agents, config))
-    single_env = RllibGFootball(args.scenario_file, args.num_agents)
+    register_env('gfootball', lambda config: RllibGFootball(args.scenario_file, "allNonGK", config))
+    single_env = RllibGFootball(args.scenario_file, "allNonGK")
     obs_space = single_env.observation_space
     act_space = single_env.action_space
 
@@ -182,13 +182,6 @@ if __name__ == '__main__':
         "model": {
             "custom_model": "nature_cnn",
             "custom_model_config": {},
-            # params for default network
-            # "conv_filters": [[32, [8, 8], 4],
-            #                  [64, [4, 4], 2],
-            #                  [32, [3, 3], 1],
-            #                  [1, [7, 10], 10],
-            #                  ],
-            # "post_fcnet_hiddens": [512],
         },
         'multiagent': {
             'policies': policies,
@@ -199,7 +192,7 @@ if __name__ == '__main__':
 
     tune.run(
         'PPO',
-        name="test_passshoot_2left_naturecnn",
+        name="fix_scenic_3v1_3left_naturecnn",
         stop={'timesteps_total': args.num_steps},
         checkpoint_freq=50,
         config=rl_trainer_config,
