@@ -73,7 +73,7 @@ class GFScenicEnv_v2(gym.Env):
 		# Execute one time step within the environment
 
 		#assert isinstance(action, int), "action must be int"
-		assert action != 19, "Cannot take built in ai action for rl!"
+		# assert action != 19, "Cannot take built in ai action for rl!"
 
 		#self.simulation.pre_step()
 
@@ -163,11 +163,11 @@ def test_observation():
 
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
-	num_trials = 1
-	scenario_file = f"/Users//codebase/scenic/examples/gfootball/monologue.scenic"
+	num_trials = 3
+	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
 	scenario = buildScenario(scenario_file)
 
-	compute_scenic_behavior = True
+	compute_scenic_behavior = False
 	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)
 
 	from scenic.simulators.gfootball.rl import utils
@@ -234,7 +234,7 @@ def test_shape():
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
 	num_trials = 1
-	scenario_file = f"/Users/codebase/scenic/examples/gfootball/monologue.scenic"
+	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
 	scenario = buildScenario(scenario_file)
 
 	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)

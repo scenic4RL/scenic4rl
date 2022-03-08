@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 
 class GameDS:
 	def __init__(self, my_players=None, op_players=None, ball=None, game_state=None, scene=None):
@@ -51,13 +51,12 @@ class GameDS:
 		pass
 
 	def compute_designated_as_closest_idx(self, num_player=1):
-		import numpy as np
 		df = lambda p1,p2: np.sqrt((p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]))
 
 		dists = {p: df(p.position, self.ball.position) for p in self.my_players}
 
 		if num_player > 1:
-			# TODO verify
+			# multiagent dynamic mode
 			players = sorted(dists, key=dists.get)[:num_player]
 			self.designated_player = players
 			self.designated_player_idx = [self.player_to_ctrl_idx[player] for player in players]
@@ -69,6 +68,23 @@ class GameDS:
 			self.designated_player = player
 			self.designated_player_idx = self.player_to_ctrl_idx[player]
 			return [self.designated_player_idx]
+
+	def compute_designated_as_fixed(self, include_GK: bool):
+		# notice we should have at least 2 left players including GK
+		if not include_GK:
+			players = [p for p in self.my_players if "GK" not in p.role]
+			assert len(players) == (len(self.my_players) - 1), "Could not exclude GK."
+		else:
+			players = self.my_players
+
+		# # use this to print the order of controlled players
+		# print([self.player_str_mini(p) for p in players])
+
+		self.designated_player = players
+		self.designated_player_idx = [self.player_to_ctrl_idx[player] for player in players]
+		return self.designated_player_idx
+
+
 
 	@staticmethod
 	def player_str(player):

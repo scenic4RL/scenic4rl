@@ -65,7 +65,7 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag="", num_left_controlled=1):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag="", player_control_mode="1"):
 
 		"""
 		def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
@@ -87,8 +87,6 @@ class GFootBallSimulation(Simulation):
 		self.last_raw_obs = None
 		self.done = None
 		self.for_gym_env = for_gym_env
-		self.num_left_controlled = num_left_controlled
-		self.multi_player_rl = (self.num_left_controlled > 1)  # not used
 
 		self.settings = self.scene.params.copy()
 		self.settings.update(settings)
@@ -183,6 +181,34 @@ class GFootBallSimulation(Simulation):
 		self.gf_env_settings["players"] = player_setting
 		self.gf_env_settings["internal_control_left"] = internal_control_left
 		self.gf_env_settings["internal_control_right"] = internal_control_right
+
+		# multiRL settings begin
+
+		# this is the number of left players that is dynamically controlled, if fixed control this is 0
+		self.num_left_dynamically_controlled = 0
+		# this is the number of left players controlled in total
+		self.num_left_controlled = 1
+
+		player_control_mode = str(player_control_mode)
+		if player_control_mode == "all":
+			self.num_left_controlled = internal_control_left
+
+		elif player_control_mode == "allNonGK":
+			assert internal_control_left > 1, "Scenario must have at least 2 left players."
+			self.num_left_controlled = internal_control_left - 1
+
+		elif player_control_mode.isnumeric():
+			self.num_left_dynamically_controlled = int(player_control_mode)
+			self.num_left_controlled = self.num_left_dynamically_controlled
+			if not (1 <= self.num_left_dynamically_controlled <= internal_control_left):
+				raise ValueError(f"player_control_mode must be a valid integer if dynamically choosing controlled players. Got: {self.num_left_dynamically_controlled}")
+
+		else:
+			raise ValueError(f'player_control_mode must be either a number for dynamic mode, or "all", or "allNonGK". Got: {player_control_mode}')
+		self.player_control_mode = player_control_mode
+
+		# multiRL settings end
+
 
 
 		self.env = self.create_gfootball_environment()
@@ -370,10 +396,14 @@ class GFootBallSimulation(Simulation):
 			return self.actions[self.game_ds.designated_player_idx]
 
 	def update_designated_player(self):
+		# only place: simulation reset / step
 		if self.env_type == "v1":
 			pass
+		elif self.num_left_dynamically_controlled == 0:
+			self.game_ds.compute_designated_as_fixed(include_GK=self.player_control_mode == "all")
 		else:
-			self.game_ds.compute_designated_as_closest_idx(num_player=self.num_left_controlled)
+			# single agent or dynamic multiagent
+			self.game_ds.compute_designated_as_closest_idx(num_player=self.num_left_dynamically_controlled)
 
 	def get_controlled_player_idx(self):
 		idx = self.game_ds.get_designated_player_idx()
@@ -438,9 +468,11 @@ class GFootBallSimulation(Simulation):
 			#assert not self.multi_player_rl, "Multi Player Rl has not been tested yet."
 			update_objects_from_obs_single_rl_agent(self.last_raw_obs, self.game_ds)
 			self.update_designated_player()
-		else:
+		else: # v2
 			update_objects_from_obs(self.last_raw_obs, self.game_ds)
-			self.update_designated_player()
+			# only update controlled player if not fixed control
+			if self.num_left_dynamically_controlled > 0:
+				self.update_designated_player()
 
 		total_rew = sim_rew
 		self.calculate_reward()
@@ -469,10 +501,6 @@ class GFootBallSimulation(Simulation):
 
 		else:
 			return None
-
-
-		#input()
-
 
 
 	def getProperties(self, obj, properties):
