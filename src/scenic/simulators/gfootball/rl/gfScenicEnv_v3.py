@@ -65,6 +65,7 @@ class GFScenicEnv_v3(gym.Env):
 		self.reset()
 		self.allow_render = allow_render
 		self.num_left_controlled = self.simulation.num_left_controlled
+		assert not (self.player_control_mode == "allNonGK" and self.num_left_controlled <= 1), "Scenario only has GK."
 
 		# multiagent obs is a list of player's respective obs
 		# self.observation_space = Tuple([Box(low=0, high=255, shape=(72, 96, 16), dtype=uint8)] * self.num_left_controlled)

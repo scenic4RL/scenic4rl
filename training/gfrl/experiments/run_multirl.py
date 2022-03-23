@@ -85,26 +85,49 @@ class RllibGFootball(MultiAgentEnv):
         return obs, rewards, dones, infos
 
 
+# scenario mapping
+scenario_name_to_file = {
+    "defender_hesitantdribble":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_hesitant_dribble.scenic",
+    "defender_zigzagdribble":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_zigzag_dribble.scenic",
+    "2v2":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2.scenic",
+    "2v2_counterattack":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2_counterattack.scenic",
+    "2v2_highpassforward":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic",
+    "3v2_counterattack":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs2_counterattack.scenic",
+    "3v2_crossfromside":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs3_cross_from_side.scenic",
+    "3v2_sidebuildup":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs3_side_buildup_play.scenic",
+
+    "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic",
+    "grf_runtoscore":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/rts.scenic",
+    "grf_runpassshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic",
+    "offense_11gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
+    "offense_avoidpassshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
+    "offense_easycross":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/easy_crossing.scenic",
+    "offense_hardcross":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/hard_crossing.scenic",
+
+}
+
 
 # running exps
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--scenario-file', type=str, default="/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/3v1.scenic")
-parser.add_argument('--num-agents', type=int, default=3)
-parser.add_argument('--num-policies', type=int, default=3)
+parser.add_argument('--scenario', type=str)
+parser.add_argument('--mode', type=str, default="allNonGK")
 parser.add_argument('--num-steps', type=int, default=5000000)
 
 parser.add_argument('--simple', action='store_true')
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    ray.init(num_gpus=1)
+    assert args.scenario in scenario_name_to_file, "invalid scenario name"
+    scenario_file = scenario_name_to_file[args.scenario]
 
-    # Simple environment with `num_agents` independent players
-    register_env('gfootball', lambda config: RllibGFootball(args.scenario_file, "allNonGK", config))
-    single_env = RllibGFootball(args.scenario_file, "allNonGK")
+    ray.init(num_gpus=1)
+    # Simple environment with input multi agent control mode
+    register_env('gfootball', lambda config: RllibGFootball(scenario_file, args.mode, config))
+    single_env = RllibGFootball(scenario_file, args.mode)
     obs_space = single_env.observation_space
     act_space = single_env.action_space
+    num_policies = single_env.num_agents
 
 
     def gen_policy(_):
@@ -113,7 +136,7 @@ if __name__ == '__main__':
 
     # Setup PPO with an ensemble of `num_policies` different policies
     policies = {
-        'policy_{}'.format(i): gen_policy(i) for i in range(args.num_policies)
+        'policy_{}'.format(i): gen_policy(i) for i in range(num_policies)
     }
     policy_ids = list(policies.keys())
 
@@ -192,7 +215,7 @@ if __name__ == '__main__':
 
     tune.run(
         'PPO',
-        name="fix_scenic_3v1_3left_naturecnn",
+        name=f"delete_all_{args.scenario}_n0",
         stop={'timesteps_total': args.num_steps},
         checkpoint_freq=50,
         config=rl_trainer_config,
