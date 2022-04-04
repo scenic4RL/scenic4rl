@@ -63,8 +63,9 @@ class GFScenicEnv_v2(gym.Env):
 
 			except Exception as e:
 				print("Resample Script. Cause Error: ", e)
-				assert False
 				pass
+		# if we reach here, we failed to generate scene within 100 iterations
+		assert False, "Failed to sample script after 100 iterations."
 
 	#def filter_obs(self, obs):
 
