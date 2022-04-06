@@ -33,6 +33,7 @@ numpy = "^1.18.2"
 pynverse = "^0.1.4"
 attrs = "^19.3.0"
 wrapt = "^1.12.1"
+gym = "^0.21.0"
 
 pyproj = {version = "^2.6.0", optional = true}
 

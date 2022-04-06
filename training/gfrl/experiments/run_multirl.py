@@ -114,8 +114,6 @@ parser.add_argument('--scenario', type=str)
 parser.add_argument('--mode', type=str, default="allNonGK")
 parser.add_argument('--num-steps', type=int, default=5000000)
 
-parser.add_argument('--simple', action='store_true')
-
 if __name__ == '__main__':
     args = parser.parse_args()
     assert args.scenario in scenario_name_to_file, "invalid scenario name"
@@ -197,10 +195,9 @@ if __name__ == '__main__':
         # Which observation filter to apply to the observation.
         "observation_filter": "NoFilter",
         'num_gpus': 1,
-        'num_workers': 15,
+        'num_workers': 4,
         'num_envs_per_worker': 1,
         'log_level': 'INFO',
-        'simple_optimizer': args.simple,
         # All model-related settings go into this sub-dict.
         "model": {
             "custom_model": "nature_cnn",
@@ -208,8 +205,8 @@ if __name__ == '__main__':
         },
         'multiagent': {
             'policies': policies,
-            'policy_mapping_fn': tune.function(
-                lambda agent_id, episode, worker, **kwargs: policy_ids[int(agent_id[6:])]),
+            'policy_mapping_fn':
+                lambda agent_id, episode, worker, **kwargs: policy_ids[int(agent_id[6:])],
         }
     }
 
