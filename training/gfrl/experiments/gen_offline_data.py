@@ -1,43 +1,112 @@
 """Simple example of writing experiences to a file using JsonWriter."""
+from typing import Optional
 
 import gym
 import numpy as np
 import os
 
+from ray.rllib.agents import DefaultCallbacks
+from ray.rllib.evaluation.episode import Episode
 from ray.rllib.models.preprocessors import get_preprocessor
-from ray.rllib.evaluation.sample_batch_builder import SampleBatchBuilder
+from ray.rllib.evaluation.sample_batch_builder import SampleBatchBuilder, MultiAgentSampleBatchBuilder
 from ray.rllib.offline.json_writer import JsonWriter
 from tqdm import tqdm
 
+from gfrl.common.rllibGFootballEnv import RllibGFootball
 from scenic.simulators.gfootball.rl.gfScenicEnv_v3 import GFScenicEnv_v3
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
+
+class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
+    def postprocess_batch_so_far(self,
+                                 episode: Optional[Episode] = None) -> None:
+        """Apply policy postprocessors to any unprocessed rows.
+
+        This pushes the postprocessed per-agent batches onto the per-policy
+        builders, clearing per-agent state.
+
+        Args:
+            episode (Optional[Episode]): The Episode object that
+                holds this MultiAgentBatchBuilder object.
+        """
+
+        # Materialize the batches so far.
+        pre_batches = {}
+        for agent_id, builder in self.agent_builders.items():
+            pre_batches[agent_id] = (
+                self.policy_map[self.agent_to_policy[agent_id]],
+                builder.build_and_reset())
+
+        # Apply postprocessor.
+        post_batches = {}
+        if self.clip_rewards is True:
+            for _, (_, pre_batch) in pre_batches.items():
+                pre_batch["rewards"] = np.sign(pre_batch["rewards"])
+        elif self.clip_rewards:
+            for _, (_, pre_batch) in pre_batches.items():
+                pre_batch["rewards"] = np.clip(
+                    pre_batch["rewards"],
+                    a_min=-self.clip_rewards,
+                    a_max=self.clip_rewards)
+        for agent_id, (_, pre_batch) in pre_batches.items():
+            other_batches = pre_batches.copy()
+            del other_batches[agent_id]
+            policy = self.policy_map[self.agent_to_policy[agent_id]]
+            if any(pre_batch["dones"][:-1]) or len(set(
+                    pre_batch["eps_id"])) > 1:
+                raise ValueError(
+                    "Batches sent to postprocessing must only contain steps "
+                    "from a single trajectory.", pre_batch)
+            # Call the Policy's Exploration's postprocess method.
+            post_batches[agent_id] = pre_batch
+            # if getattr(policy, "exploration", None) is not None:
+            #     policy.exploration.postprocess_trajectory(
+            #         policy, post_batches[agent_id], policy.get_session())
+            # post_batches[agent_id] = policy.postprocess_trajectory(
+            #     post_batches[agent_id], other_batches, episode)
+
+        # Append into policy batches and reset
+        for agent_id, post_batch in sorted(post_batches.items()):
+            self.policy_builders[self.agent_to_policy[agent_id]].add_batch(
+                post_batch)
+
+        self.agent_builders.clear()
+        self.agent_to_policy.clear()
+
+
 if __name__ == "__main__":
-    batch_builder = SampleBatchBuilder()  # or MultiAgentSampleBatchBuilder
-    writer = JsonWriter(
-        os.path.join("remove_offline0")
-    )
+    out_directory_path = "remove_offline0"
+    num_trials = 5
+    control_mode = "allNonGK"
+    scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic"
+    env = RllibGFootball(scenario_file, control_mode)
+    obs_space = env.observation_space
+    act_space = env.action_space
+    num_policies = env.num_agents
+    num_agents = num_policies  # we use 1:1 agent policy mapping
+
+    def gen_policy(_):
+        return (None, obs_space, act_space, {})
+
+    # Setup PPO with an ensemble of `num_policies` different policies
+    policies = {
+        'policy_{}'.format(i): gen_policy(i) for i in range(num_policies)
+    }
+
+    # Generate Data
+    batch_builder = ScenicSampleBatchBuilder(policies, False, DefaultCallbacks())  # or MultiAgentSampleBatchBuilder
+    writer = JsonWriter(out_directory_path)
 
     gf_env_settings = {
         "stacked": True,
         "rewards": 'scoring',
         "representation": 'extracted',
         # "channel_dimensions": (42, 42)
-        "dump_full_episodes": True,
-        "dump_scores": True,
+        "dump_full_episodes": False,
+        "dump_scores": False,
         "tracesdir": "/home/mark/workplace/gf/scenic4rl/replays",
-        "write_video": True,
+        "write_video": False,
     }
-
-    # from scenic.simulators.gfootball.rl.gfScenicEnv_v3 import GFScenicEnv_v3
-
-    num_trials = 500
-    scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic"
-    scenario = buildScenario(scenario_file)
-
-    env = GFScenicEnv_v3(initial_scenario=scenario, player_control_mode="allNonGK", gf_env_settings=gf_env_settings,
-                         allow_render=False)
-
     # RLlib uses preprocessors to implement transforms such as one-hot encoding
     # and flattening of tuple and dict observations. For CartPole a no-op
     # preprocessor is used, but this may be relevant for more complex envs.
@@ -46,36 +115,43 @@ if __name__ == "__main__":
 
     total_reward = 0
     for eps_id in tqdm(range(num_trials)):
-        obs = env.reset()
-        prev_action = np.zeros_like(env.action_space.sample())
-        prev_reward = 0
+        obs_dict = env.reset()
+        prev_action_dict = {f"agent_{i}": np.zeros_like(env.action_space.sample()) for i in range(num_agents)}
+        prev_reward_dict = {f"agent_{i}": 0 for i in range(num_agents)}
         done = False
         t = 0
         while not done:
             # action = env.action_space.sample()
-            action = env.simulation.get_scenic_designated_player_action()
+            action = env.env.simulation.get_scenic_designated_player_action()
+            action_dict = {f"agent_{i}": action[i] for i in range(num_agents)}
 
-            new_obs, rew, done, info = env.step(action)
-            batch_builder.add_values(
-                t=t,
-                eps_id=eps_id,
-                agent_index=0,
-                obs=prep.transform(obs),
-                actions=action,
-                action_prob=1.0,  # put the true action probability here
-                action_logp=0.0,
-                rewards=rew,
-                prev_actions=prev_action,
-                prev_rewards=prev_reward,
-                dones=done,
-                infos=info,
-                new_obs=prep.transform(new_obs),
-            )
-            obs = new_obs
-            prev_action = action
-            prev_reward = rew
+            new_obs_dict, rew_dict, done_dict, info_dict = env.step(action_dict)
+            done = done_dict["__all__"]
+            for i in range(num_agents):
+                agent_id = f"agent_{i}"
+                policy_id = f"policy_{i}"
+                batch_builder.add_values(
+                    agent_id,
+                    policy_id,
+                    t=t,
+                    eps_id=eps_id,
+                    agent_index=i,
+                    obs=prep.transform(obs_dict[agent_id]),
+                    actions=action_dict[agent_id],
+                    action_prob=1.0,  # put the true action probability here
+                    action_logp=0.0,
+                    rewards=rew_dict[agent_id],
+                    prev_actions=prev_action_dict[agent_id],
+                    prev_rewards=prev_reward_dict[agent_id],
+                    dones=done,
+                    infos=info_dict[agent_id],
+                    new_obs=prep.transform(new_obs_dict[agent_id]),
+                )
+            obs_dict = new_obs_dict
+            prev_action_dict = action_dict
+            prev_reward_dict = rew_dict
             t += 1
         writer.write(batch_builder.build_and_reset())
-        total_reward += prev_reward[0]
+        total_reward += prev_reward_dict["agent_0"]
 
     print(f"Done generating data. Policy score: {total_reward/num_trials}")
