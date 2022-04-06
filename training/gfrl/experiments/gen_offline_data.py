@@ -75,10 +75,10 @@ class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
 
 
 if __name__ == "__main__":
-    out_directory_path = "remove_offline0"
-    num_trials = 5
+    out_directory_path = "offline_ni_avoid_pass_shoot"
+    num_trials = 500
     control_mode = "allNonGK"
-    scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic"
+    scenario_file = "/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic"
     env = RllibGFootball(scenario_file, control_mode)
     obs_space = env.observation_space
     act_space = env.action_space
@@ -104,7 +104,7 @@ if __name__ == "__main__":
         # "channel_dimensions": (42, 42)
         "dump_full_episodes": False,
         "dump_scores": False,
-        "tracesdir": "/home/mark/workplace/gf/scenic4rl/replays",
+        "tracesdir": "/home/qcwu/gf/scenic4rl/replays",
         "write_video": False,
     }
     # RLlib uses preprocessors to implement transforms such as one-hot encoding
@@ -127,6 +127,7 @@ if __name__ == "__main__":
 
             new_obs_dict, rew_dict, done_dict, info_dict = env.step(action_dict)
             done = done_dict["__all__"]
+            
             for i in range(num_agents):
                 agent_id = f"agent_{i}"
                 policy_id = f"policy_{i}"
@@ -144,13 +145,14 @@ if __name__ == "__main__":
                     prev_actions=prev_action_dict[agent_id],
                     prev_rewards=prev_reward_dict[agent_id],
                     dones=done,
-                    infos=info_dict[agent_id],
+                    infos=None, # info is skipped to reduce file size
                     new_obs=prep.transform(new_obs_dict[agent_id]),
                 )
             obs_dict = new_obs_dict
             prev_action_dict = action_dict
             prev_reward_dict = rew_dict
             t += 1
+        batch_builder.count = t
         writer.write(batch_builder.build_and_reset())
         total_reward += prev_reward_dict["agent_0"]
 
