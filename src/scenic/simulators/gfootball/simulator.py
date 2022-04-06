@@ -393,7 +393,11 @@ class GFootBallSimulation(Simulation):
 		if self.env_type == "v1":
 			return self.designated_player_action
 		else:
-			return self.actions[self.game_ds.designated_player_idx]
+			# depending on v2 or v3, designated_player_idx may be a list
+			if isinstance(self.game_ds.designated_player_idx, list):
+				return [self.actions[i] for i in self.game_ds.designated_player_idx]
+			else:
+				return self.actions[self.game_ds.designated_player_idx]
 
 	def update_designated_player(self):
 		# only place: simulation reset / step
