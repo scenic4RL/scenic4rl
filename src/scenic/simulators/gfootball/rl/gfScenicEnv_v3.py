@@ -37,8 +37,8 @@ class GFScenicEnv_v3(gym.Env):
 		self.scenario = initial_scenario
 		self.rank = rank
 
-		# TODO: custom channel dimension support
-		# bug: the following code only change obs space dim, not actual obs dim
+		# custom channel dimension not supported
+		# issue: the following code only change obs space dim, not actual obs dim
 		# self.channel_dimensions = (72, 96)
 		# if "channel_dimensions" in gf_env_settings:
 		# 	self.channel_dimensions = gf_env_settings["channel_dimensions"]
@@ -51,7 +51,7 @@ class GFScenicEnv_v3(gym.Env):
 
 		# Validate n closest players to ball to control. (player_control_mode)
 		player_control_mode = str(player_control_mode)
-		assert player_control_mode.isnumeric() or player_control_mode in ("all", "allNonGK")
+		assert player_control_mode.isnumeric() or player_control_mode in ("all", "allNonGK", "2closest", "3closest")
 		if player_control_mode.isnumeric() and int(player_control_mode) <= 1:
 			raise ValueError("Use GFScenicEnv_v2, not v3, for single agent")
 		self.player_control_mode = player_control_mode
@@ -173,7 +173,7 @@ def test_obs():
 		# input("Enter")
 		while not done:
 			action = env.action_space.sample()
-			action = [3, 5] # 1 left 3 top 5 right 7 down
+			action = [5, 1] # 1 left 3 top 5 right 7 down
 			obs, reward, done, info = env.step(action)
 			assert obs.shape == (num_left_to_be_controlled,72,96,16), obs.shape
 			total_r += reward

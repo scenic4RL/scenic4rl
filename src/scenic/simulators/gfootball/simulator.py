@@ -65,7 +65,7 @@ class GFootBallSimulator(Simulator):
 
 class GFootBallSimulation(Simulation):
 
-	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag="", player_control_mode="1"):
+	def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, env_type = None, for_gym_env=False, gf_env_settings={}, tag="", player_control_mode="1closest"):
 
 		"""
 		def __init__(self, scene, settings, timestep=None, render=False, record=False, verbosity=0, for_gym_env=False, gf_env_settings={},
@@ -198,13 +198,29 @@ class GFootBallSimulation(Simulation):
 			self.num_left_controlled = internal_control_left - 1
 
 		elif player_control_mode.isnumeric():
-			self.num_left_dynamically_controlled = int(player_control_mode)
-			self.num_left_controlled = self.num_left_dynamically_controlled
-			if not (1 <= self.num_left_dynamically_controlled <= internal_control_left):
-				raise ValueError(f"player_control_mode must be a valid integer if dynamically choosing controlled players. Got: {self.num_left_dynamically_controlled}")
+			self.num_left_controlled = int(player_control_mode)
+			if not (1 < self.num_left_controlled <= internal_control_left):
+				raise ValueError(f"player_control_mode must be a valid integer if controlled players are fixed. Got: {self.num_left_controlled}")
+
+		elif player_control_mode == "1closest":
+			# this is single agent control, choose the closest
+			self.num_left_dynamically_controlled = 1
+			self.num_left_controlled = 1
+
+		elif player_control_mode == "2closest":
+			self.num_left_dynamically_controlled = 2
+			self.num_left_controlled = 2
+			if not (self.num_left_dynamically_controlled <= internal_control_left):
+				raise ValueError(f"Number of player greater than total number of left players. Got: {self.num_left_dynamically_controlled}")
+
+		elif player_control_mode == "3closest":
+			self.num_left_dynamically_controlled = 3
+			self.num_left_controlled = 3
+			if not (self.num_left_dynamically_controlled <= internal_control_left):
+				raise ValueError(f"Number of player greater than total number of left players. Got: {self.num_left_dynamically_controlled}")
 
 		else:
-			raise ValueError(f'player_control_mode must be either a number for dynamic mode, or "all", or "allNonGK". Got: {player_control_mode}')
+			raise ValueError(f'player_control_mode must be "1closest" or "2closest" or "3closest" for dynamic control. Or be a number > 1, or "all", or "allNonGK" for fixed control mode. Got: {player_control_mode}')
 		self.player_control_mode = player_control_mode
 
 		# multiRL settings end
@@ -404,7 +420,7 @@ class GFootBallSimulation(Simulation):
 		if self.env_type == "v1":
 			pass
 		elif self.num_left_dynamically_controlled == 0:
-			self.game_ds.compute_designated_as_fixed(include_GK=self.player_control_mode == "all")
+			self.game_ds.compute_designated_as_fixed(control_mode=self.player_control_mode)
 		else:
 			# single agent or dynamic multiagent
 			self.game_ds.compute_designated_as_closest_idx(num_player=self.num_left_dynamically_controlled)

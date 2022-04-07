@@ -69,20 +69,26 @@ class GameDS:
 			self.designated_player_idx = self.player_to_ctrl_idx[player]
 			return [self.designated_player_idx]
 
-	def compute_designated_as_fixed(self, include_GK: bool):
-		# notice we should have at least 2 left players including GK
-		if not include_GK:
-			players = [p for p in self.my_players if "GK" not in p.role]
-			assert len(players) == (len(self.my_players) - 1), "Could not exclude GK."
+	def compute_designated_as_fixed(self, control_mode: str):
+		# fixed control mode with variable number of players
+		if control_mode.isnumeric():
+			num_controlled_player = int(control_mode)
+			assert num_controlled_player > 1, "Use single agent env if we only control 1 player."
+			return self.compute_designated_as_closest_idx(num_controlled_player)
 		else:
-			players = self.my_players
+			# notice we should have at least 2 left players including GK
+			if control_mode == "allNonGK":
+				players = [p for p in self.my_players if "GK" not in p.role]
+				assert len(players) == (len(self.my_players) - 1), "Could not exclude GK."
+			else:  # "all"
+				players = self.my_players
 
-		# # use this to print the order of controlled players
-		# print([self.player_str_mini(p) for p in players])
+			# # use this to print the order of controlled players
+			# print([self.player_str_mini(p) for p in players])
 
-		self.designated_player = players
-		self.designated_player_idx = [self.player_to_ctrl_idx[player] for player in players]
-		return self.designated_player_idx
+			self.designated_player = players
+			self.designated_player_idx = [self.player_to_ctrl_idx[player] for player in players]
+			return self.designated_player_idx
 
 
 
