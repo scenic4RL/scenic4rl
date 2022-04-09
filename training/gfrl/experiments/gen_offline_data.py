@@ -1,7 +1,7 @@
 """Simple example of writing experiences to a file using JsonWriter."""
 from typing import Optional
 
-import gym
+import argparse
 import numpy as np
 import os
 
@@ -13,8 +13,6 @@ from ray.rllib.offline.json_writer import JsonWriter
 from tqdm import tqdm
 
 from gfrl.common.rllibGFootballEnv import RllibGFootball
-from scenic.simulators.gfootball.rl.gfScenicEnv_v3 import GFScenicEnv_v3
-from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
 
 class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
@@ -73,12 +71,29 @@ class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
         self.agent_builders.clear()
         self.agent_to_policy.clear()
 
+# scenario mapping
+scenario_name_to_file = {
+    "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic",
+    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_11_vs_GK.scenic",
+}
+
+# running exps
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--scenario', type=str, default="offense_11_vs_gk")
+parser.add_argument('--mode', type=str, default="3")
+
 
 if __name__ == "__main__":
-    out_directory_path = "offline_ni_avoid_pass_shoot"
+    args = parser.parse_args()
+    assert args.scenario in scenario_name_to_file, "invalid scenario name"
+    scenario_file = scenario_name_to_file[args.scenario]
+    control_mode = args.mode
+
+    out_directory_path = f"offline_ni_{args.scenario}"
     num_trials = 500
-    control_mode = "allNonGK"
-    scenario_file = "/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic"
+    
+
     env = RllibGFootball(scenario_file, control_mode)
     obs_space = env.observation_space
     act_space = env.action_space
@@ -101,7 +116,6 @@ if __name__ == "__main__":
         "stacked": True,
         "rewards": 'scoring',
         "representation": 'extracted',
-        # "channel_dimensions": (42, 42)
         "dump_full_episodes": False,
         "dump_scores": False,
         "tracesdir": "/home/qcwu/gf/scenic4rl/replays",
@@ -113,8 +127,12 @@ if __name__ == "__main__":
     prep = get_preprocessor(env.observation_space)(env.observation_space)
     print("The preprocessor is", prep)
 
+    # generating data
+    pbar = tqdm(total=num_trials)
+    eps_id = 0
+
     total_reward = 0
-    for eps_id in tqdm(range(num_trials)):
+    while eps_id < num_trials:
         obs_dict = env.reset()
         prev_action_dict = {f"agent_{i}": np.zeros_like(env.action_space.sample()) for i in range(num_agents)}
         prev_reward_dict = {f"agent_{i}": 0 for i in range(num_agents)}
@@ -127,7 +145,7 @@ if __name__ == "__main__":
 
             new_obs_dict, rew_dict, done_dict, info_dict = env.step(action_dict)
             done = done_dict["__all__"]
-            
+
             for i in range(num_agents):
                 agent_id = f"agent_{i}"
                 policy_id = f"policy_{i}"
@@ -153,7 +171,14 @@ if __name__ == "__main__":
             prev_reward_dict = rew_dict
             t += 1
         batch_builder.count = t
-        writer.write(batch_builder.build_and_reset())
-        total_reward += prev_reward_dict["agent_0"]
 
+        # we only record if this run scores 
+        candidate_batch = batch_builder.build_and_reset()
+        if prev_reward_dict["agent_0"] == 1:
+            writer.write(candidate_batch)
+            eps_id += 1
+            total_reward += prev_reward_dict["agent_0"]
+            pbar.update(1)
+        
+    pbar.close()
     print(f"Done generating data. Policy score: {total_reward/num_trials}")
