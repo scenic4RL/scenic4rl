@@ -38,6 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--scenario', type=str)
 parser.add_argument('--mode', type=str, default="allNonGK")
 parser.add_argument('--num-steps', type=int, default=5000000)
+parser.add_argument('--id', type=int, default=0)
 
 if __name__ == '__main__':
     args = parser.parse_args()
@@ -120,9 +121,13 @@ if __name__ == '__main__':
         # Which observation filter to apply to the observation.
         "observation_filter": "NoFilter",
         'num_gpus': 1,
-        'num_workers': 4,
+        'num_workers': 15,
         'num_envs_per_worker': 1,
         'log_level': 'INFO',
+        "evaluation_interval": 50,
+        "evaluation_duration": 100,
+        "evaluation_duration_unit": "episodes",
+
         # All model-related settings go into this sub-dict.
         "model": {
             "custom_model": "nature_cnn",
@@ -137,7 +142,7 @@ if __name__ == '__main__':
 
     tune.run(
         'PPO',
-        name=f"aaai2_{args.scenario}_{args.mode}_0",
+        name=f"aaai2_{args.scenario}_{args.mode}_{args.id}",
         stop={'timesteps_total': args.num_steps},
         checkpoint_freq=50,
         config=rl_trainer_config,
