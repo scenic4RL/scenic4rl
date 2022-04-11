@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     tune.run(
         'PPO',
-        name=f"aaai2_{args.scenario}_{args.mode}_{args.id}",
+        name=f"aaai{args.id}_{args.scenario}_{args.mode}",
         stop={'timesteps_total': args.num_steps},
         checkpoint_freq=50,
         config=rl_trainer_config,
