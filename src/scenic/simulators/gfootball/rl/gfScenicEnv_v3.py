@@ -57,7 +57,7 @@ class GFScenicEnv_v3(gym.Env):
 		assert self.gf_env_settings["representation"] == "extracted"
 		assert self.gf_env_settings["stacked"] == True
 
-		# do reset once to determine number of players controlled (num_left_controlled)
+		# determine number of players controlled (num_left_controlled) without resetting
 		tmp_scene, _ = scenic_helper.generateScene(self.scenario)
 		_num_total_left_player = len([obj for obj in tmp_scene.objects if is_my_player(obj)])
 
@@ -77,8 +77,8 @@ class GFScenicEnv_v3(gym.Env):
 		for _ in range(100):
 			try:
 				self.scene, _ = scenic_helper.generateScene(self.scenario)
-				# if self.scene is None:
-				# 	return None
+				if self.scene is None:
+					return None
 
 				if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
 
