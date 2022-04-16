@@ -13,6 +13,7 @@ from gfootball.env import config
 from gfootball.env import football_env
 from scenic.simulators.gfootball.interface import update_objects_from_obs, generate_index_to_player_map, \
 	update_control_index, update_objects_from_obs_single_rl_agent, update_index_ds
+from scenic.simulators.gfootball.rl.utils import get_num_left_controlled
 from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.constants import ActionCode
 from scenic.simulators.gfootball.utilities.game_ds import GameDS
@@ -148,6 +149,7 @@ class GFootBallSimulation(Simulation):
 			player_setting = [f"agent:left_players=1"]
 
 		elif env_type == "keyboard":
+			print("Warning: Untested Env Type: ", env_type)
 			self.env_type = env_type
 			self.run_pre_post_step = False
 			#self.use_scenic_behavior_in_step = use_scenic_behavior_in_step
@@ -159,6 +161,7 @@ class GFootBallSimulation(Simulation):
 
 
 		elif env_type is None:
+			print("Warning: Untested Env Type: None")
 			for_gym_env = False
 			self.for_gym_env = False
 
@@ -183,44 +186,8 @@ class GFootBallSimulation(Simulation):
 		self.gf_env_settings["internal_control_right"] = internal_control_right
 
 		# multiRL settings begin
-
-		# this is the number of left players that is dynamically controlled, if fixed control this is 0
-		self.num_left_dynamically_controlled = 0
-		# this is the number of left players controlled in total
-		self.num_left_controlled = 1
-
-		player_control_mode = str(player_control_mode)
-		if player_control_mode == "all":
-			self.num_left_controlled = internal_control_left
-
-		elif player_control_mode == "allNonGK":
-			assert internal_control_left > 1, "Scenario must have at least 2 left players."
-			self.num_left_controlled = internal_control_left - 1
-
-		elif player_control_mode.isnumeric():
-			self.num_left_controlled = int(player_control_mode)
-			if not (1 < self.num_left_controlled <= internal_control_left):
-				raise ValueError(f"player_control_mode must be a valid integer if controlled players are fixed. Got: {self.num_left_controlled}")
-
-		elif player_control_mode == "1closest":
-			# this is single agent control, choose the closest
-			self.num_left_dynamically_controlled = 1
-			self.num_left_controlled = 1
-
-		elif player_control_mode == "2closest":
-			self.num_left_dynamically_controlled = 2
-			self.num_left_controlled = 2
-			if not (self.num_left_dynamically_controlled <= internal_control_left):
-				raise ValueError(f"Number of player greater than total number of left players. Got: {self.num_left_dynamically_controlled}")
-
-		elif player_control_mode == "3closest":
-			self.num_left_dynamically_controlled = 3
-			self.num_left_controlled = 3
-			if not (self.num_left_dynamically_controlled <= internal_control_left):
-				raise ValueError(f"Number of player greater than total number of left players. Got: {self.num_left_dynamically_controlled}")
-
-		else:
-			raise ValueError(f'player_control_mode must be "1closest" or "2closest" or "3closest" for dynamic control. Or be a number > 1, or "all", or "allNonGK" for fixed control mode. Got: {player_control_mode}')
+		self.num_left_controlled, self.num_left_dynamically_controlled = get_num_left_controlled(player_control_mode,
+																								 internal_control_left)
 		self.player_control_mode = player_control_mode
 
 		# multiRL settings end
@@ -501,13 +468,13 @@ class GFootBallSimulation(Simulation):
 			total_rew += scenic_reward
 			#print(f"{self.timestep}: scenic_reward: ", scenic_reward, "total reward: ", total_rew)
 
-		"""
+		'''
 		print("Printing objects")
 		for obj in self.objects:
 			print(obj, obj.position)
 		print("*" * 80)
 		print()
-		"""
+		'''
 		#if self.for_gym_env:
 		#	self.post_step()
 

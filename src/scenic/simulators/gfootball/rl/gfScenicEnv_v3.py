@@ -1,13 +1,10 @@
-from random import randint
-
-import gfootball
 import gym
 # from scenic.simulators.gfootball.rl import pfrl_training
-
-from gfootball.env import football_action_set
 from tqdm import tqdm
 
 # Curriculum Learning usinf rllib: https://docs.ray.io/en/latest/rllib-training.html#curriculum-learning
+from scenic.simulators.gfootball.utilities.utils import is_my_player
+from scenic.simulators.gfootball.rl.utils import get_num_left_controlled
 from scenic.simulators.gfootball.utilities import scenic_helper
 from scenic.simulators.gfootball.utilities.scenic_helper import buildScenario
 
@@ -18,22 +15,21 @@ from numpy import uint8
 """Multi agent environment with scenic behaviors, modified from v2.
 Will mimic vanilla GRF multi-agent env returns.
 player_control_mode:
-	EITHER dynamically control players closest to the ball: input number of players controlled
-	OR fixed player control: input "all" or "allNonGK"
-Select n closest players to ball to control. (num_left_controlled)
-TODO: scale obs dim option
+	EITHER dynamically control players closest to the ball: "2closest" or "3closest"
+	OR fixed player control: input "all" or "allNonGK" or the number of players to be controlled.
 Always does pre_step (hence, computes all actions in scenic), and post_step"""
 class GFScenicEnv_v3(gym.Env):
 	metadata = {'render.modes': ['human']}
 
 	def __init__(self, initial_scenario, player_control_mode, gf_env_settings=None, allow_render = False, rank=0):
+		# warning we should never call reset() in the initializer, otherwise may cause weird issue.
 		super(GFScenicEnv_v3, self).__init__()
 
 		if gf_env_settings is None:
 			gf_env_settings = {}
 		self.gf_env_settings = gf_env_settings
 		# will update render option after initial reset
-		self.allow_render = False
+		self.allow_render = allow_render
 		self.scenario = initial_scenario
 		self.rank = rank
 
@@ -61,13 +57,14 @@ class GFScenicEnv_v3(gym.Env):
 		assert self.gf_env_settings["representation"] == "extracted"
 		assert self.gf_env_settings["stacked"] == True
 
-		# do reset once to determine number of players controlled
-		self.reset()
-		self.allow_render = allow_render
-		self.num_left_controlled = self.simulation.num_left_controlled
-		assert not (self.player_control_mode == "allNonGK" and self.num_left_controlled <= 1), "Scenario only has GK."
+		# do reset once to determine number of players controlled (num_left_controlled)
+		tmp_scene, _ = scenic_helper.generateScene(self.scenario)
+		_num_total_left_player = len([obj for obj in tmp_scene.objects if is_my_player(obj)])
 
-		# multiagent obs is a list of player's respective obs
+		self.num_left_controlled, _ = get_num_left_controlled(self.player_control_mode, _num_total_left_player)
+		assert self.num_left_controlled > 1, "Please use GFScenicEnv_v2 for single agent setting."
+
+		# The following spaces are set to comply with RLLib Multiagent Framework.
 		# self.observation_space = Tuple([Box(low=0, high=255, shape=(72, 96, 16), dtype=uint8)] * self.num_left_controlled)
 		self.observation_space = Box(low=0, high=255, shape=(self.num_left_controlled, self.channel_dimensions[0], self.channel_dimensions[1], 16), dtype=uint8)
 		# print("Obs Space: ", self.observation_space)
@@ -80,8 +77,8 @@ class GFScenicEnv_v3(gym.Env):
 		for _ in range(100):
 			try:
 				self.scene, _ = scenic_helper.generateScene(self.scenario)
-				if self.scene is None:
-					return None
+				# if self.scene is None:
+				# 	return None
 
 				if hasattr(self, "simulation"): self.simulation.get_underlying_gym_env().close()
 
@@ -152,16 +149,18 @@ def test_obs():
 		"dump_scores": True,
 		"tracesdir": "/home/mark/workplace/gf/scenic4rl/replays",
 		"write_video": True,
+		"real_time": True
 	}
 
 	# from scenic.simulators.gfootball.rl.gfScenicEnv_v3 import GFScenicEnv_v3
 
 	num_trials = 3
 	num_left_to_be_controlled = 2
-	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
+	# scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/dev/test2.scenic"
+	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_zigzag_dribble.scenic"
 	scenario = buildScenario(scenario_file)
 
-	env = GFScenicEnv_v3(initial_scenario=scenario, player_control_mode="allNonGK", gf_env_settings=gf_env_settings, allow_render=True)
+	env = GFScenicEnv_v3(initial_scenario=scenario, player_control_mode="all", gf_env_settings=gf_env_settings, allow_render=True)
 
 	num_epi = 0
 	total_r = 0
@@ -173,9 +172,12 @@ def test_obs():
 		# input("Enter")
 		while not done:
 			action = env.action_space.sample()
-			action = [5, 1] # 1 left 3 top 5 right 7 down
+			# action = [5, 1] # 1 left 3 top 5 right 7 down
 			obs, reward, done, info = env.step(action)
 			assert obs.shape == (num_left_to_be_controlled,72,96,16), obs.shape
+
+			# print(reward)
+
 			total_r += reward
 
 		num_epi += 1
