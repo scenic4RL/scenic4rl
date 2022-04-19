@@ -75,6 +75,7 @@ class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
 scenario_name_to_file = {
     "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic",
     "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_11_vs_GK.scenic",
+    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/counterattack_easy.scenic",
 }
 
 # running exps
@@ -82,6 +83,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--scenario', type=str, default="offense_11_vs_gk")
 parser.add_argument('--mode', type=str, default="3")
+parser.add_argument('--num-samples', type=int, default=8000)
 
 
 if __name__ == "__main__":
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     control_mode = args.mode
 
     out_directory_path = f"offline_ni_{args.scenario}"
-    num_trials = 500
+    num_trials = args.num_samples
     
 
     env = RllibGFootball(scenario_file, control_mode)
@@ -130,9 +132,10 @@ if __name__ == "__main__":
     # generating data
     pbar = tqdm(total=num_trials)
     eps_id = 0
-
+    total_attempts = 0
     total_reward = 0
     while eps_id < num_trials:
+        total_attempts += 1
         obs_dict = env.reset()
         prev_action_dict = {f"agent_{i}": np.zeros_like(env.action_space.sample()) for i in range(num_agents)}
         prev_reward_dict = {f"agent_{i}": 0 for i in range(num_agents)}
@@ -181,4 +184,4 @@ if __name__ == "__main__":
             pbar.update(1)
         
     pbar.close()
-    print(f"Done generating data. Policy score: {total_reward/num_trials}")
+    print(f"Done generating data. Dataset score: {total_reward/num_trials}. Avg Score: {total_reward/total_attempts}.")

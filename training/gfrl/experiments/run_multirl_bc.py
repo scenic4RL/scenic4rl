@@ -154,6 +154,7 @@ if __name__ == '__main__':
         trainer.restore(checkpoint)
         bcweights = trainer.get_weights()
 
+        os.makedirs(args.bc_weights_dir, exist_ok = True)
         bc_store_path = os.path.join(args.bc_weights_dir, bc_exp_name+".pkl")
         pickle.dump(bcweights, open(bc_store_path, "wb"))
         print(f"Stored bcweights to {bc_store_path}")
