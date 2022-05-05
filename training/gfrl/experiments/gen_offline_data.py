@@ -73,9 +73,10 @@ class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
 
 # scenario mapping
 scenario_name_to_file = {
-    "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_avoid_pass_shoot.scenic",
-    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/offense_11_vs_GK.scenic",
-    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration/counterattack_easy.scenic",
+    "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/offense_avoid_pass_shoot.scenic",
+    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/offense_11_vs_GK.scenic",
+    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/counterattack_easy.scenic",
+    "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/rl_pass_and_shoot_with_keeper.scenic",
 }
 
 # running exps
