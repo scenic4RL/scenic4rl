@@ -24,6 +24,7 @@ scenario_name_to_file = {
     "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic",
     "grf_runtoscore":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/rts.scenic",
     "grf_runpassshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic",
+    "grf_3v1": "/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/3v1.scenic",
     "offense_11gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
     "offense_avoidpassshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
     "offense_easycross":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/easy_crossing.scenic",
