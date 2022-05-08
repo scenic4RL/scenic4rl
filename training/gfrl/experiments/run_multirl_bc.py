@@ -18,7 +18,7 @@ from gfrl.common.nature_cnn import NatureCNN
 scenario_name_to_file = {
     "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
     "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
-    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/counterattack_easy.scenic"
+    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/counterattack_easy.scenic",
     "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic"
 }
 
