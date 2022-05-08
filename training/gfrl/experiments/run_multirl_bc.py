@@ -17,7 +17,8 @@ from gfrl.common.nature_cnn import NatureCNN
 # scenario mapping
 scenario_name_to_file = {
     "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
-    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic"
+    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
+    "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic"
 }
 
 class LoadablePPOTrainer(PPOTrainer):
@@ -37,6 +38,7 @@ parser.add_argument('--scenario', type=str)
 parser.add_argument('--mode', type=str)
 parser.add_argument('--demonstration-file', type=str)
 parser.add_argument('--resumebc', action='store_true')
+parser.add_argument('--id', type=str, default="0")
 parser.add_argument('--num-bc-steps', type=int, default=2000000)
 parser.add_argument('--num-ppo-steps', type=int, default=5000000)
 parser.add_argument('--bc-weights-dir', type=str, default="/home/qcwu/gf/scenic4rl/training/gfrl/_bc_weights")
@@ -239,7 +241,7 @@ if __name__ == '__main__':
 
     tune.run(
         LoadablePPOTrainer,
-        name=f"bc_pretrain_{args.scenario}_{args.mode}_0",
+        name=f"bc_pretrain_{args.scenario}_{args.mode}_{args.id}",
         stop={'timesteps_total': args.num_ppo_steps},
         checkpoint_freq=50,
         config=ppo_trainer_config,
