@@ -44,7 +44,7 @@ behavior SafePass(danger_cone_radius, danger_cone_angle):
         danger_cone = SectorRegion(self, danger_cone_radius, self.heading, danger_cone_angle)
         safe_players = [p for p in simulation().game_ds.left_players if p not in danger_cone]
         # safe_players = simulation().game_ds.my_players
-        selected_p = get_closest_player_info(self.position, safe_players)[0]
+        selected_p = get_closest_player_info(self, safe_players)[0]
         # selected_p = get_closest_player_info(right_goal_midpoint, safe_players)[0]
 
         do ShortPassTo(selected_p)
@@ -73,13 +73,13 @@ behavior CloseInAndShoot():
 ball = Ball at 26 @ 11
 
 # Left Team
-ego = LeftGK at -99 @ 0#, with behavior IdleBehavior()
-LeftLB at -67.2 @ 19.576#, with behavior CloseInAndShoot()
-LeftCB at -75 @ 6.356#, with behavior CloseInAndShoot()
-LeftCB at -75 @ -6.3559#, with behavior CloseInAndShoot()
-LeftRB at -67.2 @ -19.576#, with behavior CloseInAndShoot()
-LeftCM at -43.4 @ 10.568#, with behavior CloseInAndShoot()
-LeftCM at -43.4 @ -10.568#, with behavior CloseInAndShoot()
+ego = LeftGK at -99 @ 0
+LeftLB at -67.2 @ 19.576
+LeftCB at -75 @ 6.356
+LeftCB at -75 @ -6.3559
+LeftRB at -67.2 @ -19.576
+LeftCM at -43.4 @ 10.568
+LeftCM at -43.4 @ -10.568
 
 # one of the three controlled players
 p4 = LeftCM at 50 @ 31.61, with behavior CloseInAndShoot()
