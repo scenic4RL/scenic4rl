@@ -17,7 +17,8 @@ from gfrl.common.nature_cnn import NatureCNN
 # scenario mapping
 scenario_name_to_file = {
     "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
-    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic"
+    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
+    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/counterattack_easy.scenic"
 }
 
 class LoadablePPOTrainer(PPOTrainer):
@@ -28,6 +29,7 @@ class LoadablePPOTrainer(PPOTrainer):
         # load weights
         bc_weights = pickle.load(open(bc_store_path, "rb"))
         self.set_weights(bc_weights)
+        print(f"Loaded weights from {bc_store_path}")
 
 
 # running exps
