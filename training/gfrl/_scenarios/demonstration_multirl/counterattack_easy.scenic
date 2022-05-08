@@ -73,13 +73,13 @@ behavior CloseInAndShoot():
 ball = Ball at 26 @ 11
 
 # Left Team
-ego = LeftGK at -99 @ 0#, with behavior IdleBehavior()
-LeftLB at -67.2 @ 19.576#, with behavior CloseInAndShoot()
-LeftCB at -75 @ 6.356#, with behavior CloseInAndShoot()
-LeftCB at -75 @ -6.3559#, with behavior CloseInAndShoot()
-LeftRB at -67.2 @ -19.576#, with behavior CloseInAndShoot()
-LeftCM at -43.4 @ 10.568#, with behavior CloseInAndShoot()
-LeftCM at -43.4 @ -10.568#, with behavior CloseInAndShoot()
+ego = LeftGK at -99 @ 0
+LeftLB at -67.2 @ 19.576
+LeftCB at -75 @ 6.356
+LeftCB at -75 @ -6.3559
+LeftRB at -67.2 @ -19.576
+LeftCM at -43.4 @ 10.568
+LeftCM at -43.4 @ -10.568
 
 # one of the three controlled players
 p4 = LeftCM at 50 @ 31.61, with behavior CloseInAndShoot()

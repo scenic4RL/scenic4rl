@@ -31,10 +31,10 @@ p3 = LeftCF at 35 @ -31.61
 
 # Right Team
 opgk = RightGK at 99 @ 0
-RightLB at -12.8 @ -19
+RightLB at -12 @ -19
 RightCB at -40 @ -6.356
 RightCB at 40 @ 6.3559
-RightRB at -12.8 @ -20
+RightRB at -13.5 @ -20.5
 RightCM at -36.5 @ -10.568
 RightCM at -28.2 @ 0
 RightCM at -36.5 @ 10.568
