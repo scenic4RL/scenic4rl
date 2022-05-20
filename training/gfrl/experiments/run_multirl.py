@@ -12,23 +12,23 @@ from gfrl.common.rllibGFootballEnv import RllibGFootball
 
 # scenario mapping
 scenario_name_to_file = {
-    "defender_hesitantdribble":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_hesitant_dribble.scenic",
-    "defender_zigzagdribble":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_zigzag_dribble.scenic",
-    "2v2":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2.scenic",
-    "2v2_counterattack":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2_counterattack.scenic",
-    "2v2_highpassforward":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic",
-    "3v2_counterattack":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs2_counterattack.scenic",
-    "3v2_crossfromside":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs3_cross_from_side.scenic",
-    "3v2_sidebuildup":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs3_side_buildup_play.scenic",
+    "defender_hesitantdribble":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_hesitant_dribble.scenic",
+    "defender_zigzagdribble":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_zigzag_dribble.scenic",
+    "2v2":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2.scenic",
+    "2v2_counterattack":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2_counterattack.scenic",
+    "2v2_highpassforward":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/2vs2_with_scenic_high_pass_forward.scenic",
+    "3v2_counterattack":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs2_counterattack.scenic",
+    "3v2_crossfromside":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs3_cross_from_side.scenic",
+    "3v2_sidebuildup":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/defense/3vs3_side_buildup_play.scenic",
 
-    "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic",
-    "grf_runtoscore":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/rts.scenic",
-    "grf_runpassshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic",
-    "grf_3v1": "/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/3v1.scenic",
-    "offense_11gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
-    "offense_avoidpassshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
-    "offense_easycross":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/easy_crossing.scenic",
-    "offense_hardcross":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/hard_crossing.scenic",
+    "grf_passshoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic",
+    "grf_runtoscore":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/rts.scenic",
+    "grf_runpassshoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic",
+    "grf_3v1": "/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/3v1.scenic",
+    "offense_11gk":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
+    "offense_avoidpassshoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
+    "offense_easycross":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/offense/easy_crossing.scenic",
+    "offense_hardcross":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/offense/hard_crossing.scenic",
 
 }
 

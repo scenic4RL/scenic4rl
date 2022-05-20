@@ -83,7 +83,7 @@ class RllibGFootball(MultiAgentEnv):
 # running exps
 parser = argparse.ArgumentParser()
 
-# parser.add_argument('--scenario-file', type=str, default="/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic")
+# parser.add_argument('--scenario-file', type=str, default="/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic")
 parser.add_argument('--num-agents', type=int, default=3)
 parser.add_argument('--num-policies', type=int, default=3)
 parser.add_argument('--num-steps', type=int, default=5000000)

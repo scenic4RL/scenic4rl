@@ -147,7 +147,7 @@ def test_obs():
 		# "channel_dimensions": (42, 42)
 		"dump_full_episodes": True,
 		"dump_scores": True,
-		"tracesdir": "/home/mark/workplace/gf/scenic4rl/replays",
+		"tracesdir": "/home/username/workplace/gf/scenic4rl/replays",
 		"write_video": True,
 		"real_time": True
 	}
@@ -156,8 +156,8 @@ def test_obs():
 
 	num_trials = 3
 	num_left_to_be_controlled = 2
-	# scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/dev/test2.scenic"
-	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_zigzag_dribble.scenic"
+	# scenario_file = "/home/username/workplace/gf/scenic4rl/training/gfrl/_scenarios/dev/test2.scenic"
+	scenario_file = "/home/username/workplace/gf/scenic4rl/training/gfrl/_scenarios/defense/defender_vs_opponent_with_zigzag_dribble.scenic"
 	scenario = buildScenario(scenario_file)
 
 	env = GFScenicEnv_v3(initial_scenario=scenario, player_control_mode="all", gf_env_settings=gf_env_settings, allow_render=True)

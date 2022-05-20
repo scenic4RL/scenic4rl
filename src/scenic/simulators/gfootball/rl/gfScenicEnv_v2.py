@@ -165,7 +165,7 @@ def test_observation():
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
 	num_trials = 3
-	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
+	scenario_file = "/home/username/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
 	scenario = buildScenario(scenario_file)
 
 	compute_scenic_behavior = False
@@ -235,7 +235,7 @@ def test_shape():
 	from scenic.simulators.gfootball.rl.gfScenicEnv_v2 import GFScenicEnv_v2
 
 	num_trials = 1
-	scenario_file = "/home/mark/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
+	scenario_file = "/home/username/workplace/gf/scenic4rl/training/gfrl/_scenarios/grf/run_pass_shoot.scenic"
 	scenario = buildScenario(scenario_file)
 
 	env = GFScenicEnv_v2(initial_scenario=scenario, gf_env_settings=gf_env_settings, allow_render=True)

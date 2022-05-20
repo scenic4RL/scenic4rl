@@ -73,10 +73,10 @@ class ScenicSampleBatchBuilder(MultiAgentSampleBatchBuilder):
 
 # scenario mapping
 scenario_name_to_file = {
-    "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/offense_avoid_pass_shoot.scenic",
-    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/offense_11_vs_GK.scenic",
-    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/counterattack_easy.scenic",
-    "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/rl_pass_and_shoot_with_keeper.scenic",
+    "offense_avoid_pass_shoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/offense_avoid_pass_shoot.scenic",
+    "offense_11_vs_gk":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/offense_11_vs_GK.scenic",
+    "offense_counterattack_easy":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/counterattack_easy.scenic",
+    "grf_passshoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/demonstration_multirl/rl_pass_and_shoot_with_keeper.scenic",
 }
 
 # running exps
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         "representation": 'extracted',
         "dump_full_episodes": False,
         "dump_scores": False,
-        "tracesdir": "/home/qcwu/gf/scenic4rl/replays",
+        "tracesdir": "/home/username/gf/scenic4rl/replays",
         "write_video": False,
     }
     # RLlib uses preprocessors to implement transforms such as one-hot encoding

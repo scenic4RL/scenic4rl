@@ -16,10 +16,10 @@ from gfrl.common.nature_cnn import NatureCNN
 
 # scenario mapping
 scenario_name_to_file = {
-    "offense_avoid_pass_shoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
-    "offense_11_vs_gk":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
-    "offense_counterattack_easy":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/counterattack_easy.scenic",
-    "grf_passshoot":"/home/qcwu/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic"
+    "offense_avoid_pass_shoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/offense/avoid_pass_shoot.scenic",
+    "offense_11_vs_gk":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/offense/11_vs_GK.scenic",
+    "offense_counterattack_easy":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/counterattack_easy.scenic",
+    "grf_passshoot":"/home/username/gf/scenic4rl/training/gfrl/_scenarios/grf/pass_n_shoot.scenic"
 }
 
 class LoadablePPOTrainer(PPOTrainer):
@@ -43,7 +43,7 @@ parser.add_argument('--resumebc', action='store_true')
 parser.add_argument('--id', type=str, default="0")
 parser.add_argument('--num-bc-steps', type=int, default=2000000)
 parser.add_argument('--num-ppo-steps', type=int, default=5000000)
-parser.add_argument('--bc-weights-dir', type=str, default="/home/qcwu/gf/scenic4rl/training/gfrl/_bc_weights")
+parser.add_argument('--bc-weights-dir', type=str, default="/home/username/gf/scenic4rl/training/gfrl/_bc_weights")
 
 if __name__ == '__main__':
     args = parser.parse_args()
@@ -238,7 +238,7 @@ if __name__ == '__main__':
         }
     }
 
-    # bc_store_path = "/home/qcwu/gf/scenic4rl/training/gfrl/_bc_weights/bc_offense_avoid_pass_shoot_allNonGK_0.pkl"
+    # bc_store_path = "/home/username/gf/scenic4rl/training/gfrl/_bc_weights/bc_offense_avoid_pass_shoot_allNonGK_0.pkl"
     ppo_trainer_config["bc_store_path"] = bc_store_path
 
     tune.run(
